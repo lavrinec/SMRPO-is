@@ -168,3 +168,13 @@ Route::get('/pages/mailbox/read-mail', function () {
 Route::get('/pages/mailbox/compose', function () {
     return view('/mailbox/compose');
 });
+
+
+/*
+|---------------------------------------------------------------------------
+| Login route
+|---------------------------------------------------------------------------
+*/
+Route::get('/login', function(){
+	return view('/login/login');
+});
