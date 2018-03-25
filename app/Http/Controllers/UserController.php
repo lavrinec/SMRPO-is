@@ -58,7 +58,7 @@ class UserController extends Controller
         request()->session()->flash(
             'message', 'Uspešno kreiran profil.'
         );
-        return redirect()->route('profile.show', $user->id);
+        return redirect()->route('users.show', $user->id);
     }
 
     /**
@@ -99,7 +99,7 @@ class UserController extends Controller
         if(isset($data['password']))
             $data['password'] = bcrypt($request->password);
         User::where('id', $id)->update($data);
-        return redirect()->route('profile.show', $id);
+        return redirect()->route('users.show', $id);
     }
 
     /**
