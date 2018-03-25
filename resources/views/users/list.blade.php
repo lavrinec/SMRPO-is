@@ -5,8 +5,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Data Tables
-                <small>advanced tables</small>
+                Uporabniki
+                <small>Seznam uporabnikov</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -22,7 +22,7 @@
 
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Data Table With Full Features</h3>
+                            <h3 class="box-title">Seznam uporabnikov</h3>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -32,16 +32,22 @@
                                     <th>Email</th>
                                     <th>Ime</th>
                                     <th>Priimek</th>
+                                    <th>Uredi</th>
+                                    <th>Izbriši</th>
                                 </tr>
                                 </thead>
                                 <tbody>
 
                                 @foreach($users as $user)
-                                <tr>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->first_name }}</td>
-                                    <td>{{ $user->last_name }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="{{ action('UserController@show', [$user->id]) }}">{{ $user->email }}</a>
+                                        </td>
+                                        <td>{{ $user->first_name }}</td>
+                                        <td>{{ $user->last_name }}</td>
+                                        <td><a href="#"><i class="fa fa-edit"></i></a></td>
+                                        <td><a href="#"><i class="fa fa-remove"></i></a></td>
+                                    </tr>
                                 @endforeach
 
                                 </tbody>
@@ -50,6 +56,8 @@
                                     <th>Email</th>
                                     <th>Ime</th>
                                     <th>Priimek</th>
+                                    <th>Uredi</th>
+                                    <th>Izbriši</th>
                                 </tr>
                                 </tfoot>
                             </table>
