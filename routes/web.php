@@ -12,7 +12,7 @@
 */
 
 
-Route::group(['middleware' => ['auth']], function () {
+//Route::group(['middleware' => ['auth']], function () {
     //only authorized users can access these routes
     Route::prefix('users')->group(function () {
         Route::get('{id}/show', 'UserController@show')->name('users.show');
@@ -23,7 +23,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('', 'UserController@index')->name('users.list');
     });
 
-});
+//});
 
 Route::group(['middleware' => ['guest']], function () {
     //only guests can access these routes
@@ -193,6 +193,8 @@ Route::get('/pages/mailbox/compose', function () {
 | Login route
 |---------------------------------------------------------------------------
 */
-Route::get('/login', function(){
-	return view('/login/login');
-});
+Route::get('login',
+    function () {
+        return view('/login/login');
+    }
+)->name('login');
