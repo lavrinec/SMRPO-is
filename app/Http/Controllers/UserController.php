@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class UserController extends Controller
 {
@@ -51,13 +53,15 @@ class UserController extends Controller
         if ($validator->fails()) {
             return view('users.create')->withErrors($validator);
         }
-        $data = $request->toArray();
+//        $data = $request->toArray();
+        $data = request()->except('_token');
         $data['password'] = bcrypt($request->password);
         $user = new User($data);
         $user->save();
         request()->session()->flash(
             'message', 'Uspešno kreiran profil.'
         );
+
         return redirect()->route('users.show', $user->id);
     }
 

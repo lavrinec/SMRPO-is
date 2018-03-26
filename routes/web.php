@@ -15,12 +15,13 @@
 //Route::group(['middleware' => ['auth']], function () {
     //only authorized users can access these routes
     Route::prefix('users')->group(function () {
-        Route::get('{id}/show', 'UserController@show')->name('users.show');
-        Route::get('{id}/edit', 'UserController@edit')->name('users.edit');
-        Route::post('{id}', 'UserController@update')->name('users.update');
         Route::get('create', 'UserController@create')->name('users.create');
         Route::post('store', 'UserController@store')->name('users.store');
         Route::get('', 'UserController@index')->name('users.list');
+        Route::get('{id}/show', 'UserController@show')->name('users.show');
+        Route::get('{id}/edit', 'UserController@edit')->name('users.edit');
+        Route::post('{id}', 'UserController@update')->name('users.update');
+
     });
 
 //});

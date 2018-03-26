@@ -22,6 +22,23 @@
 
                     <div class="box">
                         <div class="box-header">
+                            <h3 class="box-title">Ustvarjanje novega uporabnika</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+
+                            <a href="{{ action('UserController@create') }}" class="btn btn-primary btn-block"><b>Ustvari novega uporabnika</b></a>
+
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+
+
+
+
+                    <div class="box">
+                        <div class="box-header">
                             <h3 class="box-title">Seznam uporabnikov</h3>
                         </div>
                         <!-- /.box-header -->
@@ -32,6 +49,7 @@
                                     <th>Email</th>
                                     <th>Ime</th>
                                     <th>Priimek</th>
+                                    <th>Izbrisan</th>
                                     <th>Uredi</th>
                                     <th>Izbriši</th>
                                 </tr>
@@ -45,8 +63,10 @@
                                         </td>
                                         <td>{{ $user->first_name }}</td>
                                         <td>{{ $user->last_name }}</td>
-                                        <td><a href="#"><i class="fa fa-edit"></i></a></td>
-                                        <td><a href="#"><i class="fa fa-remove"></i></a></td>
+                                        <td>@if($user->deleted_at != null ) Izbrisan @endif
+                                        </td>
+                                        <td><a href="{{ action('UserController@edit', [$user->id]) }}"><i class="fa fa-edit"></i></a></td>
+                                        <td><a href=""><i class="fa fa-remove"></i></a></td>
                                     </tr>
                                 @endforeach
 
@@ -56,6 +76,7 @@
                                     <th>Email</th>
                                     <th>Ime</th>
                                     <th>Priimek</th>
+                                    <th>Izbrisan</th>
                                     <th>Uredi</th>
                                     <th>Izbriši</th>
                                 </tr>
