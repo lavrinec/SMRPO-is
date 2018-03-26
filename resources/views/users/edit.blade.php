@@ -49,7 +49,7 @@
                 <div class="col-md-9">
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Ustvarjanje novega uporabnika</h3>
+                            <h3 class="box-title">Urejanje podatkov</h3>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -64,7 +64,7 @@
                                     <label for="first_name" class="col-sm-2 control-label">Ime</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ $users->first_name }}">
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ $users->first_name }}" required>
                                     </div>
                                 </div>
 
@@ -72,7 +72,7 @@
                                     <label for="last_name" class="col-sm-2 control-label">Priimek</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ $users->last_name }}">
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ $users->last_name }}" required>
                                     </div>
                                 </div>
 
@@ -80,7 +80,7 @@
                                     <label for="email" class="col-sm-2 control-label">Email</label>
 
                                     <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="email" name="email" value="{{ $users->email }}">
+                                        <input type="email" class="form-control" id="email" name="email" value="{{ $users->email }}" required>
                                     </div>
                                 </div>
 
@@ -89,8 +89,12 @@
 
 
                                 <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
+                                    <div class="col-sm-offset-2 col-sm-4">
                                         <button type="submit" class="btn btn-danger">Posodobi</button>
+                                    </div>
+                                    <div class="col-sm-offset-4 col-sm-2">
+                                        <a href="{{ action('UserController@show', $users->id) }}" class="btn btn-primary btn-block"><b>Prekliči</b></a>
+
                                     </div>
                                 </div>
                             </form>

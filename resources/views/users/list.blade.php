@@ -27,14 +27,13 @@
                         <!-- /.box-header -->
                         <div class="box-body">
 
-                            <a href="{{ action('UserController@create') }}" class="btn btn-primary btn-block"><b>Ustvari novega uporabnika</b></a>
+                            <a href="{{ action('UserController@create') }}" class="btn btn-primary btn-block"><b>Ustvari
+                                    novega uporabnika</b></a>
 
                         </div>
                         <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
-
-
 
 
                     <div class="box">
@@ -49,7 +48,11 @@
                                     <th>Email</th>
                                     <th>Ime</th>
                                     <th>Priimek</th>
-                                    <th>Izbrisan</th>
+                                    <th>A.</th>
+                                    <th>P.O.</th>
+                                    <th>K.M.</th>
+                                    <th>R.</th>
+                                    <th>Status</th>
                                     <th>Uredi</th>
                                     <th>Izbriši</th>
                                 </tr>
@@ -63,10 +66,27 @@
                                         </td>
                                         <td>{{ $user->first_name }}</td>
                                         <td>{{ $user->last_name }}</td>
-                                        <td>@if($user->deleted_at != null ) Izbrisan @endif
+
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+
+                                        <td>
+                                            @if($user->deleted_at != null )
+                                                Izbrisan
+                                            @else
+                                                Aktiven
+                                            @endif
                                         </td>
-                                        <td><a href="{{ action('UserController@edit', [$user->id]) }}"><i class="fa fa-edit"></i></a></td>
-                                        <td><a href=""><i class="fa fa-remove"></i></a></td>
+                                        <td>
+                                            <a href="{{ action('UserController@edit', [$user->id]) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href=""><i class="fa fa-remove"></i></a>
+                                        </td>
                                     </tr>
                                 @endforeach
 
@@ -76,7 +96,11 @@
                                     <th>Email</th>
                                     <th>Ime</th>
                                     <th>Priimek</th>
-                                    <th>Izbrisan</th>
+                                    <th>A.</th>
+                                    <th>P.O.</th>
+                                    <th>K.M.</th>
+                                    <th>R.</th>
+                                    <th>Status</th>
                                     <th>Uredi</th>
                                     <th>Izbriši</th>
                                 </tr>
