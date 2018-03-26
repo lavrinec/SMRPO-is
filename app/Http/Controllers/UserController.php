@@ -39,21 +39,23 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:8|confirmed',
         ],
             [
                 'required' => 'Polje ne sme ostati prazno!',
-                'max' => 'Elektronski naslov je lahko dolg največ 255 znakov!',
-                'min'  => 'Geslo mora biti dolgo vsaj 8 znakov!',
+                'max' => 'Maksimalna dolžina je največ 255 znakov!',
+                'min'  => 'Minimalna dolžina je vsaj 8 znakov!',
                 'unique' => 'Elektronski naslov že obstaja v naši bazi!',
                 'confirmed'  => 'Geslo se ne ujema s potrditvijo!',
                 'email' => 'Elektronski naslov je napačne oblike!',
             ]);
         if ($validator->fails()) {
-            return view('users.create')->withErrors($validator);
+            return redirect()->route('users.create')->withErrors($validator);
         }
-//        $data = $request->toArray();
+        $data = $request->toArray();
         $data = request()->except('_token');
         $data['password'] = bcrypt($request->password);
         $user = new User($data);
