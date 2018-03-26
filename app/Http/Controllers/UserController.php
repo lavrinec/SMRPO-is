@@ -38,24 +38,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:8|confirmed',
-        ],
-            [
-                'required' => 'Polje ne sme ostati prazno!',
-                'max' => 'Maksimalna dolžina je največ 255 znakov!',
-                'min'  => 'Minimalna dolžina je vsaj 8 znakov!',
-                'unique' => 'Elektronski naslov že obstaja v naši bazi!',
-                'confirmed'  => 'Geslo se ne ujema s potrditvijo!',
-                'email' => 'Elektronski naslov je napačne oblike!',
-            ]);
-        if ($validator->fails()) {
-            return redirect()->route('users.create')->withErrors($validator);
-        }
-        $data = $request->toArray();
+
+        if($validator = $this->validateUser($request)) return redirect()->route('users.create')->withErrors($validator);
+
         $data = request()->except('_token');
         $data['password'] = bcrypt($request->password);
         $user = new User($data);
@@ -91,6 +76,28 @@ class UserController extends Controller
         return view('users.edit')->with('users', $user);
     }
 
+    public function validateUser(Request $request, $user=false){
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users' . ($user ? ',email,' . $user : ''),
+            'password' => ($user ? '' : 'required|') . 'min:8|confirmed',
+        ],
+            [
+                'required' => 'Polje ne sme ostati prazno!',
+                'max' => 'Maksimalna dolžina je največ 255 znakov!',
+                'min'  => 'Minimalna dolžina je vsaj 8 znakov!',
+                'unique' => 'Elektronski naslov že obstaja v naši bazi!',
+                'confirmed'  => 'Geslo se ne ujema s potrditvijo!',
+                'email' => 'Elektronski naslov je napačne oblike!',
+            ]);
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        return false;
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -100,10 +107,12 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $data = $request->toArray();
-        if(isset($data['password']))
-            $data['password'] = bcrypt($request->password);
+        if($validator = $this->validateUser($request, $id)){
+            dd($validator);
+            return redirect()->route('users.edit', $id)->withErrors($validator);
+        }
+        $data = request()->except('_token');
+        unset($data['password']);
         User::where('id', $id)->update($data);
         return redirect()->route('users.show', $id);
     }
