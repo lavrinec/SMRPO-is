@@ -85,7 +85,27 @@
 
                             </table>
 
-                            <a href="{{ action('UserController@edit', $users->id) }}" class="btn btn-primary btn-block"><b>Uredi</b></a>
+
+                            <div class="row">
+                                <div class="col-sm-offset-0 col-sm-4">
+                                    @if($users->deleted_at == null )
+                                        <a href="{{ action('UserController@edit', $users->id) }}"
+                                           class="btn btn-primary btn-block">
+                                            <b>Uredi</b>
+                                        </a>
+                                    @endif
+                                </div>
+                                <div class="col-sm-offset-6 col-sm-2">
+                                    @if($users->deleted_at == null )
+                                        <a href="{{ action('UserController@destroy', $users->id) }}"
+                                           class="btn btn-danger btn-block">
+                                            <b>Izbriši</b>
+                                        </a>
+                                    @endif
+
+                                </div>
+                            </div>
+
 
                         </div>
                         <!-- /.box-body -->

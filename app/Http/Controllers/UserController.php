@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::withTrashed()->get();
         return view('users.list')->with('users', $users);
     }
 
@@ -60,7 +60,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::where('id', $id)->first();
+        $user = User::withTrashed()->where('id', $id)->first();
         return view('users.show')->with('users', $user);
     }
 

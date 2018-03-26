@@ -27,8 +27,9 @@
                         <!-- /.box-header -->
                         <div class="box-body">
 
-                            <a href="{{ action('UserController@create') }}" class="btn btn-primary btn-block"><b>Ustvari
-                                    novega uporabnika</b></a>
+                            <a href="{{ action('UserController@create') }}" class="btn btn-primary btn-block">
+                                <b>Ustvari novega uporabnika</b>
+                            </a>
 
                         </div>
                         <!-- /.box-body -->
@@ -39,6 +40,7 @@
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">Seznam uporabnikov</h3>
+                            <div style="float:right;">ddd</div>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -80,12 +82,18 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ action('UserController@edit', [$user->id]) }}">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
+                                            @if($user->deleted_at == null )
+                                                <a href="{{ action('UserController@edit', [$user->id]) }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                         <td>
-                                            <a href=""><i class="fa fa-remove"></i></a>
+                                            @if($user->deleted_at == null )
+                                                <a href="{{ action('UserController@destroy', $user->id) }}">
+                                                    <i class="fa fa-remove"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
