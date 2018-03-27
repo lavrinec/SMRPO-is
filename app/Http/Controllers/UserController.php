@@ -101,7 +101,8 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::where('id', $id)->first();
-        return view('users.edit')->with('users', $user);
+        $roles = Role::all();
+        return view('users.edit')->with('users', $user)->with('roles', $roles);
     }
 
     public function validateUser(Request $request, $user=false){

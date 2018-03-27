@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Dashboard</title>
+  <title>SMRPO informacijski sistem</title>
   <!-- Tell the browser to be responsive to screen width -->
   @include('dependencies.basic_head_link_dependencies')
 </head>
