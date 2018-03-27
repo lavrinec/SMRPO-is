@@ -35,4 +35,37 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\UsersRole', 'user_id');
     }
+
+
+    /**
+     * Check if the user is an admin user.
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->usersRoles->where('role_id', 1)->count() > 0;
+    }
+
+
+    /**
+     * Check if the user is product owner.
+     *
+     * @return bool
+     */
+    public function isPO()
+    {
+        return $this->usersRoles->where('role_id', 2)->count() > 0;
+    }
+
+
+    /**
+     * Check if the user is a kanban master.
+     *
+     * @return bool
+     */
+    public function isKM()
+    {
+        return $this->usersRoles->where('role_id', 3)->count() > 0;
+    }
 }
