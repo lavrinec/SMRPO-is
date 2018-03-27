@@ -68,4 +68,16 @@ class User extends Authenticatable
     {
         return $this->usersRoles->where('role_id', 3)->count() > 0;
     }
+
+
+    /**
+     * Check if the user is a developer.
+     *
+     * @return bool
+     */
+    public function isDev()
+    {
+        return $this->usersRoles->where('role_id', 4)->count() > 0;
+    }
+
 }

@@ -68,10 +68,26 @@
                                         <td>{{ $user->first_name }}</td>
                                         <td>{{ $user->last_name }}</td>
 
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>-</td>
+                                        <td>
+                                            @if($user->isAdmin())
+                                                <i class="fa fa-check"></i>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($user->isPO())
+                                                <i class="fa fa-check"></i>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($user->isKM())
+                                                <i class="fa fa-check"></i>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($user->isDev())
+                                                <i class="fa fa-check"></i>
+                                            @endif
+                                        </td>
 
                                         <td>
                                             @if($user->deleted_at != null )
