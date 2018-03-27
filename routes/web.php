@@ -12,7 +12,19 @@
 */
 
 
-//Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
+
+    /*
+    |---------------------------------------------------------------------------
+    | Root route
+    |---------------------------------------------------------------------------
+    */
+    Route::get('/', function () {
+        //return view('index2');
+        return view('content.maincontent');
+    })->name('dashboard.index');
+    Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
     //only authorized users can access these routes
     Route::prefix('users')->group(function () {
         Route::get('create', 'UserController@create')->name('users.create');
@@ -36,22 +48,11 @@
 
     });
 
-//});
+});
 
 Route::group(['middleware' => ['guest']], function () {
     //only guests can access these routes
 });
-
-/*
-|---------------------------------------------------------------------------
-| Root route
-|---------------------------------------------------------------------------
-*/
-Route::get('/', function () {
-    //return view('index2');
-    return view('content.maincontent');
-});
-
 
 /*
 |---------------------------------------------------------------------------

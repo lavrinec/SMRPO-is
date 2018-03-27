@@ -52,8 +52,15 @@ class LoginController extends Controller
 
          if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
-              return view('/tables/simple');
+             return redirect()->route('dashboard.index');
+
+              //return view('/tables/simple');
 
          }else return $this->sendFailedLoginResponse($request);
      }
+
+    public function logout(Request $request) {
+        Auth::logout();
+        return redirect('/login');
+    }
 }
