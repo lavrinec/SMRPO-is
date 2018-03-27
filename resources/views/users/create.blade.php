@@ -101,25 +101,7 @@
                                     </div>
                                 </div>
 
-
-                                <div class="form-group">
-                                    <label for="password" class="col-sm-2 control-label">Vloge</label>
-                                    <div class="col-sm-10">
-                                        <p></p>
-                                        @foreach($roles as $role)
-
-                                            <label for="{{ $role->id }}" class="control-sidebar-subheading">
-                                                <input id="roles[]" name="roles[]"
-                                                       value="{{ $role->id }}" type="checkbox"
-                                                       class="pull-left">
-                                                {{ $role->role_name }}
-                                            </label>
-
-                                        @endforeach
-
-
-                                    </div>
-                                </div>
+                                @include('users.roles')
 
 
                                 <div class="form-group">

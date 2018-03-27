@@ -54,16 +54,8 @@ class UserController extends Controller
 
         $user->save();
 
-        // check if any role is selected
-        if (array_key_exists('roles', $roles_data)) {
-            $roles_data = $roles_data['roles'];
+        $this->updateUserRoles($user->id, $roles_data);
 
-            foreach ($roles_data as $role_id){
-                $user_role = new UsersRole(['user_id'=>$user->id, 'role_id'=>$role_id]);
-
-                $user_role->save();
-            }
-        }
 
         request()->session()->flash(
             'message', 'Uspešno kreiran profil.'
@@ -81,7 +73,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::withTrashed()->with('roles')->where('id', $id)->first();
+        $user = User::withTrashed()->with('usersRoles.role')->where('id', $id)->first();
         //$user_roles = UsersRole::where('user_id', $id)->get(['role_id']);
 
         //$roles = Role::where('id', $user_roles->role_id);
@@ -100,7 +92,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::where('id', $id)->first();
+        $user = User::where('id', $id)->with('usersRoles.role')->first();
         $roles = Role::all();
         return view('users.edit')->with('users', $user)->with('roles', $roles);
     }
@@ -139,9 +131,12 @@ class UserController extends Controller
         if($validator = $this->validateUser($request, $id)){
             return redirect()->route('users.edit', $id)->withErrors($validator);
         }
-        $data = request()->except('_token');
-        unset($data['password']);
-        User::where('id', $id)->update($data);
+        $roles_data = request()->only('roles');
+
+        $data = request()->except(['_token', 'roles', 'password']);
+        $user = User::where('id', $id)->update($data);
+
+        $this->updateUserRoles($id, $roles_data);
         return redirect()->route('users.show', $id);
     }
 
@@ -155,5 +150,27 @@ class UserController extends Controller
     {
         User::where('id', $id)->delete();
         return redirect()->route('users.list');
+    }
+
+    private function updateUserRoles($id, $roles_data)
+    {
+        if (array_key_exists('roles', $roles_data)) {
+            $roles_data = $roles_data['roles'];
+        } else {
+            $roles_data = [];
+        }
+        $user = User::where('id', $id)->with('usersRoles')->first();
+        foreach ($user->usersRoles as $role){
+            $role_id = $role->role_id;
+            if(in_array($role_id, $roles_data)){
+                $roles_data = array_diff( $roles_data, [$role_id] );
+            } else {
+                $role->delete();
+            }
+        }
+
+        foreach ($roles_data as $role_id){
+            $user->usersRoles()->create( [ 'role_id' => $role_id ] );
+        }
     }
 }
