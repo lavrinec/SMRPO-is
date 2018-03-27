@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UsersRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -138,6 +139,37 @@ class UserController extends Controller
 
         $this->updateUserRoles($id, $roles_data);
         return redirect()->route('users.show', $id);
+    }
+
+    /**
+     * Update user password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function passwordUpdate(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|min:8|confirmed',
+        ],
+            [
+                'required' => 'Polje ne sme ostati prazno!',
+                'min'  => 'Minimalna dolžina je vsaj 8 znakov!',
+                'confirmed'  => 'Geslo se ne ujema s potrditvijo!',
+            ]);
+        if ($validator->fails()) {
+            return redirect()->route('users.show', $id)->withErrors($validator);
+        }
+        $user = User::where('id', $id)->first();
+        if (Hash::check($request->old_password, $user->password))
+        {
+            $user['password'] = bcrypt($request->password);
+            $user->update();
+            return redirect()->route('users.show', $id);
+        }
+        return redirect()->route('users.show', $id);
+
     }
 
     /**
