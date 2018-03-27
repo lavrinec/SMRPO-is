@@ -81,8 +81,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::withTrashed()->where('id', $id)->first();
-        $user_roles = UsersRole::where('user_id', $id)->get(['role_id']);
+        $user = User::withTrashed()->with('roles')->where('id', $id)->first();
+        //$user_roles = UsersRole::where('user_id', $id)->get(['role_id']);
 
         //$roles = Role::where('id', $user_roles->role_id);
 

@@ -32,9 +32,12 @@
 
                             <h4>Vloge</h4>
                             <ul class="list-group list-group-unbordered">
-                                <li class="list-group-item">
-                                    vloga 1 (VLOGE TODO)
-                                </li>
+                                @foreach($users->roles as $role)
+                                    <li class="list-group-item">
+                                        {{ $role['role_name'] }}
+                                    </li>
+                                @endforeach
+
 
                             </ul>
 
