@@ -42,11 +42,7 @@
     <form action={{url("login")}} method="post">
       @csrf
 
-      @if ($errors->has('active'))
-                                        <span class="invalid-feedback">
-                                            <strong>{{ var_dump($errors) }}</strong>
-                                        </span>
-                                    @endif
+
 
       <div class="form-group has-feedback">
         <input type="email" class="form-control" placeholder="Email" id="email" name="email" />
@@ -58,6 +54,18 @@
         <input type="password" class="form-control" placeholder="Password" id="password" name="password" required />
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
+
+      @if ($errors->has('email'))
+            <span class="invalid-feedback">
+                    <strong>{{ $errors->first('email') }}</strong>
+            </span>
+      @endif
+      @if ($errors->has('expired'))
+            <span class="invalid-feedback">
+                    <strong>{{ $errors->first('expired') }}</strong>
+            </span>
+      @endif
+
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">

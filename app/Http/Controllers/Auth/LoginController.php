@@ -44,7 +44,7 @@ class LoginController extends Controller
      {
 
        if ($this->hasTooManyLoginAttempts($request)) {
-         return view('content.maincontent');
+         return $this->sendLockoutResponse($request);
        }
        $this->incrementLoginAttempts($request);
 
@@ -52,14 +52,7 @@ class LoginController extends Controller
 
          if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
-            if (DB::table('users')->where('email',$request->email)->first()->deleted_at ==null){
               return view('/tables/simple');
-            }else{
-              throw ValidationException::withMessages([
-                  "active" => ["Niste aktivni uporabnik"],
-              ]);
-            }
-
 
          }else return $this->sendFailedLoginResponse($request);
      }
