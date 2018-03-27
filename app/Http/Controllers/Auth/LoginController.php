@@ -4,6 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+
 
 class LoginController extends Controller
 {
@@ -25,15 +31,36 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
+   protected $maxAttempts = 3;
+   protected $decayMinutes = 2;
+   /**
+    * Create a new controller instance.
+    *
+    * @return void
+    */
+
+     public function login(Request $request)
+     {
+
+       if ($this->hasTooManyLoginAttempts($request)) {
+         return $this->sendLockoutResponse($request);
+       }
+       $this->incrementLoginAttempts($request);
+
+
+
+         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+
+             return redirect()->route('dashboard.index');
+
+              //return view('/tables/simple');
+
+         }else return $this->sendFailedLoginResponse($request);
+     }
+
+    public function logout(Request $request) {
+        Auth::logout();
+        return redirect('/login');
     }
 }

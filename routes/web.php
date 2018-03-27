@@ -12,7 +12,19 @@
 */
 
 
-//Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
+
+    /*
+    |---------------------------------------------------------------------------
+    | Root route
+    |---------------------------------------------------------------------------
+    */
+    Route::get('/', function () {
+        //return view('index2');
+        return view('content.maincontent');
+    })->name('dashboard.index');
+    Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
     //only authorized users can access these routes
     Route::prefix('users')->group(function () {
         Route::get('create', 'UserController@create')->name('users.create');
@@ -25,22 +37,32 @@
 
     });
 
-//});
+    Route::prefix('boards')->group(function () {
+        Route::get('create', 'BoardController@create')->name('boards.create');
+        Route::post('store', 'BoardController@store')->name('boards.store');
+        Route::get('', 'BoardController@index')->name('boards.list');
+        Route::get('{id}/show', 'BoardController@show')->name('boards.show');
+        Route::get('{id}/edit', 'BoardController@edit')->name('boards.edit');
+        Route::get('{id}/delete', 'BoardController@destroy')->name('boards.delete');
+        Route::post('{id}', 'BoardController@update')->name('boards.update');
+
+    });
+
+    Route::prefix('groups')->group(function () {
+        Route::get('create', 'GroupController@create')->name('groups.create');
+        Route::post('store', 'GroupController@store')->name('groups.store');
+        Route::get('', 'GroupController@index')->name('groups.list');
+        Route::get('{id}/show', 'GroupController@show')->name('groups.show');
+        Route::get('{id}/edit', 'GroupController@edit')->name('groups.edit');
+        Route::post('{id}', 'GroupController@update')->name('groups.update');
+
+    });
+
+});
 
 Route::group(['middleware' => ['guest']], function () {
     //only guests can access these routes
 });
-
-/*
-|---------------------------------------------------------------------------
-| Root route
-|---------------------------------------------------------------------------
-*/
-Route::get('/', function () {
-    //return view('index2');
-    return view('content.maincontent');
-});
-
 
 /*
 |---------------------------------------------------------------------------
@@ -200,3 +222,5 @@ Route::get('login',
         return view('/login/login');
     }
 )->name('login');
+
+Route::post('login','Auth\LoginController@login')->name('login.test');

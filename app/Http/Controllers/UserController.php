@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -108,7 +108,6 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         if($validator = $this->validateUser($request, $id)){
-            dd($validator);
             return redirect()->route('users.edit', $id)->withErrors($validator);
         }
         $data = request()->except('_token');
