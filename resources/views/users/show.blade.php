@@ -74,10 +74,19 @@
                                 </div>
                                 <div class="col-sm-offset-6 col-sm-2">
                                     @if($users->deleted_at == null )
-                                        <a href="{{ action('UserController@destroy', $users->id) }}"
+                                        <a href="javascript:reallyDelete()"
                                            class="btn btn-danger btn-block">
                                             <b>Izbriši</b>
                                         </a>
+
+                                        <script>
+                                            function reallyDelete() {
+                                                var r = confirm("Ali ste prepričani, da želite izbrisati uporabnika?");
+                                                if (r == true) {
+                                                    window.location.href = "{{ action('UserController@destroy', $users->id) }}";
+                                                }
+                                            }
+                                        </script>
                                     @endif
 
                                 </div>

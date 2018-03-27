@@ -105,8 +105,11 @@
 
 
                                 <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger">Ustvari</button>
+                                    <div class="col-sm-offset-2 col-sm-4">
+                                        <button type="submit" class="btn btn-primary">Ustvari</button>
+                                    </div>
+                                    <div class="col-sm-offset-4 col-sm-2">
+                                        <a href="{{ action('UserController@index') }}" class="btn btn-danger btn-block"><b>Prekliči</b></a>
                                     </div>
                                 </div>
                             </form>

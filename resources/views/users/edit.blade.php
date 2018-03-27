@@ -67,11 +67,10 @@
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-4">
-                                        <button type="submit" class="btn btn-danger">Posodobi</button>
+                                        <button type="submit" class="btn btn-primary">Posodobi</button>
                                     </div>
                                     <div class="col-sm-offset-4 col-sm-2">
-                                        <a href="{{ action('UserController@show', $users->id) }}" class="btn btn-primary btn-block"><b>Prekliči</b></a>
-
+                                        <a href="{{ action('UserController@show', $users->id) }}" class="btn btn-danger btn-block"><b>Prekliči</b></a>
                                     </div>
                                 </div>
                             </form>

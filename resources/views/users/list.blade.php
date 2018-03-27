@@ -105,9 +105,20 @@
                                         </td>
                                         <td>
                                             @if($user->deleted_at == null )
-                                                <a href="{{ action('UserController@destroy', $user->id) }}">
-                                                    <i class="fa fa-remove"></i>
-                                                </a>
+                                                {{--<a href="{{ action('UserController@destroy', $user->id) }}">--}}
+                                                {{--<i class="fa fa-remove"></i>--}}
+                                                {{--</a>--}}
+
+                                                <a href="javascript:reallyDelete()"><i class="fa fa-remove"></i></a>
+
+                                                <script>
+                                                    function reallyDelete() {
+                                                        var r = confirm("Ali ste prepričani, da želite izbrisati uporabnika?");
+                                                        if (r == true) {
+                                                            window.location.href = "{{ action('UserController@destroy', $user->id) }}";
+                                                        }
+                                                    }
+                                                </script>
                                             @endif
                                         </td>
                                     </tr>
