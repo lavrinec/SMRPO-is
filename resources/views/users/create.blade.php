@@ -40,7 +40,7 @@
                                     <label for="first_name" class="col-sm-2 control-label">Ime</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Ime">
+                                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Ime" pattern=".{1,255}" required title="Ime naj bo dolgo med 8 in 255 znakov">
                                         @if ($errors->has('email'))
                                             <span class="help-block">{{ $errors->first('first_name') }}</span>
                                         @endif
@@ -51,7 +51,7 @@
                                     <label for="last_name" class="col-sm-2 control-label">Priimek</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Priimek">
+                                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Priimek" pattern=".{1,255}" required title="Priimek naj bo dolg med 1 in 255 znakov">
                                         @if ($errors->has('email'))
                                             <span class="help-block">{{ $errors->first('last_name') }}</span>
                                         @endif
@@ -62,7 +62,7 @@
                                     <label for="email" class="col-sm-2 control-label">Email</label>
 
                                     <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" required title="Vnesi email v pravilni obliki">
                                         @if ($errors->has('email'))
                                             <span class="help-block">{{ $errors->first('email') }}</span>
                                         @endif
@@ -73,7 +73,7 @@
                                     <label for="password" class="col-sm-2 control-label">Geslo</label>
 
                                     <div class="col-sm-10">
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="Geslo">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Geslo" pattern=".{8,255}" required title="Geslo naj bo dolgo med 8 in 255 znakov">
                                         @if ($errors->has('password'))
                                             <span class="help-block">{{ $errors->first('password') }}</span>
                                         @endif
@@ -85,7 +85,7 @@
                                     <label for="password" class="col-sm-2 control-label">Ponovite geslo</label>
 
                                     <div class="col-sm-10">
-                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Geslo">
+                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Geslo" pattern=".{8,255}" required title="Geslo naj bo dolgo med 8 in 255 znakov">
                                         @if ($errors->has('password'))
                                             <span class="help-block">{{ $errors->first('password_confirmation') }}</span>
                                         @endif

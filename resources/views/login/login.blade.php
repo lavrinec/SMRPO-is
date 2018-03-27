@@ -39,21 +39,30 @@
   <!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">Sign in to start your session</p>
+    <form action={{url("login")}} method="post">
+      @csrf
 
-    <form action="/login" method="post">
+      @if ($errors->has('active'))
+                                        <span class="invalid-feedback">
+                                            <strong>{{ var_dump($errors) }}</strong>
+                                        </span>
+                                    @endif
+
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email" name="email" required>
+        <input type="email" class="form-control" placeholder="Email" id="email" name="email" />
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
+      <div class="">
+      </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password" name="password" required>
+        <input type="password" class="form-control" placeholder="Password" id="password" name="password" required />
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
             <label>
-              <input type="checkbox"> Remember Me
+              <input type="checkbox" /> Remember Me
             </label>
           </div>
         </div>

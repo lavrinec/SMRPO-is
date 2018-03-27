@@ -20,6 +20,7 @@
         Route::get('', 'UserController@index')->name('users.list');
         Route::get('{id}/show', 'UserController@show')->name('users.show');
         Route::get('{id}/edit', 'UserController@edit')->name('users.edit');
+        Route::get('{id}/delete', 'UserController@destroy')->name('users.delete');
         Route::post('{id}', 'UserController@update')->name('users.update');
 
     });
@@ -210,3 +211,5 @@ Route::get('login',
         return view('/login/login');
     }
 )->name('login');
+
+Route::post('login','Auth\LoginController@login')->name('login.test');
