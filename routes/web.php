@@ -24,6 +24,17 @@
 
     });
 
+
+    Route::prefix('groups')->group(function () {
+        Route::get('create', 'GroupController@create')->name('users.create');
+        Route::post('store', 'GroupController@store')->name('users.store');
+        Route::get('', 'GroupController@index')->name('users.list');
+        Route::get('{id}/show', 'GroupController@show')->name('users.show');
+        Route::get('{id}/edit', 'GroupController@edit')->name('users.edit');
+        Route::post('{id}', 'GroupController@update')->name('users.update');
+
+    });
+
 //});
 
 Route::group(['middleware' => ['guest']], function () {
