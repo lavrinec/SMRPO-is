@@ -198,3 +198,5 @@ Route::get('login',
         return view('/login/login');
     }
 )->name('login');
+
+Route::post('login','Auth\LoginController@login')->name('login.test');
