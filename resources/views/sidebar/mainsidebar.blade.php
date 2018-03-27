@@ -24,6 +24,7 @@
           </a>
         </li>
         <li class="{{ $routeGroup == 'users' ? 'active' : '' }}"><a href="/users"><i class="fa fa-users"></i> <span>Uporabniki</span></a></li>
+        <li class="{{ $routeGroup == 'boards' ? 'active' : '' }}"><a href="/boards"><i class="fa fa-users"></i> <span>Table</span></a></li>
       </ul>
     </section>
     <!-- /.sidebar -->
