@@ -40,7 +40,6 @@
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">Seznam uporabnikov</h3>
-                            <div style="float:right;">ddd</div>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
