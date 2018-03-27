@@ -37,6 +37,16 @@ Route::group(['middleware' => ['auth']], function () {
 
     });
 
+    Route::prefix('boards')->group(function () {
+        Route::get('create', 'BoardController@create')->name('boards.create');
+        Route::post('store', 'BoardController@store')->name('boards.store');
+        Route::get('', 'BoardController@index')->name('boards.list');
+        Route::get('{id}/show', 'BoardController@show')->name('boards.show');
+        Route::get('{id}/edit', 'BoardController@edit')->name('boards.edit');
+        Route::get('{id}/delete', 'BoardController@destroy')->name('boards.delete');
+        Route::post('{id}', 'BoardController@update')->name('boards.update');
+
+    });
 
     Route::prefix('groups')->group(function () {
         Route::get('create', 'GroupController@create')->name('groups.create');

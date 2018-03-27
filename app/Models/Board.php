@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Group extends Model
+class Board extends Model
 {
     use SoftDeletes;
 
@@ -15,6 +15,6 @@ class Group extends Model
      * @var array
      */
     protected $fillable = [
-        'group_name', 'description', 'meta'
-    ]; 
+        'board_name', 'description', 'meta'
+    ];
 }

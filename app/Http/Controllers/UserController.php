@@ -108,7 +108,6 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         if($validator = $this->validateUser($request, $id)){
-            dd($validator);
             return redirect()->route('users.edit', $id)->withErrors($validator);
         }
         $data = request()->except('_token');
