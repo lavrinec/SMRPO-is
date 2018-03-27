@@ -105,10 +105,6 @@
                                         </td>
                                         <td>
                                             @if($user->deleted_at == null )
-                                                {{--<a href="{{ action('UserController@destroy', $user->id) }}">--}}
-                                                {{--<i class="fa fa-remove"></i>--}}
-                                                {{--</a>--}}
-
                                                 <a href="javascript:reallyDelete()"><i class="fa fa-remove"></i></a>
 
                                                 <script>

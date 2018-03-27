@@ -21,8 +21,8 @@
         <section class="content">
 
             <div class="row">
-                @include('users.detail')
-                <!-- /.col -->
+            @include('users.detail')
+            <!-- /.col -->
                 <div class="col-md-9">
                     <div class="box">
                         <div class="box-header">

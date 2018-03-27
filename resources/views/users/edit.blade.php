@@ -21,8 +21,8 @@
         <section class="content">
 
             <div class="row">
-                @include('users.detail')
-                <!-- /.col -->
+            @include('users.detail')
+            <!-- /.col -->
                 <div class="col-md-9">
                     <div class="box">
                         <div class="box-header">
@@ -33,7 +33,8 @@
 
                             {{--{{ action('UserController@store') }}--}}
 
-                            <form class="form-horizontal" method="POST" action="{{ action('UserController@update', $users->id) }}">
+                            <form class="form-horizontal" method="POST"
+                                  action="{{ action('UserController@update', $users->id) }}">
 
                                 @csrf
 
@@ -41,7 +42,8 @@
                                     <label for="first_name" class="col-sm-2 control-label">Ime</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ $users->first_name }}" required>
+                                        <input type="text" class="form-control" id="first_name" name="first_name"
+                                               value="{{ $users->first_name }}" required>
                                     </div>
                                 </div>
 
@@ -49,7 +51,8 @@
                                     <label for="last_name" class="col-sm-2 control-label">Priimek</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ $users->last_name }}" required>
+                                        <input type="text" class="form-control" id="last_name" name="last_name"
+                                               value="{{ $users->last_name }}" required>
                                     </div>
                                 </div>
 
@@ -57,24 +60,23 @@
                                     <label for="email" class="col-sm-2 control-label">Email</label>
 
                                     <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="email" name="email" value="{{ $users->email }}" required>
+                                        <input type="email" class="form-control" id="email" name="email"
+                                               value="{{ $users->email }}" required>
                                     </div>
                                 </div>
 
                                 @include('users.roles')
-
-
-
+                                
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-4">
                                         <button type="submit" class="btn btn-primary">Posodobi</button>
                                     </div>
                                     <div class="col-sm-offset-4 col-sm-2">
-                                        <a href="{{ action('UserController@show', $users->id) }}" class="btn btn-danger btn-block"><b>Prekliči</b></a>
+                                        <a href="{{ action('UserController@show', $users->id) }}"
+                                           class="btn btn-danger btn-block"><b>Prekliči</b></a>
                                     </div>
                                 </div>
                             </form>
-
 
 
                         </div>
