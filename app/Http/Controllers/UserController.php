@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
+use App\Models\UsersRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,7 +29,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $roles = Role::all();
+        return view('users.create')->with('roles', $roles);
     }
 
     /**
@@ -41,13 +44,31 @@ class UserController extends Controller
 
         if($validator = $this->validateUser($request)) return redirect()->route('users.create')->withErrors($validator);
 
-        $data = request()->except('_token');
+        // gets array with 1 element: 'roles' => [array of selected roles]
+        // or gets empty array (if no role is selected)
+        $roles_data = request()->only('roles');
+
+        $data = request()->except(['_token', 'roles']);
         $data['password'] = bcrypt($request->password);
         $user = new User($data);
+
         $user->save();
+
+        // check if any role is selected
+        if (array_key_exists('roles', $roles_data)) {
+            $roles_data = $roles_data['roles'];
+
+            foreach ($roles_data as $role_id){
+                $user_role = new UsersRole(['user_id'=>$user->id, 'role_id'=>$role_id]);
+
+                $user_role->save();
+            }
+        }
+
         request()->session()->flash(
             'message', 'Uspešno kreiran profil.'
         );
+
 
         return redirect()->route('users.show', $user->id);
     }
@@ -61,6 +82,13 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::withTrashed()->where('id', $id)->first();
+        $user_roles = UsersRole::where('user_id', $id)->get(['role_id']);
+
+        //$roles = Role::where('id', $user_roles->role_id);
+
+        // Lavrinec, prosim dobi ven imena vlog in jih tudi poslji na view
+
+
         return view('users.show')->with('users', $user);
     }
 
