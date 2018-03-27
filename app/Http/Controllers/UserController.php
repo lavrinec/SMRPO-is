@@ -86,7 +86,7 @@ class UserController extends Controller
 
         //$roles = Role::where('id', $user_roles->role_id);
 
-        // Lavrinec, prosim dobi ven imena vlog in jih tudi poslji na view
+        // TODO: get names of roles and send them to view (along with user data)
 
 
         return view('users.show')->with('users', $user);
