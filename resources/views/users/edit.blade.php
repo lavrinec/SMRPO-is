@@ -100,7 +100,7 @@
                         <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
-                    
+
                     {{-- div for password form --}}
                     <div class="box">
                         <div class="box-header">
