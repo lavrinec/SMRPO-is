@@ -100,8 +100,7 @@
                         <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
-
-
+                    
                     {{-- div for password form --}}
                     <div class="box">
                         <div class="box-header">
@@ -148,8 +147,7 @@
                                     <div class="col-sm-10">
                                         <input type="password" class="form-control" id="password_confirmation"
                                                name="password_confirmation" placeholder="Geslo" pattern=".{8,255}"
-                                               required
-                                               title="Geslo naj bo dolgo med 8 in 255 znakov">
+                                               required title="Geslo naj bo dolgo med 8 in 255 znakov">
                                         @if ($errors->has('password'))
                                             <span class="help-block">{{ $errors->first('password_confirmation') }}</span>
                                         @endif
