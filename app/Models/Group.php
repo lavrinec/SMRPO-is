@@ -17,4 +17,9 @@ class Group extends Model
     protected $fillable = [
         'group_name', 'description', 'meta'
     ]; 
+
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\User', 'users_groups');
+    }
 }

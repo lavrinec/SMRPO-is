@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\UsersGroup;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -15,6 +17,8 @@ class GroupController extends Controller
     public function index()
     {
         //
+        $groups = Group::withTrashed()->get();
+        return  view('groups.list')->with('groups', $groups);
     }
 
     /**
@@ -48,10 +52,14 @@ class GroupController extends Controller
     public function show($id)
     {
         //
-        $group = Group::where('id', $id)->first();
-        return view('groups.show', [
-            "group"=>$group
-        ]);
+        $groups = Group::where('id', $id)->first();
+        //$group_users = UsersGroup::where('group_id', $id)->get(['user_id']);
+        $users =Group::find(1)->users()->get();
+        //return $users;
+         return view('groups.show', [
+             "groups"=>$groups, "users"=>$users
+         ]);
+
     }
 
     /**
