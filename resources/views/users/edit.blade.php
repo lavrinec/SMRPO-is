@@ -52,6 +52,9 @@
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="first_name" name="first_name"
                                                value="{{ $users->first_name }}" required>
+                                        @if ($errors->has('first_name'))
+                                            <span class="help-block">{{ $errors->first('first_name') }}</span>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -61,6 +64,9 @@
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="last_name" name="last_name"
                                                value="{{ $users->last_name }}" required>
+                                        @if ($errors->has('last_name'))
+                                            <span class="help-block">{{ $errors->first('last_name') }}</span>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -70,6 +76,9 @@
                                     <div class="col-sm-10">
                                         <input type="email" class="form-control" id="email" name="email"
                                                value="{{ $users->email }}" required>
+                                        @if ($errors->has('email'))
+                                            <span class="help-block">{{ $errors->first('email') }}</span>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -138,7 +147,8 @@
 
                                     <div class="col-sm-10">
                                         <input type="password" class="form-control" id="password_confirmation"
-                                               name="password_confirmation" placeholder="Geslo" pattern=".{8,255}" required
+                                               name="password_confirmation" placeholder="Geslo" pattern=".{8,255}"
+                                               required
                                                title="Geslo naj bo dolgo med 8 in 255 znakov">
                                         @if ($errors->has('password'))
                                             <span class="help-block">{{ $errors->first('password_confirmation') }}</span>
