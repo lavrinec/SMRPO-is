@@ -16,50 +16,67 @@
         <section class="content">
 
             <div class="row">
-                <div class="col-md-12">
 
+                {{-- left narrow column --}}
+                <div class="col-md-3">
+                    @include('groups.detail')
+
+                    {{--here my be included some other part --}}
+                </div>
+                <!-- /.col -->
+
+                {{-- right wide column --}}
+                <div class="col-md-9">
+
+                    {{-- div for user data form --}}
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Ustvarjanje nove skupine</h3>
+                            <h3 class="box-title">Urejanje podatkov</h3>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
 
-                            {{--{{ action('GroupController@store') }}--}}
+                            <form class="form-horizontal" method="POST"
+                                  action="{{ action('GroupController@update', $groups->id) }}">
+                                {{-- <form class="form-horizontal"> --}}
 
-                            <form class="form-horizontal" method="POST" action="{{ action('GroupController@store') }}">
                                 @csrf
 
                                 <div class="form-group">
-                                    <label for="first_name" class="col-sm-2 control-label">Ime skupine</label>
+                                    <label for="group_name" class="col-sm-2 control-label">Ime</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="group_name" name="group_name"
-                                               placeholder="Ime" required>
+                                               value="{{ $groups->group_name }}" required>
                                         @if ($errors->has('group_name'))
                                             <span class="help-block">{{ $errors->first('group_name') }}</span>
                                         @endif
                                     </div>
                                 </div>
 
+
                                 <div class="form-group">
-                                    <label for="description" class="col-sm-2 control-label">Opis skupine</label>
+                                    <label for="description" class="col-sm-2 control-label">Opis</label>
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="description" name="description"
-                                               placeholder="Opis">
+                                               value="{{ $groups->description }}" required>
                                         @if ($errors->has('description'))
                                             <span class="help-block">{{ $errors->first('description') }}</span>
                                         @endif
                                     </div>
                                 </div>
 
-                                @include('groups.usersgroup')
-
+                                {{-- this needs to be implemented!!!!  @include('groups.roles')  --}}
+                                @include('groups.usersgroup');
 
                                 <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger">Ustvari</button>
+                                    <div class="col-sm-offset-2 col-sm-4">
+                                        <button type="submit" class="btn btn-primary">Posodobi podatke</button>
+                                    </div>
+                                    <div class="col-sm-offset-4 col-sm-2">
+                                        <a href="{{ action('GroupController@show', $groups->id) }}"
+                                           class="btn btn-danger btn-block"><b>Prekliči</b></a>
                                     </div>
                                 </div>
                             </form>

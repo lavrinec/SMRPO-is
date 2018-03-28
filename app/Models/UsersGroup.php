@@ -14,7 +14,7 @@ class UsersGroup extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'group_id'
+        'user_id', 'group_id', 'is_active'
     ];
 
     protected $dates = ['deleted_at'];

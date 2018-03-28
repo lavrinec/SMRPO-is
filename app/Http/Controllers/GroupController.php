@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\Group;
 use App\Models\UsersGroup;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
 {
@@ -18,7 +20,7 @@ class GroupController extends Controller
     {
         //
         $groups = Group::withTrashed()->get();
-        return  view('groups.list')->with('groups', $groups);
+        return view('groups.list')->with('groups', $groups);
     }
 
     /**
@@ -29,70 +31,166 @@ class GroupController extends Controller
     public function create()
     {
         //
-        return view('groups.create');
+        $usersgroup = UsersGroup::all();
+        $users = User::all();
+        //$users = collect();
+        return view('groups.create')->with('usersgroup', $usersgroup)->with('users', $users);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         //
+
+        /*
+            This is where we put code to insert data of groups...
+        */
+        if ($validator = $this->validateGroup($request)) return redirect()->route('groups.create')->withErrors($validator);
+
+        // gets array with 1 element: 'roles' => [array of selected roles]
+        // or gets empty array (if no role is selected)
+
+
+        //we get all selected users from create group mask;
+        $users = request()->only('users');
+
+
+        //$data = request()->except(['_token', 'roles']);
+        $data = request()->only(['group_name', 'description']);
+        $group = new Group($data);
+        $group->save();
+        $this->updateUsersGroup($group->id, $users);
+
+        //$this->updateUserRoles($user->id, $roles_data);
+
+
+        request()->session()->flash(
+            'message', 'Uspešno kreirana skupina.'
+        );
+
+
+        return redirect()->route('groups.show', $group->id);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Group  $group
+     * @param  \App\Group $group
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
-        $groups = Group::where('id', $id)->first();
-        //$group_users = UsersGroup::where('group_id', $id)->get(['user_id']);
-        $users =Group::find(1)->users()->get();
-        //return $users;
-         return view('groups.show', [
-             "groups"=>$groups, "users"=>$users
-         ]);
+
+        $groups = Group::withTrashed()->where('id', $id)->first();
+        $users = Group::find(1)->users()->get();
+        /*return view('groups.show', [
+            "groups"=>$groups, "users"=>$users
+        ]);*/
+        return view('groups.show')->with('groups', $groups)->with('users', $users);
 
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Group  $group
+     * @param  \App\Group $group
      * @return \Illuminate\Http\Response
      */
-    public function edit(Group $group)
+    public function edit($id)
     {
         //
+        $groups = Group::where('id', $id)->first();
+        $users = User::all();
+        return view('groups.edit')->with('groups', $groups)->with('users', $users);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Group  $group
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Group $group
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Group $group)
+
+    public function update(Request $request, $id)
     {
         //
+        if ($validator = $this->validateGroup($request, $id)) {
+            return redirect()->route('groups.edit', $id)->withErrors($validator);
+        }
+        $data = request()->only(['group_name', 'description']);
+        $users = request()->only('users');
+        $group = Group::where('id', $id)->update($data);
+        $this->updateUsersGroup($id, $users);
+        return redirect()->route('groups.show', $id);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Group  $group
+     * @param  \App\Group $group
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Group $group)
+    public function destroy($id)
     {
         //
+        $group = Group::where('id', $id);
+        if ($group->first() != null) {
+            $group->delete();
+        } else {
+            return redirect()->route('groups.show')->withErrors(['someError' => 'yes']);
+        }
+        return redirect()->route('groups.list');
     }
+
+    public function validateGroup(Request $request, $group = false)
+    {
+        $validator = Validator::make($request->all(), [
+            'group_name' => 'required|max:255',
+            'description' => 'max:255'
+        ],
+            [
+                'required' => 'Polje ne sme ostati prazno!',
+                'max' => 'Maksimalna dolžina je največ 255 znakov!'
+            ]);
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        return false;
+    }
+
+
+    private function updateUsersGroup($group_id, $users_data)
+    {
+        if (array_key_exists('users', $users_data)) {
+            /*
+             * We extract/get users object from collection so that we do not have to ...
+             * ... always search through properties.
+             * */
+            $users_data = $users_data['users'];
+        } else {
+            $users_data = [];
+        }
+        $group = Group::where('id', $group_id)->with('usersGroups')->first();
+        foreach ($group->usersGroups as $userGroup) {
+            $user_id = $userGroup->id;
+            if (in_array($user_id, $users_data)) {
+                $users_data = array_diff($users_data, [$user_id]);
+            } else {
+                $userGroup->delete();
+            }
+        }
+        foreach ($users_data as $user_id) {
+            $group->usersGroups()->create(['user_id' => $user_id, 'is_active' => 1]);
+        }
+
+    }
+
+
 }

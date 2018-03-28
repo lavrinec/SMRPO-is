@@ -16,7 +16,12 @@ class Group extends Model
      */
     protected $fillable = [
         'group_name', 'description', 'meta'
-    ]; 
+    ];
+
+    public function usersGroups()
+    {
+        return $this->hasMany('App\Models\UsersGroup', 'group_id');
+    }
 
     public function users()
     {
