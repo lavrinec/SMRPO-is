@@ -21,17 +21,25 @@
         <section class="content">
 
             <div class="row">
-            @include('users.detail')
-            <!-- /.col -->
+
+                {{-- left narrow column --}}
+                <div class="col-md-3">
+                    @include('users.detail')
+
+                    {{--here my be included some other part --}}
+                </div>
+                <!-- /.col -->
+
+                {{-- right wide column --}}
                 <div class="col-md-9">
+
+                    {{-- div for user data form --}}
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">Urejanje podatkov</h3>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
-
-                            {{--{{ action('UserController@store') }}--}}
 
                             <form class="form-horizontal" method="POST"
                                   action="{{ action('UserController@update', $users->id) }}">
@@ -69,7 +77,7 @@
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-4">
-                                        <button type="submit" class="btn btn-primary">Posodobi</button>
+                                        <button type="submit" class="btn btn-primary">Posodobi podatke</button>
                                     </div>
                                     <div class="col-sm-offset-4 col-sm-2">
                                         <a href="{{ action('UserController@show', $users->id) }}"
@@ -83,6 +91,80 @@
                         <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
+
+
+                    {{-- div for password form --}}
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Spreminjanje gesla</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+
+                            <form class="form-horizontal" method="POST"
+                                  action="{{ action('UserController@passwordUpdate', $users->id) }}">
+
+                                @csrf
+
+                                <div class="form-group">
+                                    <label for="old_password" class="col-sm-2 control-label">Trenutno geslo</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="password" class="form-control" id="old_password"
+                                               name="old_password" placeholder="Geslo" pattern=".{8,255}" required
+                                               title="Geslo naj bo dolgo med 8 in 255 znakov">
+                                        @if ($errors->has('old_password'))
+                                            <span class="help-block">{{ $errors->first('old_password') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password" class="col-sm-2 control-label">Novo geslo</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="password" class="form-control" id="password" name="password"
+                                               placeholder="Geslo" pattern=".{8,255}" required
+                                               title="Geslo naj bo dolgo med 8 in 255 znakov">
+                                        @if ($errors->has('password'))
+                                            <span class="help-block">{{ $errors->first('password') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password_confirmation" class="col-sm-2 control-label">Ponovite novo
+                                        geslo </label>
+
+                                    <div class="col-sm-10">
+                                        <input type="password" class="form-control" id="password_confirmation"
+                                               name="password_confirmation" placeholder="Geslo" pattern=".{8,255}" required
+                                               title="Geslo naj bo dolgo med 8 in 255 znakov">
+                                        @if ($errors->has('password'))
+                                            <span class="help-block">{{ $errors->first('password_confirmation') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-4">
+                                        <button type="submit" class="btn btn-primary">Posodobi geslo</button>
+
+                                    </div>
+                                    <div class="col-sm-offset-4 col-sm-2">
+                                        <a href="{{ action('UserController@show', $users->id) }}"
+                                           class="btn btn-danger btn-block"><b>Prekliči</b></a>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+
+
                 </div>
                 <!-- /.col -->
             </div>

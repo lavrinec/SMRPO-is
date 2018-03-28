@@ -21,8 +21,16 @@
         <section class="content">
 
             <div class="row">
-            @include('users.detail')
-            <!-- /.col -->
+
+                {{-- left narrow column --}}
+                <div class="col-md-3">
+                    @include('users.detail')
+
+                    {{--here my be included some other part --}}
+                </div>
+                <!-- /.col -->
+
+                {{-- right wide column --}}
                 <div class="col-md-9">
                     <div class="box">
                         <div class="box-header">

@@ -159,7 +159,8 @@ class UserController extends Controller
                 'confirmed'  => 'Geslo se ne ujema s potrditvijo!',
             ]);
         if ($validator->fails()) {
-            return redirect()->route('users.show', $id)->withErrors($validator);
+//            return dd($validator);
+            return redirect()->route('users.edit', $id)->withErrors($validator);
         }
         $user = User::where('id', $id)->first();
         if (Hash::check($request->old_password, $user->password))
@@ -167,6 +168,9 @@ class UserController extends Controller
             $user['password'] = bcrypt($request->password);
             $user->update();
             return redirect()->route('users.show', $id);
+        }
+        else{
+            return redirect()->route('users.edit', $id)->withErrors(['old_password'=>'Vpisano trenutno geslo se ne ujema s tistim v bazi.']);
         }
         return redirect()->route('users.show', $id);
 
