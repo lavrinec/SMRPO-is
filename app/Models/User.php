@@ -36,6 +36,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\UsersRole', 'user_id');
     }
 
+    public function groups()
+    {
+        return $this->belongsToMany('App\Models\Group', 'users_groups');
+    }
+
 
     /**
      * Check if the user is an admin user.
