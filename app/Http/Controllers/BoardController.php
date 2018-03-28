@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BoardController extends Controller
 {
@@ -54,8 +55,10 @@ class BoardController extends Controller
      * @param  \App\Models\Board  $board
      * @return \Illuminate\Http\Response
      */
-    public function show(Board $board)
+    public function show($id)
     {
+        $board = Board::withTrashed()->where('id', $id)->first();
+
         return view('boards.show')->with('board', $board);
     }
 
@@ -80,8 +83,10 @@ class BoardController extends Controller
      * @param  \App\Models\Board  $board
      * @return \Illuminate\Http\Response
      */
-    public function edit(Board $board)
+    public function edit($id)
     {
+        $board = Board::where('id', $id)->first();
+
         return view('boards.edit')->with('board', $board);
     }
 
