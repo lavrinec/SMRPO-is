@@ -92,7 +92,7 @@ class BoardController extends Controller
 
     public function addColumn(){
 
-        $column_id = str_random(20);
+        $column_id = "aa" . str_random(20);
 
         return view('boards.column')->with('column_id', $column_id);
 

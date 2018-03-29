@@ -29,7 +29,8 @@
 
         <div class="box-body" style="border: solid black 1px;">
             <div class="">
-
+                {{ $column_id }}
+                
                 <div class="form-group">
                     <label for="wip" class="col-sm-2 control-label">WIP</label>
 
@@ -76,14 +77,9 @@
                 </div>
             </div>
 
-            <script type="text/javascript">
-
-
-
-
-            </script>
-
             <div class="container">
+
+
 
                 <button type="button" class="btn btn-default" onclick="addSubColumnTo({{ $column_id }})" style="float: left;">
                     Dodaj podstolpec
