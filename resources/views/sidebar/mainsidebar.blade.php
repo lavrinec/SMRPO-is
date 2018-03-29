@@ -23,7 +23,9 @@
                     <i class="fa fa-dashboard"></i> <span>Domov</span>
                 </a>
             </li>
-            <li class="{{ $routeGroup == 'users' ? 'active' : '' }}"><a href="/users"><i class="fa fa-users"></i> <span>Uporabniki</span></a>
+            @if(Auth::user()->isAdmin())
+                <li class="{{ $routeGroup == 'users' ? 'active' : '' }}"><a href="/users"><i class="fa fa-users"></i> <span>Uporabniki</span></a>
+            @endif
             </li>
             <li class="{{ $routeGroup == 'groups' ? 'active' : '' }}"><a href="/groups"><i class="fa fa-users"></i>
                     <span>Skupine</span></a></li>
