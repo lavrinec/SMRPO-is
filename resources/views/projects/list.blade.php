@@ -49,8 +49,10 @@
                                     <th>Naročnik</th>
                                     <th>Datum začetka</th>
                                     <th>Datum zaključka</th>
-                                    <th>Uredi</th>
-                                    <th>Izbriši</th>
+                                    @if(Auth::user()->isKM())
+                                        <th>Uredi</th>
+                                        <th>Izbriši</th>
+                                    @endif
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -64,28 +66,29 @@
                                         <td>{{ date("d-m-Y", strtotime($project->start_date)) }}</td>
                                         <td>{{ date("d-m-Y", strtotime($project->end_date)) }}</td>
 
-                                        
-                                        <td>
-                                            @if($project->deleted_at == null )
-                                                <a href="{{ action('ProjectController@edit', [$project->id]) }}">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($project->deleted_at == null )
-                                                <a href="javascript:reallyDelete()"><i class="fa fa-remove"></i></a>
+                                        @if(Auth::user()->isKM())
+                                            <td>
+                                                @if($project->deleted_at == null )
+                                                    <a href="{{ action('ProjectController@edit', [$project->id]) }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($project->deleted_at == null )
+                                                    <a href="javascript:reallyDelete()"><i class="fa fa-remove"></i></a>
 
-                                                <script>
-                                                    function reallyDelete() {
-                                                        var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
-                                                        if (r == true) {
-                                                            window.location.href = "{{ action('ProjectController@destroy', $project->id) }}";
+                                                    <script>
+                                                        function reallyDelete() {
+                                                            var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
+                                                            if (r == true) {
+                                                                window.location.href = "{{ action('ProjectController@destroy', $project->id) }}";
+                                                            }
                                                         }
-                                                    }
-                                                </script>
+                                                    </script>
+                                                @endif
+                                            </td>
                                             @endif
-                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -96,8 +99,10 @@
                                     <th>Naročnik</th>
                                     <th>Datum začetka</th>
                                     <th>Datum zaključka</th>
-                                    <th>Uredi</th>
-                                    <th>Izbriši</th>
+                                    @if(Auth::user()->isKM())
+                                        <th>Uredi</th>
+                                        <th>Izbriši</th>
+                                    @endif
                                 </tr>
                                 </tfoot>
                             </table>

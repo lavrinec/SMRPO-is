@@ -66,6 +66,26 @@ class ProjectController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Project  $project
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Project $project)
+    {
+        $data = request()->except(['_token']);
+        $startRequired = true;
+        if($this->areThereCards($project)){
+            unset($data['start_date']);
+            $startRequired = false;
+        } else $data['start_date'] = date("Y-m-d", strtotime($data['start_date']));
+        $data['end_date'] = date("Y-m-d", strtotime($data['end_date']));
+        $project->update($data);
+        return redirect()->route('projects.show', $project->id);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -75,33 +95,17 @@ class ProjectController extends Controller
     {
         //
         $project = Project::where('id', $id)->first();
-        return view('projects.edit')->with('projects', $project);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-        $data = request()->except(['_token', 'roles']);
-       $data['start_date'] = date("Y-m-d", strtotime($data['start_date']));
-       $data['end_date'] = date("Y-m-d", strtotime($data['end_date']));
-        $project = Project::where('id', $id)->update($data);
-        return redirect()->route('projects.show', $id);
+        $hasCards = $this->areThereCards($project);
+        return view('projects.edit')->with('projects', $project)->with('hasCards', $hasCards);
     }
 
 
-    public function validateProject(Request $request){
+    public function validateProject(Request $request, $startRequired){
         $validator = Validator::make($request->all(), [
             'board_name' => 'required|max:255',
             'description' => 'required|max:255',
             'buyer_name' => 'required|max:255',
-            'start_date' => 'required|date|before_or_equal:today',
+            'start_date' => ($startRequired ? 'required|' : '') . 'date|before_or_equal:today',
             'end_date' => 'required|date|after:start_date',
 
 
@@ -129,11 +133,18 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        $board = $project->board()->first();
-        if(!empty($board) && $board->cards()->count() > 0){
+        if($this->areThereCards($project)){
             return redirect()->back()->withErrors(['msg' => 'Izbris ni mogoč. Najprej izbrišite kartice v projektu!']);
         }
         $project->delete();
         return redirect()->route('projects.list');
+    }
+
+    private function areThereCards(Project $project){
+        $board = $project->board()->first();
+        if(!empty($board) && $board->cards()->count() > 0){
+            return true;
+        }
+        return false;
     }
 }

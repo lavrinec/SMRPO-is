@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('{id}/show', 'ProjectController@show')->name('projects.show');
         Route::get('{id}/edit', 'ProjectController@edit')->name('projects.edit');
         Route::get('{project}/delete', 'ProjectController@destroy')->name('projects.delete');
-        Route::post('{id}', 'ProjectController@update')->name('projects.update');
+        Route::post('{project}', 'ProjectController@update')->name('projects.update');
 
     });
 
