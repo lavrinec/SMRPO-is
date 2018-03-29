@@ -19,10 +19,7 @@ Route::group(['middleware' => ['auth']], function () {
     | Root route
     |---------------------------------------------------------------------------
     */
-    Route::get('/', function () {
-        //return view('index2');
-        return view('content.maincontent');
-    })->name('dashboard.index');
+    Route::get('/', 'DashboardController@index')->name('dashboard');
     Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
     //only authorized users can access these routes

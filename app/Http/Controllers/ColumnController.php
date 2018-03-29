@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Project;
 
+use App\Models\Column;
 use Illuminate\Http\Request;
 
-class ProjectController extends Controller
+class ColumnController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::withTrashed()->get();
-        return view('projects.list')->with('projects', $projects);
+        //
     }
 
     /**
@@ -26,7 +25,6 @@ class ProjectController extends Controller
     public function create()
     {
         //
-        return view('projects.create');
     }
 
     /**
@@ -38,46 +36,38 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         //
-        $data = request()->except(['_token', 'roles']);
-        $data["lane_number"] = 0;
-        $project = new Project($data);
-        $project->save();
-        return redirect()->route('projects.show', $project->id);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Column  $column
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Column $column)
     {
-        $project = Project::withTrashed()->where('id', $id)->first();        
-        return view('projects.show')->with('projects', $project);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Column  $column
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Column $column)
     {
         //
-        $project = Project::where('id', $id)->first();
-        return view('projects.edit')->with('projects', $project);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Column  $column
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Column $column)
     {
         //
     }
@@ -85,11 +75,15 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Column  $column
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Column $column)
     {
-        //
+        if($column->cards()->count() > 0){
+            return redirect()->back()->withErrors(['msg', 'Izbris ni mogoč. Najprej izbrišite kartice v stolpcu!']);
+        }
+        $column->delete();
+        return redirect()->route('column.list');
     }
 }

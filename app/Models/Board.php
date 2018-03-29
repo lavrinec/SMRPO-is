@@ -22,4 +22,10 @@ class Board extends Model
     {
         return $this->hasMany('App\Models\Project', 'board_id');
     }
+    
+    public function columns()
+    {
+        return $this->hasMany('App\Models\Column', 'board_id');
+
+    }
 }
