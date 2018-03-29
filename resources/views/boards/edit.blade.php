@@ -124,6 +124,16 @@
                                                 });
                                             }
 
+                                            function addSubColumnTo(column) {
+                                                $.ajax({
+                                                    type: 'GET',
+                                                    url : "{{ action('BoardController@addColumn') }}",
+                                                    success : function (data) {
+                                                        $("#sub_"+column.id).append(data);
+                                                    }
+                                                });
+                                            }
+
 
                                             function deleteColumn(column) {
                                                 console.log(column);

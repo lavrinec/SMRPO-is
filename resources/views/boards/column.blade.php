@@ -77,15 +77,7 @@
             </div>
 
             <script type="text/javascript">
-                function addSubColumn() {
-                    $.ajax({
-                        type: 'GET',
-                        url : "{{ action('BoardController@addColumn') }}",
-                        success : function (data) {
-                            $("#sub_{{ $column_id }}").append(data);
-                        }
-                    });
-                }
+
 
 
 
@@ -93,7 +85,7 @@
 
             <div class="container">
 
-                <button type="button" class="btn btn-default" onclick="addSubColumn()" style="float: left;">
+                <button type="button" class="btn btn-default" onclick="addSubColumnTo({{ $column_id }})" style="float: left;">
                     Dodaj podstolpec
                 </button>
                 <br>
