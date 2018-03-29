@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -38,12 +39,15 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         //
+        if($validator = $this->validateProject($request)) return redirect()->route('projects.create')->withErrors($validator);
+
+
         $data = request()->except(['_token', 'roles']);
         $data["lane_number"] = 0;
         $project = new Project($data);
         
         $project->save();
-        return redirect()->route('projects.show', $project->id);
+        return $project;//redirect()->route('projects.show', $project->id);
     }
 
     /**
@@ -84,6 +88,32 @@ class ProjectController extends Controller
         $data = request()->except(['_token', 'roles']);
         $project = Project::where('id', $id)->update($data);
         return $project; //redirect()->route('projects.show', $id);
+    }
+
+
+    public function validateProject(Request $request){
+        $validator = Validator::make($request->all(), [
+            'board_name' => 'required|max:255',
+            'description' => 'required|max:255',
+            'buyer_name' => 'required|max:255',
+            'start_date' => 'required|date|before_or_equal:today',
+            'end_date' => 'required|date|after:start_date',
+
+
+        ],
+            [
+                'required' => 'Polje ne sme ostati prazno!',
+                'max' => 'Maksimalna dolžina je največ 255 znakov!',
+                'date'  => 'Vpišite datum v obliki dd.mm.llll',
+                'before_or_equal' => "Projekt se lahko začne najkasneje z današnjim dnem!",
+                'after'=> "Datum konca projekta mora biti kasnejši od datuma začetka!"
+                
+            ]);
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        return false;
     }
 
     /**
