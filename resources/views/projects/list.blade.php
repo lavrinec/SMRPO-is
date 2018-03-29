@@ -51,7 +51,6 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-
                                 @foreach($projects as $project)
                                     <tr>
                                         <td>
@@ -86,11 +85,10 @@
                                         </td>
                                     </tr>
                                 @endforeach
-
                                 </tbody>
                                 <tfoot>
                                 <tr>
-                                    <<th>Ime</th>
+                                    <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Naročnik</th>
                                     <th>Datum začetka</th>
