@@ -90,6 +90,16 @@ class BoardController extends Controller
         return view('boards.edit')->with('board', $board);
     }
 
+    public function addColumn(){
+
+        $column_id = str_random(20);
+
+        return view('boards.column')->with('column_id', $column_id);
+
+    }
+
+
+
     /**
      * Update the specified resource in storage.
      *

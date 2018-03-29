@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::prefix('boards')->group(function () {
         Route::get('create', 'BoardController@create')->name('boards.create');
         Route::post('store', 'BoardController@store')->name('boards.store');
+        Route::get('column', 'BoardController@addColumn')->name('boards.column');
         Route::get('', 'BoardController@index')->name('boards.list');
         Route::get('{id}/show', 'BoardController@show')->name('boards.show');
         Route::get('{id}/edit', 'BoardController@edit')->name('boards.edit');

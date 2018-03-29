@@ -47,7 +47,7 @@
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="description" name="description"
                                                placeholder="Opis" pattern=".{1,255}" required
-                                               title="Priimek naj bo dolg med 1 in 255 znakov">
+                                               title="Opis naj bo dolg med 1 in 255 znakov">
                                     </div>
                                 </div>
 

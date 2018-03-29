@@ -43,7 +43,7 @@
                                         @endif
                                     </div>
 
-                                    <label for="board_name" class="col-sm-1 control-label">Opis</label>
+                                    <label for="description" class="col-sm-1 control-label">Opis</label>
 
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="description" name="description"
@@ -60,197 +60,242 @@
                                            class="btn btn-danger">Prekliči</a>
                                     </div>
                                 </div>
-                            </form>
-
-                            <style>
-                                /* The heart of the matter */
-                                .testimonial-group > .row {
-                                    overflow-x: auto;
-                                    white-space: nowrap;
-                                }
-
-                                .testimonial-group > .row > .col-xs-4 {
-                                    display: inline-block;
-                                    float: none;
-                                }
-
-                                /* Decorations */
-                                .col-xs-4 {
-                                    color: #fff;
-                                    font-size: 48px;
-                                    padding-bottom: 20px;
-                                    padding-top: 18px;
-                                }
-
-                                .col-xs-4:nth-child(3n+1) {
-                                    background: #c69;
-                                }
-
-                                .col-xs-4:nth-child(3n+2) {
-                                    background: #9c6;
-                                }
-
-                                .col-xs-4:nth-child(3n+3) {
-                                    background: #69c;
-                                }
 
 
-                            </style>
+                                <style>
+                                    /* The heart of the matter */
+                                    .testimonial-group {
+                                        width: 100%;
+                                    }
+
+                                    .testimonial-group > .row {
+                                        overflow-x: auto;
+                                        white-space: nowrap;
+                                    }
+
+                                    .testimonial-group > .row > .column {
+                                        display: inline-block;
+                                        float: none;
+                                    }
+
+                                    /* Decorations */
+                                    .column {
+                                        padding: 5px;
+                                    }
+
+                                    .column > .box {
+                                        margin: 0px;
+                                    }
+
+                                    .column:nth-child(3n+1) {
+                                        background: #c69;
+                                    }
+
+                                    .column:nth-child(3n+2) {
+                                        background: #9c6;
+                                    }
+
+                                    .column:nth-child(3n+3) {
+                                        background: #69c;
+                                    }
 
 
-                            <div class="box container testimonial-group">
-                                <div class="row text-center">
-                                    <div class="col-xs-4">1</div>
-                                    <div class="col-xs-4">2</div>
-                                    <div class="col-xs-4">3</div>
-                                    <div class="col-xs-4">4</div>
-                                    <div class="col-xs-4">5</div>
-                                    <div class="col-xs-4">6</div>
-                                    <div class="col-xs-4">7</div>
-                                    <div class="col-xs-4">8</div>
-                                    <div class="col-xs-4">9</div>
-                                </div>
-                            </div>
+                                </style>
+
+                                
+                                <button type="button" class="btn btn-default" onclick="addColumn()" style="float: right;">
+                                    Dodaj stolpec
+                                </button>
+
+                                <div class="container testimonial-group">
+                                    <div class="row text-center" id="board-canvas">
 
 
-                            <!-- Dragula JS for boards -->
-                            <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.js'></script>
+                                        {{--@include('boards.column')--}}
 
-                            <div class="box container">
+                                        <script type="text/javascript">
+                                            function addColumn() {
+                                                $.ajax({
+                                                    type: 'GET',
+                                                    url : "{{ action('BoardController@addColumn') }}",
+                                                    success : function (data) {
+                                                        $("#board-canvas").append(data);
+                                                    }
+                                                });
+                                            }
 
-                                <div class="row" style="float:left;">
-                                    <div class="col-sm-12">stolpec 1</div>
 
-                                    <div id="column1" class="container col-sm-12"
-                                         style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-                                        <div style="background: lightblue;">test1</div>
-                                        <div style="background: lightgreen;">test2</div>
-                                        <div style="background: lightgrey;">test3</div>
+                                            function deleteColumn(column) {
+                                                console.log(column);
+                                                column.parentNode.removeChild(column);
+                                                return false;
+                                            }
+
+                                        </script>
+
+
+
 
                                     </div>
                                 </div>
 
 
-                                <div class="row" style="float:left;">
-                                    <div class="col-sm-12">stolpec 2</div>
-                                    <div id="column2" class="container col-sm-12"
-                                         style="border: solid black 1px; width: 150px; height: 200px; float: left;">
+                                <div style="height:200px;"></div>
 
 
-                                        <div class="row" style="float:left; width: 80px;">
-                                            <div class="col-sm-12">st 2_1</div>
-                                            <div id="column21" class="container col-sm-12"
-                                                 style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
+                                <!-- Dragula JS for boards -->
+                                <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.js'></script>
 
-                                            </div>
+                                <div class="container" style="width: 100%;">
+
+                                    <div class="box" style="float:left;">
+                                        <div class="box-header">stolpec 1</div>
+
+                                        <div id="column1" class="container box-body"
+                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
+                                            <div style="background: lightblue;">test1</div>
+                                            <div style="background: lightgreen;">test2</div>
+                                            <div style="background: lightgrey;">test3</div>
+
                                         </div>
-
-                                        <div class="row" style="float:left; width: 70px;">
-                                            <div class="col-sm-12">st 2_2</div>
-                                            <div id="column22" class="container col-sm-12"
-                                                 style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                            </div>
-                                        </div>
-
                                     </div>
+
+
+                                    <div class="row" style="float:left;">
+                                        <div class="col-sm-12">stolpec 1</div>
+
+                                        <div id="column1" class="container col-sm-12"
+                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
+                                            <div style="background: lightblue;">test1</div>
+                                            <div style="background: lightgreen;">test2</div>
+                                            <div style="background: lightgrey;">test3</div>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row" style="float:left;">
+                                        <div class="col-sm-12">stolpec 2</div>
+                                        <div id="column2" class="container col-sm-12"
+                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
+
+
+                                            <div class="row" style="float:left; width: 80px;">
+                                                <div class="col-sm-12">st 2_1</div>
+                                                <div id="column21" class="container col-sm-12"
+                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row" style="float:left; width: 70px;">
+                                                <div class="col-sm-12">st 2_2</div>
+                                                <div id="column22" class="container col-sm-12"
+                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="float:left;">
+                                        <div class="col-sm-12">stolpec 3</div>
+
+                                        <div id="column3" class="container col-sm-12"
+                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row" style="float:left;">
+                                        <div class="col-sm-12">stolpec 4</div>
+                                        <div id="column4" class="container col-sm-12"
+                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
+
+
+                                            <div class="row" style="float:left; width: 80px;">
+                                                <div class="col-sm-12">st 4_1</div>
+                                                <div id="column41" class="container col-sm-12"
+                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row" style="float:left; width: 70px;">
+                                                <div class="col-sm-12">st 4_2</div>
+                                                <div id="column42" class="container col-sm-12"
+                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row" style="float:left;">
+                                        <div class="col-sm-12">stolpec 5</div>
+
+                                        <div id="column5" class="container col-sm-12"
+                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row" style="float:left;">
+                                        <div class="col-sm-12">stolpec 6</div>
+                                        <div id="column6" class="container col-sm-12"
+                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
+
+
+                                            <div class="row" style="float:left; width: 80px;">
+                                                <div class="col-sm-12">st 6_1</div>
+                                                <div id="column61" class="container col-sm-12"
+                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row" style="float:left; width: 70px;">
+                                                <div class="col-sm-12">st 6_2</div>
+                                                <div id="column62" class="container col-sm-12"
+                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
                                 </div>
 
-                                <div class="row" style="float:left;">
-                                    <div class="col-sm-12">stolpec 3</div>
 
-                                    <div id="column3" class="container col-sm-12"
-                                         style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-
-                                    </div>
-                                </div>
-
-
-                                <div class="row" style="float:left;">
-                                    <div class="col-sm-12">stolpec 4</div>
-                                    <div id="column4" class="container col-sm-12"
-                                         style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-
-
-                                        <div class="row" style="float:left; width: 80px;">
-                                            <div class="col-sm-12">st 4_1</div>
-                                            <div id="column41" class="container col-sm-12"
-                                                 style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="float:left; width: 70px;">
-                                            <div class="col-sm-12">st 4_2</div>
-                                            <div id="column42" class="container col-sm-12"
-                                                 style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
-                                <div class="row" style="float:left;">
-                                    <div class="col-sm-12">stolpec 5</div>
-
-                                    <div id="column5" class="container col-sm-12"
-                                         style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-
-                                    </div>
-                                </div>
-
-
-                                <div class="row" style="float:left;">
-                                    <div class="col-sm-12">stolpec 6</div>
-                                    <div id="column6" class="container col-sm-12"
-                                         style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-
-
-                                        <div class="row" style="float:left; width: 80px;">
-                                            <div class="col-sm-12">st 6_1</div>
-                                            <div id="column61" class="container col-sm-12"
-                                                 style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="float:left; width: 70px;">
-                                            <div class="col-sm-12">st 6_2</div>
-                                            <div id="column62" class="container col-sm-12"
-                                                 style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-
-                            <script>
-                                dragula([
-                                    document.querySelector('#column1'),
+                                <script>
+                                    dragula([
+                                        document.querySelector('#column1'),
 //                                    document.querySelector('#column2'),
-                                    document.querySelector('#column21'),
-                                    document.querySelector('#column22'),
+                                        document.querySelector('#column21'),
+                                        document.querySelector('#column22'),
 
-                                    document.querySelector('#column3'),
+                                        document.querySelector('#column3'),
 //                                    document.querySelector('#column4'),
-                                    document.querySelector('#column41'),
-                                    document.querySelector('#column42'),
+                                        document.querySelector('#column41'),
+                                        document.querySelector('#column42'),
 
-                                    document.querySelector('#column5'),
+                                        document.querySelector('#column5'),
 //                                    document.querySelector('#column6'),
-                                    document.querySelector('#column61'),
-                                    document.querySelector('#column62'),
+                                        document.querySelector('#column61'),
+                                        document.querySelector('#column62'),
 
-                                ]);
-                            </script>
+                                    ]);
+                                </script>
 
+
+                            </form>
 
                         </div>
                         <!-- /.box-body -->

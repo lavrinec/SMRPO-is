@@ -17,7 +17,7 @@
 
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Ustvarjanje novega uporabnika</h3>
+                            <h3 class="box-title">Ustvarjanje nove table</h3>
                         </div>
                         <!-- /.box-header -->
                         @if(Auth::user()->isKM())
