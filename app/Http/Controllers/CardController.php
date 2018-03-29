@@ -35,7 +35,14 @@ class CardController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = request()->except('_token');
+        $card = new Card($data);
+        $card->save();
+        request()->session()->flash(
+            'message', 'Uspešno kreirana kartica.'
+        );
+
+        return redirect()->route('cards.show', $card);
     }
 
     /**
@@ -57,7 +64,7 @@ class CardController extends Controller
      */
     public function edit(Card $card)
     {
-        //
+        return view('cards.edit')->with('card', $card);
     }
 
     /**
@@ -69,7 +76,9 @@ class CardController extends Controller
      */
     public function update(Request $request, Card $card)
     {
-        //
+        $data = request()->except('_token');
+        $card->update($data);
+        return redirect()->route('cards.show', $card);
     }
 
     /**
@@ -80,6 +89,7 @@ class CardController extends Controller
      */
     public function destroy(Card $card)
     {
-        //
+        $card->delete();
+        return redirect()->route('boards.list');
     }
 }
