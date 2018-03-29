@@ -34,8 +34,8 @@ class GroupController extends Controller
         //
         $usersgroup = UsersGroup::all();
         $users = User::all();
-        foreach ($users as $user){}
-        $user = User::withTrashed()->with('usersRoles.role')->where('id', 6)->first();
+     
+        
         //$users = collect();
         $role = $user->usersRoles;
         return view('groups.create')->with('usersgroup', $usersgroup)->with('users', $users);

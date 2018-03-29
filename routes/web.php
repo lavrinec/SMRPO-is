@@ -49,6 +49,17 @@ Route::group(['middleware' => ['auth']], function () {
 
     });
 
+    Route::prefix('projects')->group(function () {
+        Route::get('create', 'ProjectController@create')->name('projects.create');
+        Route::post('store', 'ProjectController@store')->name('projects.store');
+        Route::get('', 'ProjectController@index')->name('projects.list');
+        Route::get('{id}/show', 'ProjectController@show')->name('projects.show');
+        Route::get('{id}/edit', 'ProjectController@edit')->name('projects.edit');
+        Route::get('{id}/delete', 'ProjectController@destroy')->name('projects.delete');
+        Route::post('{id}', 'ProjectController@update')->name('projects.update');
+
+    });
+
     Route::prefix('groups')->group(function () {
         Route::get('create', 'GroupController@create')->name('groups.create');
         Route::post('store', 'GroupController@store')->name('groups.store');

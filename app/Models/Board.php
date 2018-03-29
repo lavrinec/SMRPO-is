@@ -17,4 +17,9 @@ class Board extends Model
     protected $fillable = [
         'board_name', 'description', 'meta'
     ];
+
+    public function project()
+    {
+        return $this->hasMany('App\Models\Project', 'board_id');
+    }
 }
