@@ -68,57 +68,68 @@
                                         width: 100%;
                                     }
 
-                                    .testimonial-group > .row {
+                                    .canvas {
                                         overflow-x: auto;
                                         white-space: nowrap;
                                     }
 
-                                    .testimonial-group > .row > .column {
+                                    .subcanvas {
+                                        overflow-x: hidden;
+                                    }
+
+                                    .canvas > .column {
                                         display: inline-block;
-                                        float: none;
+                                        /*float: none;*/
+                                        width: 280px;
                                     }
 
                                     /* Decorations */
                                     .column {
                                         padding: 5px;
+                                        background: #69c;
                                     }
 
                                     .column > .box {
+                                        display: inline-block;
                                         margin: 0px;
                                     }
 
-                                    .column:nth-child(3n+1) {
-                                        background: #c69;
-                                    }
+                                    /*.column:nth-child(3n+1) {*/
+                                    /*background: #c69;*/
+                                    /*}*/
 
-                                    .column:nth-child(3n+2) {
-                                        background: #9c6;
-                                    }
+                                    /*.column:nth-child(3n+2) {*/
+                                    /*background: #9c6;*/
+                                    /*}*/
 
-                                    .column:nth-child(3n+3) {
-                                        background: #69c;
-                                    }
+                                    /*.column:nth-child(3n+3) {*/
+                                    /*background: #69c;*/
+                                    /*}*/
 
 
                                 </style>
 
-                                
-                                <button type="button" class="btn btn-default" onclick="addColumn()" style="float: right;">
+
+                                <button type="button" class="btn btn-default" onclick="addColumn()"
+                                        style="float: right;">
                                     Dodaj stolpec
                                 </button>
 
                                 <div class="container testimonial-group">
-                                    <div class="row text-center" id="board-canvas">
+                                    <div class="row canvas" id="board-canvas">
 
 
                                         {{--@include('boards.column')--}}
 
                                         <script type="text/javascript">
+
                                             function addColumn() {
+                                                console.log("body " + $('body'));
+
                                                 $.ajax({
                                                     type: 'GET',
-                                                    url : "{{ action('BoardController@addColumn') }}",
-                                                    success : function (data) {
+                                                    url: "{{ action('BoardController@addColumn') }}",
+                                                    success: function (data) {
                                                         $("#board-canvas").append(data);
                                                     }
                                                 });
@@ -127,9 +138,11 @@
                                             function addSubColumnTo(column) {
                                                 $.ajax({
                                                     type: 'GET',
-                                                    url : "{{ action('BoardController@addColumn') }}",
-                                                    success : function (data) {
-                                                        $("#sub_"+column.id).append(data);
+                                                    url: "{{ action('BoardController@addColumn') }}",
+                                                    success: function (data) {
+                                                        $("#" + column.id + "_subcanvas").append(data);
+
+                                                        $("#" + column.id).css({"width": "600px"});
                                                     }
                                                 });
                                             }
@@ -142,8 +155,6 @@
                                             }
 
                                         </script>
-
-
 
 
                                     </div>

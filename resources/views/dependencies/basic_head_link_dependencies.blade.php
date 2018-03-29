@@ -26,3 +26,5 @@
 
 <!-- Dragula CSS for boards -->
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.css">
+
+<script src="/dependencies/jquery/dist/jquery.min.js"></script>

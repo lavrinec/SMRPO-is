@@ -1,7 +1,9 @@
-<div class="col-xs-3 column" id="{{ $column_id }}">
+<div class="column" id="{{ $column_id }}">
     <div class="box">
         <div class="box-header">
             <h5 class="box-title">
+
+                <small>začasni id: {{ substr($column_id, 0, 6) }}</small>
 
                 <div class="form-group">
                     <label for="column_name" class="col-sm-2 control-label">Ime</label>
@@ -29,8 +31,7 @@
 
         <div class="box-body" style="border: solid black 1px;">
             <div class="">
-                {{ $column_id }}
-                
+
                 <div class="form-group">
                     <label for="wip" class="col-sm-2 control-label">WIP</label>
 
@@ -91,7 +92,7 @@
                 </button>
             </div>
 
-            <div class="row text-center" id="sub_{{ $column_id }}">
+            <div class="canvas subcanvas row" id="{{ $column_id }}_subcanvas">
 
             </div>
         </div>
