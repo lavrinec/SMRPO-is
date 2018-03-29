@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UsersRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -190,23 +191,25 @@ class UserController extends Controller
 
     private function updateUserRoles($id, $roles_data)
     {
-        if (array_key_exists('roles', $roles_data)) {
-            $roles_data = $roles_data['roles'];
-        } else {
-            $roles_data = [];
-        }
-        $user = User::where('id', $id)->with('usersRoles')->first();
-        foreach ($user->usersRoles as $role){
-            $role_id = $role->role_id;
-            if(in_array($role_id, $roles_data)){
-                $roles_data = array_diff( $roles_data, [$role_id] );
+        if(Auth::user()->isAdmin()) {
+            if (array_key_exists('roles', $roles_data)) {
+                $roles_data = $roles_data['roles'];
             } else {
-                $role->delete();
+                $roles_data = [];
             }
-        }
+            $user = User::where('id', $id)->with('usersRoles')->first();
+            foreach ($user->usersRoles as $role) {
+                $role_id = $role->role_id;
+                if (in_array($role_id, $roles_data)) {
+                    $roles_data = array_diff($roles_data, [$role_id]);
+                } else {
+                    $role->delete();
+                }
+            }
 
-        foreach ($roles_data as $role_id){
-            $user->usersRoles()->create( [ 'role_id' => $role_id ] );
+            foreach ($roles_data as $role_id) {
+                $user->usersRoles()->create(['role_id' => $role_id]);
+            }
         }
     }
 }
