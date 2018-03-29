@@ -18,3 +18,21 @@
 <script src="/js/pages/dashboard2.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/js/demo.js"></script>
+<!-- DataTables -->
+<script src="/dependencies/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/dependencies/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            "language": {
+                "url": "/dependencies/datatables.net/js/slovenian.json"
+            }
+        });
+    })
+</script>

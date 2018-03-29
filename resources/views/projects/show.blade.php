@@ -12,6 +12,8 @@
             </h1>
         </section>
 
+        @include('layout.error')
+
         <!-- Main content -->
         <section class="content">
 
@@ -56,13 +58,14 @@
 
                                 <tr>
                                     <td>Datum začetka</td>
-                                    <td>{{ $projects->start_date }}</td>
+                                    
+                                    <td>{{ date("d-m-Y", strtotime($projects->start_date)) }}</td>
 
                                 </tr>
 
                                 <tr>
                                     <td>Datum zaključka</td>
-                                    <td>{{ $projects->end_date }}</td>
+                                    <td>{{ date("d-m-Y", strtotime($projects->end_date)) }}</td>
 
                                 </tr>
 
@@ -89,7 +92,7 @@
 
                                         <script>
                                             function reallyDelete() {
-                                                var r = confirm("Ali ste prepričani, da želite izbrisati uporabnika?");
+                                                var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
                                                 if (r == true) {
                                                     window.location.href = "{{ action('ProjectController@destroy', $projects->id) }}";
                                                 }
