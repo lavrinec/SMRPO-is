@@ -17,4 +17,9 @@ class Board extends Model
     protected $fillable = [
         'board_name', 'description', 'meta'
     ];
+
+    public function columns()
+    {
+        return $this->hasMany('App\Models\Column', 'board_id');
+    }
 }
