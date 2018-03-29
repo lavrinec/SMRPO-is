@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\Group;
 use App\Models\UsersGroup;
+use App\Models\UsersRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -33,7 +34,10 @@ class GroupController extends Controller
         //
         $usersgroup = UsersGroup::all();
         $users = User::all();
+        foreach ($users as $user){}
+        $user = User::withTrashed()->with('usersRoles.role')->where('id', 6)->first();
         //$users = collect();
+        $role = $user->usersRoles;
         return view('groups.create')->with('usersgroup', $usersgroup)->with('users', $users);
     }
 
@@ -58,13 +62,25 @@ class GroupController extends Controller
 
         //we get all selected users from create group mask;
         $users = request()->only('users');
+    
 
 
         //$data = request()->except(['_token', 'roles']);
         $data = request()->only(['group_name', 'description']);
-        $group = new Group($data);
-        $group->save();
-        $this->updateUsersGroup($group->id, $users);
+
+        //save if group is valid, otherwise return error
+        $validGroup = $this->checkRoles($request);
+        if ($validGroup){
+            $group = new Group($data);
+            $group->save();
+            $this->updateUsersGroup($group->id, $users);
+        }else{
+            //return error
+            throw ValidationException::withMessages([
+                "invalidGroup" => ["V skupini mora biti natanko en product owner in kanban master ter eden ali več razvijalcev"],
+            ]);
+        }
+       
 
         //$this->updateUserRoles($user->id, $roles_data);
 
@@ -73,8 +89,8 @@ class GroupController extends Controller
             'message', 'Uspešno kreirana skupina.'
         );
 
-
-        return redirect()->route('groups.show', $group->id);
+        
+        return  redirect()->route('groups.show', $group->id);
     }
 
     /**
@@ -166,6 +182,39 @@ class GroupController extends Controller
     }
 
 
+    private function checkRoles($request){
+            //count the roles checked in request, allow only roles if user is checked above them, check group validity
+            $roles = [];
+            $developers = 0;
+            $owner = 0;
+            $k_m = 0;
+            
+            //roles: 1:admin, 2:product owner, 3:kanban master, 4:developer
+
+            foreach($request->users as $user) {
+                $roles[$user] = $request ->$user;
+                $array = $request ->$user;
+                foreach ((array)$array as $role){
+                    switch($role){
+                        case 4:$developers++;
+                        break;
+                        case 3:$k_m++;
+                        break;
+                        case 2:$owner++;
+                        break;
+                        //default vrni napako
+                    }
+                 }
+            }
+            
+            $correctGroup = $owner===1 && $k_m===1 && $developers>=1;
+
+            return $correctGroup;
+
+    }
+
+
+
     private function updateUsersGroup($group_id, $users_data)
     {
         if (array_key_exists('users', $users_data)) {
@@ -191,6 +240,7 @@ class GroupController extends Controller
         }
 
     }
+
 
 
 }
