@@ -2,7 +2,8 @@
 
 @section('content')
 
-
+ <!-- bootstrap datepicker -->
+ <link rel="stylesheet" href="/dependencies/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -34,13 +35,13 @@
                                 @csrf
 
                                 <div class="form-group">
-                                    <label for="project_name" class="col-sm-2 control-label">Ime projekta</label>
+                                    <label for="board_name" class="col-sm-2 control-label">Ime projekta</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="project_name" name="project_name"
+                                        <input type="text" class="form-control" id="board_name" name="board_name"
                                                value="{{ $projects->board_name }}" required>
-                                        @if ($errors->has('project_name'))
-                                            <span class="help-block">{{ $errors->first('project_name') }}</span>
+                                        @if ($errors->has('board_name'))
+                                            <span class="help-block">{{ $errors->first('board_name') }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -58,10 +59,10 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="owner" class="col-sm-2 control-label">Naročnik projekta</label>
+                                    <label for="buyer_name" class="col-sm-2 control-label">Naročnik projekta</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="owner" name="owner"
+                                        <input type="text" class="form-control" id="buyer_name" name="buyer_name"
                                         value="{{ $projects->buyer_name }}" required>
                                         @if ($errors->has('owner'))
                                             <span class="help-block">{{ $errors->first('owner') }}</span>
@@ -73,7 +74,7 @@
                                     <label for="startDate" class="col-sm-2 control-label">Datum začetka</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="startDate" name="startDate"
+                                        <input type="text" class="form-control" id="start_date" name="start_date"
                                         value="{{ $projects->start_date }}" required>
                                         @if ($errors->has('startDate'))
                                             <span class="help-block">{{ $errors->first('startDate') }}</span>
@@ -85,7 +86,7 @@
                                     <label for="endDate" class="col-sm-2 control-label">Datum zaključka</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="endDate" name="endDate"
+                                        <input type="text" class="form-control" id="end_date" name="end_date"
                                         value="{{ $projects->end_date }}" required>
                                         @if ($errors->has('endDate'))
                                             <span class="help-block">{{ $errors->first('endDate') }}</span>

@@ -37,7 +37,7 @@ class GroupController extends Controller
      
         
         //$users = collect();
-        $role = $user->usersRoles;
+        //$role = $user->usersRoles;
         return view('groups.create')->with('usersgroup', $usersgroup)->with('users', $users);
     }
 

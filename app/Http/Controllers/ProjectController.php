@@ -14,7 +14,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::withTrashed()->get();
+        $projects = Project::all();
         return view('projects.list')->with('projects', $projects);
     }
 
@@ -41,6 +41,7 @@ class ProjectController extends Controller
         $data = request()->except(['_token', 'roles']);
         $data["lane_number"] = 0;
         $project = new Project($data);
+        
         $project->save();
         return redirect()->route('projects.show', $project->id);
     }
@@ -80,6 +81,9 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $data = request()->except(['_token', 'roles']);
+        $project = Project::where('id', $id)->update($data);
+        return $project; //redirect()->route('projects.show', $id);
     }
 
     /**
@@ -91,5 +95,7 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         //
+        Project::where('id', $id)->delete();
+        return redirect()->route('projects.list');
     }
 }
