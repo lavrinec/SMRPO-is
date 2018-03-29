@@ -5,8 +5,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Skupine
-                <small>Seznam skupin</small>
+                Projekti
+                <small>Seznam projektov</small>
             </h1>
         </section>
 
@@ -34,9 +34,9 @@
 
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Seznam skupin</h3>
+                            <h3 class="box-title">Seznam projektov</h3>
                         </div>
-                        <!-- /.box-header -->
+                       
                         <div class="box-body">
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
@@ -59,8 +59,8 @@
                                         </td>
                                         <td>{{ $project->description }}</td>
                                         <td>{{ $project->buyer_name }}</td>
-                                        <td>{{ $project->start_date }}</td>
-                                        <td>{{ $project->end_date }}</td>
+                                        <td>{{ date("d-m-Y", strtotime($project->start_date)) }}</td>
+                                        <td>{{ date("d-m-Y", strtotime($project->end_date)) }}</td>
 
                                         
                                         <td>
@@ -76,7 +76,7 @@
 
                                                 <script>
                                                     function reallyDelete() {
-                                                        var r = confirm("Ali ste prepričani, da želite izbrisati uporabnika?");
+                                                        var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
                                                         if (r == true) {
                                                             window.location.href = "{{ action('ProjectController@destroy', $project->id) }}";
                                                         }

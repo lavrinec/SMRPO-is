@@ -75,7 +75,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="start_date" name="start_date"
-                                        value="{{ $projects->start_date }}" required>
+                                        value="{{ date("d-m-Y", strtotime($projects->start_date)) }}" required>
                                         @if ($errors->has('startDate'))
                                             <span class="help-block">{{ $errors->first('startDate') }}</span>
                                         @endif
@@ -87,7 +87,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="end_date" name="end_date"
-                                        value="{{ $projects->end_date }}" required>
+                                        value="{{ date("d-m-Y", strtotime($projects->end_date)) }}" required>
                                         @if ($errors->has('endDate'))
                                             <span class="help-block">{{ $errors->first('endDate') }}</span>
                                         @endif

@@ -45,9 +45,12 @@ class ProjectController extends Controller
         $data = request()->except(['_token', 'roles']);
         $data["lane_number"] = 0;
         $project = new Project($data);
+        $project->start_date = date("Y-m-d", strtotime($project->start_date));
+        $project->end_date = date("Y-m-d", strtotime($project->end_date));
+       
         
         $project->save();
-        return $project;//redirect()->route('projects.show', $project->id);
+        return redirect()->route('projects.show', $project->id);
     }
 
     /**
@@ -86,8 +89,10 @@ class ProjectController extends Controller
     {
         //
         $data = request()->except(['_token', 'roles']);
+       $data['start_date'] = date("Y-m-d", strtotime($data['start_date']));
+       $data['end_date'] = date("Y-m-d", strtotime($data['end_date']));
         $project = Project::where('id', $id)->update($data);
-        return $project; //redirect()->route('projects.show', $id);
+        return redirect()->route('projects.show', $id);
     }
 
 

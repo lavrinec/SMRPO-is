@@ -70,7 +70,7 @@
                                     <label for="start_date" class="col-sm-2 control-label">Datum začetka</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="start_date" name="start_date"
+                                        <input type="date" class="form-control" id="start_date" name="start_date"
                                                placeholder="Začetek">
                                         @if ($errors->has('start_date'))
                                             <span class="help-block">{{ $errors->first('start_date') }}</span>
@@ -82,7 +82,7 @@
                                     <label for="end_date" class="col-sm-2 control-label">Datum zaključka</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="end_date" name="end_date"
+                                        <input type="date" class="form-control" id="end_date" name="end_date"
                                                placeholder="Zaključek">
                                         @if ($errors->has('end_date'))
                                             <span class="help-block">{{ $errors->first('end_date') }}</span>
