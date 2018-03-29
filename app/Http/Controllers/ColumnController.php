@@ -90,7 +90,7 @@ class ColumnController extends Controller
     public function destroy(Column $column)
     {
         if($column->cards()->count() > 0){
-            return redirect()->back()->withErrors(['msg', 'Izbris ni mogoč. Najprej izbrišite kartice v stolpcu!']);
+            return redirect()->back()->withErrors(['msg' => 'Izbris ni mogoč. Najprej izbrišite kartice v stolpcu!']);
         }
         $column->delete();
         return redirect()->route('column.list');

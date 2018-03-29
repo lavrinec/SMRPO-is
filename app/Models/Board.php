@@ -28,4 +28,9 @@ class Board extends Model
         return $this->hasMany('App\Models\Column', 'board_id');
 
     }
+
+    public function cards()
+    {
+        return $this->hasManyThrough('App\Models\Card', 'App\Models\Column', 'board_id', 'column_id');
+    }
 }

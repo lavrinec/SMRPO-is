@@ -124,13 +124,16 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Project $project)
     {
-        //
-        Project::where('id', $id)->delete();
+        $board = $project->board()->first();
+        if(!empty($board) && $board->cards()->count() > 0){
+            return redirect()->back()->withErrors(['msg' => 'Izbris ni mogoč. Najprej izbrišite kartice v projektu!']);
+        }
+        $project->delete();
         return redirect()->route('projects.list');
     }
 }

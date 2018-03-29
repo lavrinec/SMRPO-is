@@ -10,6 +10,8 @@
             </h1>
         </section>
 
+        @include('layout.error')
+
         <!-- Main content -->
         <section class="content">
             <div class="row">

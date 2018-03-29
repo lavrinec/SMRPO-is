@@ -47,7 +47,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="description" name="description"
-                                               placeholder="Opis">
+                                               placeholder="Opis" required>
                                         @if ($errors->has('description'))
                                             <span class="help-block">{{ $errors->first('description') }}</span>
                                         @endif
@@ -59,7 +59,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="buyer_name" name="buyer_name"
-                                               placeholder="Naročnik">
+                                               placeholder="Naročnik" required>
                                         @if ($errors->has('buyer_name'))
                                             <span class="help-block">{{ $errors->first('buyer_name') }}</span>
                                         @endif
@@ -71,7 +71,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="start_date" name="start_date"
-                                               placeholder="Začetek">
+                                               placeholder="Začetek" required>
                                         @if ($errors->has('start_date'))
                                             <span class="help-block">{{ $errors->first('start_date') }}</span>
                                         @endif
@@ -83,7 +83,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="end_date" name="end_date"
-                                               placeholder="Zaključek">
+                                               placeholder="Zaključek" required>
                                         @if ($errors->has('end_date'))
                                             <span class="help-block">{{ $errors->first('end_date') }}</span>
                                         @endif
