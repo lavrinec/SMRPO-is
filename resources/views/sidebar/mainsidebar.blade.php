@@ -7,8 +7,8 @@
                 <img src="/img/user2-160x160.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-                <p>Ime Prijavljenega Uporabnika</p>
-                <a href="/users"><i class="fa fa-circle text-success"></i> Online</a>
+                <p>{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</p>
+                <a href="/users"><i class="fa fa-circle text-success"></i> Aktiven</a>
             </div>
         </div>
     @php
