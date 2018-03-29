@@ -35,7 +35,14 @@ class ColumnController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = request()->except('_token');
+        $column = new Column($data);
+        $column->save();
+        request()->session()->flash(
+            'message', 'Uspešno kreiran stolpec.'
+        );
+
+        return redirect()->route('columns.show', $column);
     }
 
     /**
@@ -57,7 +64,7 @@ class ColumnController extends Controller
      */
     public function edit(Column $column)
     {
-        //
+        return view('columns.edit')->with('column', $column);
     }
 
     /**
@@ -69,7 +76,9 @@ class ColumnController extends Controller
      */
     public function update(Request $request, Column $column)
     {
-        //
+        $data = request()->except('_token');
+        $column->update($data);
+        return redirect()->route('columns.show', $column);
     }
 
     /**

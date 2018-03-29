@@ -24,12 +24,12 @@
                 </a>
             </li>
             @if(Auth::user()->isAdmin())
-                <li class="{{ $routeGroup == 'users' ? 'active' : '' }}"><a href="/users"><i class="fa fa-users"></i> <span>Uporabniki</span></a>
+                <li class="{{ $routeGroup == 'users' ? 'active' : '' }}"><a href="/users"><i class="fa fa-user"></i> <span>Uporabniki</span></a>
             @endif
             </li>
             <li class="{{ $routeGroup == 'groups' ? 'active' : '' }}"><a href="/groups"><i class="fa fa-users"></i>
                     <span>Skupine</span></a></li>
-            <li class="{{ $routeGroup == 'boards' ? 'active' : '' }}"><a href="/boards"><i class="fa fa-users"></i>
+            <li class="{{ $routeGroup == 'boards' ? 'active' : '' }}"><a href="/boards"><i class="fa fa-table"></i>
                     <span>Table</span></a></li>
         </ul>
     </section>
