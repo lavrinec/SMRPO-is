@@ -31,7 +31,7 @@
                     <span>Skupine</span></a></li>
             <li class="{{ $routeGroup == 'boards' ? 'active' : '' }}"><a href="/boards"><i class="fa fa-table"></i>
                     <span>Table</span></a></li>
-            <li class="{{ $routeGroup == 'projects' ? 'active' : '' }}"><a href="/projects"><i class="fa fa-users"></i>
+            <li class="{{ $routeGroup == 'projects' ? 'active' : '' }}"><a href="/projects"><i class="fa fa-briefcase"></i>
                     <span>Projekti</span></a></li>
         </ul>
     </section>
