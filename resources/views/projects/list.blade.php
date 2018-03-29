@@ -14,22 +14,23 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
+                    @if(Auth::user()->isKM())
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Ustvarjanje novega projekta</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
 
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">Ustvarjanje novega projekta</h3>
+                                <a href="{{ action('ProjectController@create') }}" class="btn btn-primary btn-block">
+                                    <b>Ustvari nov projekt</b>
+                                </a>
+
+                            </div>
+                            <!-- /.box-body -->
                         </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-
-                            <a href="{{ action('ProjectController@create') }}" class="btn btn-primary btn-block">
-                                <b>Ustvari nov projekt</b>
-                            </a>
-
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-                    <!-- /.box -->
+                        <!-- /.box -->
+                    @endif
 
 
                     <div class="box">

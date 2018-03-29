@@ -14,13 +14,12 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
-
+                    @if(Auth::user()->isKM())
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">Ustvarjanje novega uporabnika</h3>
                         </div>
                         <!-- /.box-header -->
-                        @if(Auth::user()->isKM())
                             <div class="box-body">
 
                                 <a href="{{ action('BoardController@create') }}" class="btn btn-primary btn-block">
@@ -29,10 +28,9 @@
 
                             </div>
                             <!-- /.box-body -->
-                        @endif
                     </div>
                     <!-- /.box -->
-
+                    @endif
 
                     <div class="box">
                         <div class="box-header">
