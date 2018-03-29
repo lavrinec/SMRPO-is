@@ -20,14 +20,16 @@
                             <h3 class="box-title">Ustvarjanje novega uporabnika</h3>
                         </div>
                         <!-- /.box-header -->
-                        <div class="box-body">
+                        @if(Auth::user()->isKM())
+                            <div class="box-body">
 
-                            <a href="{{ action('BoardController@create') }}" class="btn btn-primary btn-block">
-                                <b>Ustvari novo tablo (samo za kanban masterja)</b>
-                            </a>
+                                <a href="{{ action('BoardController@create') }}" class="btn btn-primary btn-block">
+                                    <b>Ustvari novo tablo</b>
+                                </a>
 
-                        </div>
-                        <!-- /.box-body -->
+                            </div>
+                            <!-- /.box-body -->
+                        @endif
                     </div>
                     <!-- /.box -->
 
