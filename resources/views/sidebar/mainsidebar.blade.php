@@ -1,26 +1,24 @@
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-        <!-- Sidebar user panel -->
-        <div class="user-panel">
-            <div class="pull-left image">
-                <img src="/img/user.jpg" class="img-circle" alt="User Image">
+        @if($user = Auth::user())
+            <!-- Sidebar user panel -->
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="/img/user.jpg" class="img-circle" alt="User Image">
+                </div>
+                <div class="pull-left info">
+                        <p>{{ $user->first_name }} {{ $user->last_name }}</p>
+                        <a href="/users"><i class="fa fa-circle text-success"></i> Aktiven</a>
+                </div>
             </div>
-            <div class="pull-left info">
-                @if($user = Auth::user())
-                    <p>{{ $user->first_name }} {{ $user->last_name }}</p>
-                    <a href="/users"><i class="fa fa-circle text-success"></i> Aktiven</a>
-                @else
-                    <a href="/users"><i class="fa fa-circle text-warning"></i> Neprijavljen</a>
-                @endif
-            </div>
-        </div>
-    @php
-        $route = Route::current();
-        $routeName = isset($route) ? $route->getName() : '';
-        $routeGroup = explode('.', $routeName)[0];
-    @endphp
-    <!-- sidebar menu: : style can be found in sidebar.less -->
+        @endif
+        @php
+            $route = Route::current();
+            $routeName = isset($route) ? $route->getName() : '';
+            $routeGroup = explode('.', $routeName)[0];
+        @endphp
+        <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
             <li class="header">NAVIGACIJA</li>
             <li class="{{ ($routeGroup == '' || $routeGroup == 'dashboard' || $routeGroup == 'home') ? 'active' : '' }}">
