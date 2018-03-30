@@ -79,6 +79,8 @@
                                     /* The heart of the matter */
                                     .testimonial-group {
                                         width: 100%;
+                                        /*height: 445px;*/
+                                        /*overflow-y: auto;*/
                                     }
 
                                     .canvas {
@@ -86,16 +88,17 @@
                                         white-space: nowrap;
                                     }
 
-                                    .subcanvas {
-                                        overflow-x: hidden;
-                                    }
+                                    /*.subcanvas {*/
+                                        /*overflow-x: hidden;*/
+                                    /*}*/
 
                                     .canvas > .column {
                                         display: inline-block;
                                         /*float: none;*/
                                         min-width: 320px;
-                                        padding: 5px;
-                                        background: #69c;
+                                        min-height: 434px;
+                                        /*padding: 5px;*/
+                                        border: 5px solid #69c;
                                     }
 
                                     /* Decorations */
@@ -309,20 +312,12 @@
                 url: "{{ action('BoardController@addColumn') }}",
                 success: function (data) {
                     $("#" + column.id + "_subcanvas").append(data);
-
-                    var currentParrentWidth = $("#" + column.id).width();
-                    console.log(currentParrentWidth);
-
-                    if(currentParrentWidth>320) {
-//                        $("#" + column.id).css({"min-width": currentParrentWidth + 20 + "px"});
-                    }
                 }
             });
         }
 
 
         function deleteColumn(column) {
-            console.log(column);
             column.parentNode.removeChild(column);
             return false;
         }

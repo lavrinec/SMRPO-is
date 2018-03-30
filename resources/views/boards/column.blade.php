@@ -1,9 +1,10 @@
 <div class="column" id="{{ $column_id }}">
     <div class="box">
+        <pre style="width: 100%; text-align: center; line-height: 0.2em;">začasni id: {{ substr($column_id, 0, 6) }}
+        </pre>
+
         <div class="box-header">
             <h5 class="box-title">
-
-                <small>začasni id: {{ substr($column_id, 0, 6) }}</small>
 
                 <div class="form-group">
                     <label for="column_name" class="col-sm-2 control-label">Ime</label>
@@ -15,27 +16,26 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="description" class="col-sm-2 control-label">Opis</label>
+            </h5>
+        </div>
 
-                    <div class="col-sm-10">
+        <div class="box-body" style="border-top: solid black 1px;">
+            <div class="content">
+
+                <div class="form-group">
+                    <label for="description" class="col-sm-3 control-label">Opis</label>
+
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" id="description" name="description"
                                placeholder="Opis" pattern=".{1,255}" required
                                title="Opis naj bo dolg med 1 in 255 znakov">
                     </div>
                 </div>
 
-
-            </h5>
-        </div>
-
-        <div class="box-body" style="border: solid black 1px;">
-            <div class="content">
-
                 <div class="form-group">
-                    <label for="wip" class="col-sm-2 control-label">WIP</label>
+                    <label for="wip" class="col-sm-3 control-label">WIP</label>
 
-                    <div class="col-sm-10">
+                    <div class="col-sm-9">
                         <input type="number" class="form-control" id="wip" name="wip">
                     </div>
                 </div>
@@ -79,7 +79,6 @@
 
 
                 <div class="row">
-
                     <button type="button" class="btn btn-default col-sm-3" onclick="addColumnBefore({{ $column_id }})">
                         <i class="fa fa-plus"></i>
                         <br>
@@ -88,7 +87,6 @@
 
                     <button type="button" class="btn btn-danger col-sm-3" onclick="deleteColumn({{ $column_id }})">
                         <i class="fa fa-trash"></i>
-
                     </button>
 
                     <button type="button" class="btn btn-default col-sm-3" onclick="addSubColumnTo({{ $column_id }})">
@@ -103,7 +101,7 @@
                 </div>
             </div>
 
-            <div class="canvas subcanvas row" id="{{ $column_id }}_subcanvas">
+            <div class="canvas subcanvas row" id="{{ $column_id }}_subcanvas" style="margin-left: 0px; margin-right: 0px">
 
             </div>
         </div>
