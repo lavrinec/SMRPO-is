@@ -30,7 +30,7 @@
         </div>
 
         <div class="box-body" style="border: solid black 1px;">
-            <div class="">
+            <div class="content">
 
                 <div class="form-group">
                     <label for="wip" class="col-sm-2 control-label">WIP</label>
@@ -76,20 +76,31 @@
 
                     </div>
                 </div>
-            </div>
-
-            <div class="container">
 
 
+                <div class="row">
 
-                <button type="button" class="btn btn-default" onclick="addSubColumnTo({{ $column_id }})" style="float: left;">
-                    Dodaj podstolpec
-                </button>
-                <br>
-                <br>
-                <button type="button" class="btn btn-danger" onclick="deleteColumn({{ $column_id }})" style="float: left;">
-                    Izbriši stolpec
-                </button>
+                    <button type="button" class="btn btn-default col-sm-3" onclick="addColumnBefore({{ $column_id }})">
+                        <i class="fa fa-plus"></i>
+                        <br>
+                        <i class="fa fa-arrow-left"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-danger col-sm-3" onclick="deleteColumn({{ $column_id }})">
+                        <i class="fa fa-trash"></i>
+
+                    </button>
+
+                    <button type="button" class="btn btn-default col-sm-3" onclick="addSubColumnTo({{ $column_id }})">
+                        <i class="fa fa-arrow-down"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-default col-sm-3" onclick="addColumnAfter({{ $column_id }})">
+                        <i class="fa fa-plus"></i>
+                        <br>
+                        <i class="fa fa-arrow-right"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="canvas subcanvas row" id="{{ $column_id }}_subcanvas">
