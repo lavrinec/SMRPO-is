@@ -34,5 +34,12 @@
                 "url": "/dependencies/datatables.net/js/slovenian.json"
             }
         });
+
+        $('.openCard').on('click',function(e){
+            var target = $(e.target), id = target.data('cardId');
+            $('.modal-body').load('/cards/' + id + '/edit',function(){
+                $('#cardModal').modal({show:true});
+            });
+        });
     })
 </script>

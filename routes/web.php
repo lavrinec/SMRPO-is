@@ -69,6 +69,13 @@ Route::group(['middleware' => ['auth']], function () {
 
     });
 
+    Route::prefix('cards')->group(function () {
+        Route::post('store', 'CardController@store')->name('cards.store');
+        Route::get('{id}/edit/{board?}', 'CardController@edit')->name('cards.edit');
+        Route::get('{id}/delete', 'CardController@destroy')->name('cards.delete');
+        Route::post('{id}', 'CardController@update')->name('cards.update');
+
+    });
 });
 
 Route::group(['middleware' => ['guest']], function () {

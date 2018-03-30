@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Board;
 use App\Models\Card;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class CardController extends Controller
      */
     public function create()
     {
-        //
+        return view('cards.create');
     }
 
     /**
@@ -59,12 +60,18 @@ class CardController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Card  $card
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Card $card)
+    public function edit($id, Board $board = null)
     {
-        return view('cards.edit')->with('card', $card);
+        $card = null;
+        if($id != 0){
+            $card = Card::findOrFail($id);
+            if(!isset($board)) $board = $card->board()->first();
+
+        }
+        return view('cards.edit')->with(['card' => $card, 'board' => $board]);
     }
 
     /**
