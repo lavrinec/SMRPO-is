@@ -100,7 +100,7 @@ class ProjectController extends Controller
     }
 
 
-    public function validateProject(Request $request, $startRequired){
+    public function validateProject(Request $request, $startRequired = true){
         $validator = Validator::make($request->all(), [
             'board_name' => 'required|max:255',
             'description' => 'required|max:255',
