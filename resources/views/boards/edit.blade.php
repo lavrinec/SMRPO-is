@@ -6,9 +6,9 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                Tabla
-            </h1>
+            {{--<h1>--}}
+                {{--Tabla--}}
+            {{--</h1>--}}
         </section>
 
         <!-- Main content -->
@@ -60,8 +60,8 @@
 
 
                                     <div class="col-sm-offset-1 col-sm-2">
-                                        <button type="button" class="btn btn-success" onclick="addColumn()">
-                                            Dodaj stolpec
+                                        <button id="buttonFirstColumn" type="button" class="btn btn-success" onclick="addFirstColumn(this)">
+                                            Dodaj začetni stolpec
                                         </button>
                                     </div>
 
@@ -265,7 +265,8 @@
          *
          * */
 
-        function addColumn() {
+        function addFirstColumn(obj) {
+            obj.setAttribute('disabled', 'disabled');
 
             $.ajax({
                 type: 'GET',
@@ -307,6 +308,8 @@
 
 
         function addSubColumnTo(column) {
+            // disable [add first subcolumn] button!!
+
             $.ajax({
                 type: 'GET',
                 url: "{{ action('BoardController@addColumn') }}",
@@ -318,9 +321,29 @@
 
 
         function deleteColumn(column) {
+            var parent = column.parentNode;
             column.parentNode.removeChild(column);
+            checkIfEmpty(parent);
             return false;
         }
+
+        function checkIfEmpty(parent) {
+
+            console.log(parent.id);
+
+            if( $("#"+parent.id)[0].childElementCount==0) {
+
+                console.log("prazen");
+
+                if(parent.id == 'board-canvas'){
+
+                    $("#buttonFirstColumn")[0].removeAttribute("disabled");
+                }
+            }
+
+
+        }
+
 
 
         /*
