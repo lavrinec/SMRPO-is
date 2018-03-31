@@ -26,6 +26,9 @@
                                     <b>Ustvari novo tablo</b>
                                 </a>
 
+                                <button type="button" class="btn btn-primary openCard" data-card-id="0">Dodaj kartico</button>
+                                @include('modals.modal')
+
                             </div>
                             <!-- /.box-body -->
                     </div>
