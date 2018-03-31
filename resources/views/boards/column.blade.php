@@ -3,6 +3,9 @@
         <pre style="width: 100%; text-align: center; line-height: 0.2em;">začasni id: {{ substr($column_id, 0, 6) }}
         </pre>
 
+        <input type="hidden" id="{{ $column_id }}_parent_id" name="{{ $column_id }}_parent_id" value="{{ $parent_id }}">
+        <input type="hidden" id="{{ $column_id }}_column_id" name="{{ $column_id }}_column_id" value="{{ $column_id }}">
+
         <div class="box-header">
             <h5 class="box-title">
 

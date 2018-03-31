@@ -90,11 +90,12 @@ class BoardController extends Controller
         return view('boards.edit')->with('board', $board);
     }
 
-    public function addColumn(){
+    public function addColumn(Request $request){
 
         $column_id = "aa" . str_random(20);
+        $parent_id = $request->parent_id;
 
-        return view('boards.column')->with('column_id', $column_id);
+        return view('boards.column')->with(['column_id'=> $column_id, 'parent_id'=> $parent_id]);
     }
 
 

@@ -7,7 +7,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             {{--<h1>--}}
-                {{--Tabla--}}
+            {{--Tabla--}}
             {{--</h1>--}}
         </section>
 
@@ -60,7 +60,8 @@
 
 
                                     <div class="col-sm-offset-1 col-sm-2">
-                                        <button id="buttonFirstColumn" type="button" class="btn btn-success" onclick="addFirstColumn(this)">
+                                        <button id="buttonFirstColumn" type="button" class="btn btn-success"
+                                                onclick="addFirstColumn(this)">
                                             Dodaj začetni stolpec
                                         </button>
                                     </div>
@@ -79,7 +80,9 @@
                                     /* The heart of the matter */
                                     .testimonial-group {
                                         width: 100%;
-                                        /*height: 445px;*/
+                                        min-height: 100vh;
+                                        background: lightgrey;
+
                                         /*overflow-y: auto;*/
                                     }
 
@@ -89,22 +92,22 @@
                                     }
 
                                     /*.subcanvas {*/
-                                        /*overflow-x: hidden;*/
+                                    /*overflow-x: hidden;*/
                                     /*}*/
 
                                     .canvas > .column {
                                         display: inline-block;
                                         /*float: none;*/
+
                                         min-width: 320px;
                                         min-height: 434px;
+                                        /*min-height: 100%;*/
+
                                         /*padding: 5px;*/
                                         border: 5px solid #69c;
                                     }
 
                                     /* Decorations */
-                                    .column {
-
-                                    }
 
                                     .column > .box {
                                         display: inline-block;
@@ -140,6 +143,7 @@
                                 <div style="height:200px;"></div>
 
 
+                                <!--DEMO DIVs FOR DRAG & DROP -->
                                 <div class="container" style="width: 100%;">
 
                                     <div class="box" style="float:left;">
@@ -227,9 +231,8 @@
 
                                         </div>
                                     </div>
-
-
                                 </div>
+                                <!--DEMO DIVs FOR DRAG & DROP -->
 
 
                             </form>
@@ -266,40 +269,49 @@
          * */
 
         function addFirstColumn(obj) {
-            // disable [add first column] button
-            obj.setAttribute('disabled', 'disabled');
-
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "parent_id": null
+                },
                 success: function (data) {
+                    // disable [add first column] button
+                    obj.setAttribute('disabled', 'disabled');
+
+                    // collapse sidebar and focus the board
+                    $('body').addClass('sidebar-collapse');
+                    $('html,body').animate({scrollTop: $("#board-canvas").offset().top}, 'slow');
+
                     $("#board-canvas").append(data);
                 }
             });
         }
 
         function addColumnBefore(column) {
-
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'parent_id': $("#"+column.id+"_parent_id")[0].value
+                },
                 success: function (data) {
-//                    $("#board-canvas").append(data);
-
                     $(data).insertBefore($("#" + column.id));
-
                 }
             });
         }
 
         function addColumnAfter(column) {
-
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'parent_id': $("#"+column.id+"_parent_id")[0].value
+                },
                 success: function (data) {
-//                    $("#board-canvas").append(data);
-
                     $(data).insertAfter($("#" + column.id));
                 }
             });
@@ -307,13 +319,16 @@
 
 
         function addSubColumnTo(column) {
-            // disable [add first subcolumn] button
-            $("#"+column.id+"_addFirstSubcolumn")[0].setAttribute('disabled', 'disabled');
-
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'parent_id': column.id
+                },
                 success: function (data) {
+                    // disable [add first subcolumn] button
+                    $("#" + column.id + "_addFirstSubcolumn")[0].setAttribute('disabled', 'disabled');
                     $("#" + column.id + "_subcanvas").append(data);
                 }
             });
@@ -328,15 +343,8 @@
         }
 
         function checkIfEmpty(parent) {
-
-            console.log(parent.id);
-
-            if( $("#"+parent.id)[0].childElementCount==0) {
-
-                console.log("prazen");
-
-                if(parent.id == 'board-canvas'){
-
+            if ($("#" + parent.id)[0].childElementCount == 0) {
+                if (parent.id == 'board-canvas') {
                     $("#buttonFirstColumn")[0].removeAttribute("disabled");
                 }
 
@@ -344,15 +352,12 @@
                 // splitedID[0] = random string = column id
                 //splitedID[1] = subcanvas
 
-                if(splitedID[1] == "subcanvas"){
+                if (splitedID[1] == "subcanvas") {
                     console.log(parent.id + "je prazen");
-                    $("#"+splitedID[0]+"_addFirstSubcolumn")[0].removeAttribute('disabled');
+                    $("#" + splitedID[0] + "_addFirstSubcolumn")[0].removeAttribute('disabled');
                 }
             }
-
-
         }
-
 
 
         /*
