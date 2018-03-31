@@ -105,12 +105,13 @@
 
                                         /*padding: 5px;*/
                                         border: 5px solid #69c;
+                                        vertical-align: top;
                                     }
 
                                     /* Decorations */
 
                                     .column > .box {
-                                        display: inline-block;
+                                        /*display: inline-block;*/
                                         margin: 0px;
                                     }
 
@@ -274,7 +275,8 @@
                 url: "{{ action('BoardController@addColumn') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    "parent_id": null
+                    "parent_id": null,
+                    'level': 0
                 },
                 success: function (data) {
                     // disable [add first column] button
@@ -295,7 +297,8 @@
                 url: "{{ action('BoardController@addColumn') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    'parent_id': $("#"+column.id+"_parent_id")[0].value
+                    'parent_id': $("#"+column.id+"_parent_id")[0].value,
+                    'level': parseInt($("#"+column.id+"_level")[0].value)
                 },
                 success: function (data) {
                     $(data).insertBefore($("#" + column.id));
@@ -309,7 +312,8 @@
                 url: "{{ action('BoardController@addColumn') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    'parent_id': $("#"+column.id+"_parent_id")[0].value
+                    'parent_id': $("#"+column.id+"_parent_id")[0].value,
+                    'level': parseInt($("#"+column.id+"_level")[0].value)
                 },
                 success: function (data) {
                     $(data).insertAfter($("#" + column.id));
@@ -318,13 +322,14 @@
         }
 
 
-        function addSubColumnTo(column) {
+        function addFirstSubColumnTo(column) {
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    'parent_id': column.id
+                    'parent_id': column.id,
+                    'level': parseInt($("#"+column.id+"_level")[0].value)+1
                 },
                 success: function (data) {
                     // disable [add first subcolumn] button
