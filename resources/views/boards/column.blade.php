@@ -89,7 +89,7 @@
                         <i class="fa fa-trash"></i>
                     </button>
 
-                    <button type="button" class="btn btn-default col-sm-3" onclick="addSubColumnTo({{ $column_id }})">
+                    <button id="{{ $column_id }}_addFirstSubcolumn" type="button" class="btn btn-default col-sm-3" onclick="addSubColumnTo({{ $column_id }})">
                         <i class="fa fa-arrow-down"></i>
                     </button>
 

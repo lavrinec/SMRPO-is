@@ -266,6 +266,7 @@
          * */
 
         function addFirstColumn(obj) {
+            // disable [add first column] button
             obj.setAttribute('disabled', 'disabled');
 
             $.ajax({
@@ -278,8 +279,6 @@
         }
 
         function addColumnBefore(column) {
-
-//            $( "p" ).insertBefore( "#foo" ); // add <p> before #foo
 
             $.ajax({
                 type: 'GET',
@@ -308,7 +307,8 @@
 
 
         function addSubColumnTo(column) {
-            // disable [add first subcolumn] button!!
+            // disable [add first subcolumn] button
+            $("#"+column.id+"_addFirstSubcolumn")[0].setAttribute('disabled', 'disabled');
 
             $.ajax({
                 type: 'GET',
@@ -338,6 +338,15 @@
                 if(parent.id == 'board-canvas'){
 
                     $("#buttonFirstColumn")[0].removeAttribute("disabled");
+                }
+
+                var splitedID = parent.id.split("_");
+                // splitedID[0] = random string = column id
+                //splitedID[1] = subcanvas
+
+                if(splitedID[1] == "subcanvas"){
+                    console.log(parent.id + "je prazen");
+                    $("#"+splitedID[0]+"_addFirstSubcolumn")[0].removeAttribute('disabled');
                 }
             }
 
