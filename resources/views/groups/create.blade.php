@@ -2,7 +2,6 @@
 
 @section('content')
 
-
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -55,13 +54,24 @@
                                 </div>
 
                                 @include('groups.usersgroup')
-
+                                <hr/>
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-10">
                                         <button type="submit" class="btn btn-danger">Ustvari</button>
                                     </div>
+                                    @if($errors->has('noUsersSelected'))
+                                        <span class="col-sm-offset-2 col-sm-10 help-block">
+                                            {{$errors->first('noUsersSelected')}}
+                                        </span>
+                                    @endif
+                                    @if($errors->has('invalidGroup'))
+                                        <span class="col-sm-offset-2 col-sm-10 help-block">
+                                            {{$errors->first('invalidGroup')}}
+                                        </span>
+                                    @endif
                                 </div>
+
                             </form>
 
 

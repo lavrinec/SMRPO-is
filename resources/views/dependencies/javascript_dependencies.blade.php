@@ -1,4 +1,4 @@
-<script src="/dependencies/jquery/dist/jquery.min.js"></script>
+
 <!-- Bootstrap 3.3.7 -->
 <script src="/dependencies/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- FastClick -->
@@ -21,6 +21,8 @@
 <!-- DataTables -->
 <script src="/dependencies/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="/dependencies/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script>
     $(function () {
         $('#example1').DataTable({
@@ -35,4 +37,10 @@
             }
         });
     })
+
+    $(document).ready(function(){
+        $('.js-example-basic-single').select2({
+            placeholder: 'Select an option'
+        });
+    });
 </script>

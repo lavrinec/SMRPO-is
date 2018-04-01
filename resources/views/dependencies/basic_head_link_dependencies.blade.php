@@ -13,6 +13,9 @@
      folder instead of downloading all of them to reduce the load. -->
 <link rel="stylesheet" href="/css/skins/_all-skins.min.css">
 
+{{-- Scripts and styles for select2 library --}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="/dependencies/jquery/dist/jquery.min.js"></script>
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>

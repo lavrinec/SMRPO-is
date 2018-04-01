@@ -9,6 +9,7 @@ use App\Models\UsersRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class GroupController extends Controller
 {
@@ -34,11 +35,11 @@ class GroupController extends Controller
         //
         $usersgroup = UsersGroup::all();
         $users = User::all();
-     
+        $roles = Role::all();
         
         //$users = collect();
         //$role = $user->usersRoles;
-        return view('groups.create')->with('usersgroup', $usersgroup)->with('users', $users);
+        return view('groups.create')->with('usersgroup', $usersgroup)->with('users', $users)->with('roles',$roles);
     }
 
     /**
@@ -190,7 +191,11 @@ class GroupController extends Controller
             $k_m = 0;
             
             //roles: 1:admin, 2:product owner, 3:kanban master, 4:developer
-
+            if($request->users == null){
+                throw ValidationException::withMessages([
+                    "noUsersSelected" => ["Skupine ne morete ustvariti brez uporabnikov in pripadajočih vlog."],
+                ]);
+            }
             foreach($request->users as $user) {
                 $roles[$user] = $request ->$user;
                 $array = $request ->$user;
@@ -238,6 +243,17 @@ class GroupController extends Controller
         foreach ($users_data as $user_id) {
             $group->usersGroups()->create(['user_id' => $user_id, 'is_active' => 1]);
         }
+
+    }
+
+    public function getUsersGroupInitialData(Request $request){
+        $users = User::all();
+        $roles = Role::all();
+        $usersGroups = array();
+        /*if($group_id != null){
+            $usersGroups = UsersGroup::all();
+        }*/
+        return view('groups.usersgroup')->with('users', $users)->with('roles', $roles)->with('usersGroups', $usersGroups);
 
     }
 
