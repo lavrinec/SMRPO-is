@@ -16,33 +16,35 @@
       <!-- Navbar Right Menu -->
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
-          <!-- User Account: style can be found in dropdown.less -->
-          <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="/img/user.jpg" class="user-image" alt="User Image">
-              <span class="hidden-xs">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
-            </a>
-            <ul class="dropdown-menu">
-              <!-- User image -->
-              <li class="user-header">
-                <img src="/img/user.jpg" class="img-circle" alt="User Image">
+          @if($user = Auth::user())
+            <!-- User Account: style can be found in dropdown.less -->
+            <li class="dropdown user user-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="/img/user.jpg" class="user-image" alt="User Image">
+                <span class="hidden-xs">{{ $user->first_name }} {{ $user->last_name }}</span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- User image -->
+                <li class="user-header">
+                  <img src="/img/user.jpg" class="img-circle" alt="User Image">
 
-                <p>
-                  {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
-                  <small>{{ Auth::user()->email }}</small>
-                </p>
-              </li>
-              <!-- Menu Footer-->
-              <li class="user-footer">
-                <div class="pull-left">
-                  <a href="{{ route('users.show', Auth::user()->id) }}" class="btn btn-default btn-flat">Profil</a>
-                </div>
-                <div class="pull-right">
-                  <a href="{{ route('logout') }}" class="btn btn-default btn-flat">Odjava</a>
-                </div>
-              </li>
-            </ul>
-          </li>
+                  <p>
+                    {{ $user->first_name }} {{ $user->last_name }}
+                    <small>{{ $user->email }}</small>
+                  </p>
+                </li>
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="{{ route('users.show', $user->id) }}" class="btn btn-default btn-flat">Profil</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="{{ route('logout') }}" class="btn btn-default btn-flat">Odjava</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          @endif
           <!-- Control Sidebar Toggle Button
           <li>
             <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>

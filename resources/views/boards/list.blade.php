@@ -17,7 +17,7 @@
                     @if(Auth::user()->isKM())
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Ustvarjanje novega uporabnika</h3>
+                            <h3 class="box-title">Ustvarjanje nove table</h3>
                         </div>
                         <!-- /.box-header -->
                             <div class="box-body">
@@ -25,6 +25,9 @@
                                 <a href="{{ action('BoardController@create') }}" class="btn btn-primary btn-block">
                                     <b>Ustvari novo tablo</b>
                                 </a>
+
+                                <button type="button" class="btn btn-primary openCard" data-card-id="0">Dodaj kartico</button>
+                                @include('modals.modal')
 
                             </div>
                             <!-- /.box-body -->

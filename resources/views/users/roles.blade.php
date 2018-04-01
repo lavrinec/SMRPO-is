@@ -1,6 +1,6 @@
 @if(Auth::user()->isAdmin())
     <div class="form-group">
-        <label for="password" class="col-sm-2 control-label">Vloge</label>
+        <label class="col-sm-2 control-label">Vloge</label>
         <div class="col-sm-10">
             @foreach($roles as $role)
                 <label for="roles_{{ $role->id }}" class="control-sidebar-subheading">

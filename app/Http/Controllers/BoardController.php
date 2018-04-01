@@ -32,12 +32,12 @@ class BoardController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        if($validator = $this->validateBoard($request)) return redirect()->route('boards.create')->withErrors($validator);
+        if ($validator = $this->validateBoard($request)) return redirect()->route('boards.create')->withErrors($validator);
 
         $data = request()->except('_token');
         $board = new Board($data);
@@ -52,7 +52,7 @@ class BoardController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Board  $board
+     * @param  \App\Models\Board $board
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -62,7 +62,8 @@ class BoardController extends Controller
         return view('boards.show')->with('board', $board);
     }
 
-    public function validateBoard(Request $request, $board=false){
+    public function validateBoard(Request $request, $board = false)
+    {
         $validator = Validator::make($request->all(), [
             'board_name' => 'required|max:255',
         ],
@@ -80,7 +81,7 @@ class BoardController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Board  $board
+     * @param  \App\Models\Board $board
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -90,17 +91,31 @@ class BoardController extends Controller
         return view('boards.edit')->with('board', $board);
     }
 
+    public function addColumn(Request $request)
+    {
+        $column_id = "aa" . str_random(20);
+        $parent_id = $request->parent_id;
+        $level = $request->level;
+
+        return view('boards.column')->with([
+            'column_id' => $column_id,
+            'parent_id' => $parent_id,
+            'level' => $level
+        ]);
+    }
+
+
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Board  $board
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Models\Board $board
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Board $board)
     {
         $id = $board->id;
-        if($validator = $this->validateUser($request, $id)){
+        if ($validator = $this->validateUser($request, $id)) {
             return redirect()->route('boards.edit', $id)->withErrors($validator);
         }
         $data = request()->except('_token');
@@ -111,7 +126,7 @@ class BoardController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Board  $board
+     * @param  \App\Models\Board $board
      * @return \Illuminate\Http\Response
      */
     public function destroy(Board $board)

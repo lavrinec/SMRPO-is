@@ -14,12 +14,26 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     /**
+     * Return redirect
+     *
+     * @return \Illuminate\Http\Response
+     */
+    private function redirectIfNotAdmin($id = null){
+        $user = Auth::user();
+        if(!$user->isAdmin() && $user->id != $id) {
+            return redirect()->route('users.show', $user->id);
+        } else return null;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
+        $redirect = $this->redirectIfNotAdmin();
+        if(isset($redirect)) return $redirect;
         $users = User::withTrashed()->get();
         return view('users.list')->with('users', $users);
     }
@@ -31,6 +45,8 @@ class UserController extends Controller
      */
     public function create()
     {
+        $redirect = $this->redirectIfNotAdmin();
+        if(isset($redirect)) return $redirect;
         $roles = Role::all();
         return view('users.create')->with('roles', $roles);
     }
@@ -43,6 +59,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $redirect = $this->redirectIfNotAdmin();
+        if(isset($redirect)) return $redirect;
 
         if($validator = $this->validateUser($request)) return redirect()->route('users.create')->withErrors($validator);
 
@@ -75,6 +93,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $redirect = $this->redirectIfNotAdmin($id);
+        if(isset($redirect)) return $redirect;
+
         $user = User::withTrashed()->with('usersRoles.role')->where('id', $id)->first();
         //$user_roles = UsersRole::where('user_id', $id)->get(['role_id']);
 
@@ -94,6 +115,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $redirect = $this->redirectIfNotAdmin($id);
+        if(isset($redirect)) return $redirect;
+
         $user = User::where('id', $id)->with('usersRoles.role')->first();
         $roles = Role::all();
         return view('users.edit')->with('users', $user)->with('roles', $roles);
@@ -130,6 +154,9 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $redirect = $this->redirectIfNotAdmin($id);
+        if(isset($redirect)) return $redirect;
+
         if($validator = $this->validateUser($request, $id)){
             return redirect()->route('users.edit', $id)->withErrors($validator);
         }

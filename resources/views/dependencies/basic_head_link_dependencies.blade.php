@@ -29,3 +29,11 @@
 
 <!-- Dragula CSS for boards -->
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.css">
+
+<!-- JS dependencies that have to be injected before <body> -->
+
+<!-- jQuery -->
+<script src="/dependencies/jquery/dist/jquery.min.js"></script>
+
+<!-- Dragula JS for boards -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.js'></script>
