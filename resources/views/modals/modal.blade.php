@@ -11,7 +11,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Zapri</button>
+                <button type="button" class="btn btn-success" id="saveCard">Shrani</button>
             </div>
         </div>
     </div>

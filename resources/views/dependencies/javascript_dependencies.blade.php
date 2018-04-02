@@ -46,12 +46,28 @@
 
 
         $('.openCard').on('click',function(e){
-            var target = $(e.target), id = target.data('cardId');
-            $('.modal-body').load('/cards/' + id + '/edit',function(){
+            var target = $(e.target), cardId = target.data('cardId'), boardId = target.data('boardId');
+            $('#cardModal .modal-body').load('/cards/' + cardId + '/edit/' + boardId,function(){
                 $('#cardModal').modal({show:true});
             });
         });
-    })
+
+        $('#saveCard').on('click',function(e){
+            var target = $(e.target), $form = $('#updateCard');
+            target.hide();
+            $('#cardModal .modal-body').html("");
+            $.ajax({
+                url: $form.attr('action'),
+                type: 'POST',
+                data: $form.serialize(),
+                success: function(result) {
+                    alert("Opravljeno");
+                }
+            });
+            $('#cardModal').modal({show:false});
+            target.show();
+        });
+    });
 
     $(document).ready(function(){
         //js-example-basic-single

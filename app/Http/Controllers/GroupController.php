@@ -256,6 +256,7 @@ class GroupController extends Controller
         }
 
         //roles: 1:admin, 2:product owner, 3:kanban master, 4:developer
+
         if ($request->users == null) {
             throw ValidationException::withMessages([
                 "noUsersSelected" => ["Skupine ne morete ustvariti brez uporabnikov in pripadajočih vlog."],
@@ -271,6 +272,7 @@ class GroupController extends Controller
                 ]);
             }
             $userHasOneRole = false;
+            $both =0; //check if user has both kanban master and product owner role
             foreach ($users->{$key}->roles as $key => $value) {
                 $userHasOneRole = true;
                 switch ($value) {
@@ -279,12 +281,16 @@ class GroupController extends Controller
                         break;
                     case 3:
                         $k_m++;
+                        $both++;
                         break;
                     case 2:
                         $owner++;
+                        $both++;
                         break;
                 }
             }
+            if ($both==2) break;
+
             if(!$userHasOneRole){
                 throw ValidationException::withMessages([
                     "noRolesSelected" => ["Za vsakega uporabnika morate izbrati vlogo v skupini."]
@@ -293,7 +299,7 @@ class GroupController extends Controller
         }
 
 
-        $correctGroup = $owner === 1 && $k_m === 1 && $developers >= 1;
+        $correctGroup = $owner === 1 && $k_m === 1 && $developers >= 1 && $both < 2;
 
         return $correctGroup;
 
@@ -330,6 +336,7 @@ class GroupController extends Controller
             }
         }
     }
+
 
 
 

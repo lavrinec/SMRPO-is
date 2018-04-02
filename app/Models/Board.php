@@ -33,4 +33,9 @@ class Board extends Model
     {
         return $this->hasManyThrough('App\Models\Card', 'App\Models\Column', 'board_id', 'column_id');
     }
+
+    public function groups()
+    {
+        return $this->hasManyThrough('App\Models\Group', 'App\Models\Project', 'board_id', 'id', 'id', 'group_id');
+    }
 }

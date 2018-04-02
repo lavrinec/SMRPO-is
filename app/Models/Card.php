@@ -9,6 +9,10 @@ class Card extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'card_name', 'description', 'column_id', 'meta'
+    ];
+
     public function column()
     {
         return $this->belongsTo('App\Models\Column', 'column_id');

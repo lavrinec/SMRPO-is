@@ -69,6 +69,11 @@
 
                                 </tr>
 
+                                <tr>
+                                    <td>Skupina</td>
+                                    <td>{{ $group->group_name }}</td>
+
+                                </tr>
                                 
 
                             </table>
