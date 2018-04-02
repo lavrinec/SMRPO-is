@@ -34,7 +34,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="group_name" name="group_name"
-                                               placeholder="Ime" required>
+                                               placeholder="Ime" required value="{{old('group_name')}}">
                                         @if ($errors->has('group_name'))
                                             <span class="help-block">{{ $errors->first('group_name') }}</span>
                                         @endif
@@ -46,8 +46,8 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="description" name="description"
-                                               placeholder="Opis">
-                                        <input type="text" hidden name="usersgroups" id="usersgroups-input" />
+                                               placeholder="Opis" value="{{old('description')}}">
+                                        <input type="text" hidden name="usersgroups" id="usersgroups-input" value="{{old('usersgroups')}}" />
                                         @if ($errors->has('description'))
                                             <span class="help-block">{{ $errors->first('description') }}</span>
                                         @endif
@@ -70,6 +70,11 @@
                                     @if($errors->has('invalidGroup'))
                                         <span class="col-sm-offset-2 col-sm-10 help-block">
                                             {{$errors->first('invalidGroup')}}
+                                        </span>
+                                    @endif
+                                    @if($errors->has('noRolesSelected'))
+                                        <span class="col-sm-offset-2 col-sm-10 help-block">
+                                            {{$errors->first('noRolesSelected')}}
                                         </span>
                                     @endif
                                 </div>

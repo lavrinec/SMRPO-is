@@ -79,6 +79,22 @@
                                         <a href="{{ action('GroupController@show', $groups->id) }}"
                                            class="btn btn-danger btn-block"><b>Prekliči</b></a>
                                     </div>
+
+                                    @if($errors->has('noUsersSelected'))
+                                        <span class="col-sm-offset-2 col-sm-10 help-block">
+                                            {{$errors->first('noUsersSelected')}}
+                                        </span>
+                                    @endif
+                                    @if($errors->has('invalidGroup'))
+                                        <span class="col-sm-offset-2 col-sm-10 help-block">
+                                            {{$errors->first('invalidGroup')}}
+                                        </span>
+                                    @endif
+                                    @if($errors->has('noRolesSelected'))
+                                        <span class="col-sm-offset-2 col-sm-10 help-block">
+                                            {{$errors->first('noRolesSelected')}}
+                                        </span>
+                                    @endif
                                 </div>
                             </form>
 

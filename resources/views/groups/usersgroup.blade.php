@@ -13,6 +13,9 @@
                     allRoles = [],
                     allUsersGroups = [];
                 (function () {
+                    console.log('to je input');
+                    console.log($('#usersgroups-input').val());
+
                     function setEditValues(dataFromDatabase, dataFromSelect) {
                         for (var value of Object.values(dataFromDatabase)) {
                             if (parseInt(value.id) === parseInt(dataFromSelect.id)) {
@@ -34,7 +37,11 @@
                             allUsers = data.users;
                             allUsersGroups = data.usersGroups;
                             var currentUsersGroupsRoles = @json($currentUsersGroupsRoles);
-                            if (currentUsersGroupsRoles !== undefined && currentUsersGroupsRoles !== null
+                            var oldDataToSend = $('#usersgroups-input').val();
+                            if(oldDataToSend !== null && oldDataToSend !== undefined && oldDataToSend !== ''){
+                                dataToSend = JSON.parse(oldDataToSend);
+                            }
+                            else if (currentUsersGroupsRoles !== undefined && currentUsersGroupsRoles !== null
                                 && currentUsersGroupsRoles !== {} && currentUsersGroupsRoles !== []) {
                                 dataToSend = currentUsersGroupsRoles;
                                 $('#usersgroups-input').val(JSON.stringify(dataToSend));
