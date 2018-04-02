@@ -98,11 +98,11 @@ class CardController extends Controller
         $data = request()->except('_token');
         if(!isset($data['user_id']) || $data['user_id'] == 0) $data['user_id'] = null;
         if($id == 0){
-            Card::create($data);
+            $card = Card::create($data);
         } else {
-            Card::where('id', $id)->update($data);
+            $card = Card::where('id', $id)->update($data);
         }
-        return redirect()->route('cards.show', $id);
+        return $card;
     }
 
     /**

@@ -49,23 +49,26 @@
             var target = $(e.target), cardId = target.data('cardId'), boardId = target.data('boardId');
             $('#cardModal .modal-body').load('/cards/' + cardId + '/edit/' + boardId,function(){
                 $('#cardModal').modal({show:true});
+                $('#updateCard').on('submit',function(e){
+                    e.preventDefault();
+                    var $form = $('#updateCard');
+                    $('#cardModal .modal-body').html("");
+                    $.ajax({
+                        url: $form.attr('action'),
+                        type: 'POST',
+                        data: $form.serialize(),
+                        success: function (result) {
+                            $('#cardModal').modal({show: false});
+                            $('#saveCard').show();
+                        }
+                    });
+                });
             });
         });
 
-        $('#saveCard').on('click',function(e){
-            var target = $(e.target), $form = $('#updateCard');
-            target.hide();
-            $('#cardModal .modal-body').html("");
-            $.ajax({
-                url: $form.attr('action'),
-                type: 'POST',
-                data: $form.serialize(),
-                success: function(result) {
-                    alert("Opravljeno");
-                }
-            });
-            $('#cardModal').modal({show:false});
-            target.show();
+        $('#saveCard').on('click',function(e) {
+            $('#saveCard').hide();
+            $('#updateCard').submit();
         });
     });
 
