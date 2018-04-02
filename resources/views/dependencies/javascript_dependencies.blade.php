@@ -47,9 +47,25 @@
 
         $('.openCard').on('click',function(e){
             var target = $(e.target), cardId = target.data('cardId'), boardId = target.data('boardId');
-            $('.modal-body').load('/cards/' + cardId + '/edit/' + boardId,function(){
+            $('#cardModal .modal-body').load('/cards/' + cardId + '/edit/' + boardId,function(){
                 $('#cardModal').modal({show:true});
             });
+        });
+
+        $('#saveCard').on('click',function(e){
+            var target = $(e.target), $form = $('#updateCard');
+            target.hide();
+            $('#cardModal .modal-body').html("");
+            $.ajax({
+                url: $form.attr('action'),
+                type: 'POST',
+                data: $form.serialize(),
+                success: function(result) {
+                    alert("Opravljeno");
+                }
+            });
+            $('#cardModal').modal({show:false});
+            target.show();
         });
     });
 

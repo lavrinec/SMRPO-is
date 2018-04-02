@@ -72,6 +72,7 @@ class CardController extends Controller
             $data['card'] = Card::findOrFail($id);
             if(!isset($board)) $data['board'] = $data['card']->project()->first();
         }
+
         $data['users'] = User::
             join('users_groups', 'users_groups.user_id', '=', 'users.id')
             ->join('groups', 'users_groups.group_id', '=', 'groups.id')
@@ -92,11 +93,16 @@ class CardController extends Controller
      * @param  \App\Models\Card  $card
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Card $card)
+    public function update(Request $request, int $id)
     {
         $data = request()->except('_token');
-        $card->update($data);
-        return redirect()->route('cards.show', $card);
+        if(!isset($data['user_id']) || $data['user_id'] == 0) $data['user_id'] = null;
+        if($id == 0){
+            Card::create($data);
+        } else {
+            Card::where('id', $id)->update($data);
+        }
+        return redirect()->route('cards.show', $id);
     }
 
     /**
