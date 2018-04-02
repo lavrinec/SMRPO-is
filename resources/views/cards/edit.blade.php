@@ -4,7 +4,7 @@
     <!--<input type="hidden" class="form-control" id="id" value="{{ isset($card) ? $card->id : '0' }}">-->
     <div class="form-group">
         <label for="card_name" class="col-form-label">Ime naloge:</label>
-        <input type="text" class="form-control" id="card_name" name="card_name" value="{{ isset($card) ? $card->card_name : '' }}">
+        <input type="text" class="form-control" id="card_name" name="card_name" value="{{ isset($card) ? $card->card_name : '' }}" required>
     </div>
     <div class="form-group">
         <label for="description" class="col-form-label">Opis:</label>
@@ -37,6 +37,7 @@
     <div class="checkbox">
         <label><input type="checkbox" name="is_rejected" {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
     </div>
+    <input type="submit" style="display: none;">
 </form>
 <script>
     var $disabledResults = $(".select2");
