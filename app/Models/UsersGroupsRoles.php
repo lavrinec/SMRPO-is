@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UsersGroupRoles extends Model
+class UsersGroupsRoles extends Model
 {
     //use SoftDeletes;
 
@@ -14,7 +14,7 @@ class UsersGroupRoles extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'group_id', 'is_active'
+        'users_group_id', 'role_id'
     ];
 
     protected $dates = ['deleted_at'];
