@@ -301,9 +301,7 @@
                     'level': parseInt($("#"+column.id+"_level")[0].value)
                 },
                 success: function (data) {
-
                     $(data).insertBefore($("#" + column.id));
-
                     redoLeftIds();
 
                 }
@@ -320,9 +318,7 @@
                     'level': parseInt($("#"+column.id+"_level")[0].value)
                 },
                 success: function (data) {
-
                     $(data).insertAfter($("#" + column.id));
-
                     redoLeftIds();
                 }
             });

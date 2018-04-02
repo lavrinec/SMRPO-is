@@ -98,8 +98,6 @@ class BoardController extends Controller
         $left_id = $request->left_id;
         $level = $request->level;
 
-        $testni = json_encode("123");
-
         return view('boards.column')->with([
             'column_id' => $column_id,
             'parent_id' => $parent_id,
