@@ -95,12 +95,16 @@ class BoardController extends Controller
     {
         $column_id = "aa" . str_random(20);
         $parent_id = $request->parent_id;
+        $left_id = $request->left_id;
         $level = $request->level;
+
+        $testni = json_encode("123");
 
         return view('boards.column')->with([
             'column_id' => $column_id,
             'parent_id' => $parent_id,
-            'level' => $level
+            'left_id' => $left_id,
+            'level' => $level,
         ]);
     }
 
@@ -114,6 +118,8 @@ class BoardController extends Controller
      */
     public function update(Request $request, Board $board)
     {
+        dd($request);
+
         $id = $board->id;
         if ($validator = $this->validateUser($request, $id)) {
             return redirect()->route('boards.edit', $id)->withErrors($validator);

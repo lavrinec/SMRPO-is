@@ -301,7 +301,11 @@
                     'level': parseInt($("#"+column.id+"_level")[0].value)
                 },
                 success: function (data) {
+
                     $(data).insertBefore($("#" + column.id));
+
+                    redoLeftIds();
+
                 }
             });
         }
@@ -316,7 +320,10 @@
                     'level': parseInt($("#"+column.id+"_level")[0].value)
                 },
                 success: function (data) {
+
                     $(data).insertAfter($("#" + column.id));
+
+                    redoLeftIds();
                 }
             });
         }
@@ -335,6 +342,7 @@
                     // disable [add first subcolumn] button
                     $("#" + column.id + "_addFirstSubcolumn")[0].setAttribute('disabled', 'disabled');
                     $("#" + column.id + "_subcanvas").append(data);
+                    redoLeftIds();
                 }
             });
         }
@@ -344,6 +352,7 @@
             var parent = column.parentNode;
             column.parentNode.removeChild(column);
             checkIfEmpty(parent);
+            redoLeftIds();
             return false;
         }
 
@@ -363,6 +372,19 @@
                 }
             }
         }
+        
+        function redoLeftIds() {
+            $(".column").each(function(i, current) {
+                var prev_id = null;
+                if($("#" + current.id).prev()[0]) {
+                    prev_id = $("#" + current.id).prev()[0].id; // prev_id
+                }
+
+                // set left_id of curr to prev_id
+                $("#"+current.id+"_left_id")[0].value = prev_id;
+            });
+        }
+        
 
 
         /*
