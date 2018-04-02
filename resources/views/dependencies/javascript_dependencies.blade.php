@@ -46,12 +46,12 @@
 
 
         $('.openCard').on('click',function(e){
-            var target = $(e.target), id = target.data('cardId');
-            $('.modal-body').load('/cards/' + id + '/edit',function(){
+            var target = $(e.target), cardId = target.data('cardId'), boardId = target.data('boardId');
+            $('.modal-body').load('/cards/' + cardId + '/edit/' + boardId,function(){
                 $('#cardModal').modal({show:true});
             });
         });
-    })
+    });
 
     $(document).ready(function(){
         //js-example-basic-single

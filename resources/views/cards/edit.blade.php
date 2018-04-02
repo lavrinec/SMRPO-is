@@ -9,7 +9,11 @@
     </div>
     <div class="form-group">
         <label for="user_id" class="col-form-label">Lastnik:</label>
-        <input type="number" class="form-control" id="user_id">
+        <select class="form-control select2" id="user_id">
+            @foreach($users as $user)
+                <option value="{{$user->id}}">{{$user->first_name}} {{$user->last_name}}</option>
+            @endforeach
+        </select>
     </div>
     <div class="form-group">
         <label for="deadline" class="col-form-label">Rok:</label>
@@ -30,3 +34,7 @@
         <label><input type="checkbox" name="is_rejected" value="">Zavrnjen</label>
     </div>
 </form>
+<script>
+    var $disabledResults = $(".select2");
+    $disabledResults.select2();
+</script>

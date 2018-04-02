@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Card;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CardController extends Controller
 {
@@ -65,13 +67,22 @@ class CardController extends Controller
      */
     public function edit($id, Board $board = null)
     {
-        $card = null;
+        $data = ['card' => null, 'board' => $board];
         if($id != 0){
-            $card = Card::findOrFail($id);
-            if(!isset($board)) $board = $card->board()->first();
-
+            $data['card'] = Card::findOrFail($id);
+            if(!isset($board)) $data['board'] = $data['card']->project()->first();
         }
-        return view('cards.edit')->with(['card' => $card, 'board' => $board]);
+        $data['users'] = User::
+            join('users_groups', 'users_groups.user_id', '=', 'users.id')
+            ->join('groups', 'users_groups.group_id', '=', 'groups.id')
+            ->join('projects', 'projects.group_id', '=', 'groups.id')
+            ->join('boards', 'projects.board_id', '=', 'boards.id')
+            ->where('boards.id', $board->id)
+            //->groupBy('users_groups.user_id')
+            ->distinct('users_groups.user_id')
+            ->get();
+
+        return view('cards.edit')->with($data);
     }
 
     /**
