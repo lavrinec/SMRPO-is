@@ -11,7 +11,7 @@
                 @foreach($groups->users as $user)
                     {{--@dd($role['group_id'])--}}
                     <li class="list-group-item">
-                        {{ $user->first_name }}
+                        {{ $user->first_name }} {{ $user->last_name }}
                     </li>
                 @endforeach
 
