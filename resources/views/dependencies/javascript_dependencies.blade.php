@@ -1,4 +1,4 @@
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="/dependencies/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- FastClick -->
@@ -22,7 +22,6 @@
 <script src="/dependencies/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="/dependencies/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script>
     $(function () {
         $('#example1').DataTable({
@@ -37,6 +36,15 @@
             }
         });
 
+        $('#usersgroupsselect').select2({
+            placeholder: 'Select an option',
+            multiple:"multiple",
+            theme:"classic",
+            allowClear:true,
+            tags:true
+        });
+
+
         $('.openCard').on('click',function(e){
             var target = $(e.target), id = target.data('cardId');
             $('.modal-body').load('/cards/' + id + '/edit',function(){
@@ -46,8 +54,7 @@
     })
 
     $(document).ready(function(){
-        $('.js-example-basic-single').select2({
-            placeholder: 'Select an option'
-        });
+        //js-example-basic-single
+
     });
 </script>
