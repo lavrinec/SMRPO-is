@@ -191,23 +191,31 @@ class GroupController extends Controller
             
             //roles: 1:admin, 2:product owner, 3:kanban master, 4:developer
 
-            foreach($request->users as $user) {
+            foreach((array)$request->users as $user) {
                 $roles[$user] = $request ->$user;
                 $array = $request ->$user;
+                #TO DO: check if kanban and product owner
+                $both=0;
                 foreach ((array)$array as $role){
                     switch($role){
-                        case 4:$developers++;
-                        break;
-                        case 3:$k_m++;
-                        break;
-                        case 2:$owner++;
-                        break;
+                        case 4:{
+                            $developers++;
+                            break;}
+                        case 3:{
+                            $k_m++;
+                            $both++;
+                            break;}
+                        case 2:{
+                            $owner++;
+                            $both++;
+                            break;}
                         //default vrni napako
-                    }
+                    }                    
                  }
+                 if ($both==2) break;
             }
             
-            $correctGroup = $owner===1 && $k_m===1 && $developers>=1;
+            $correctGroup = $owner===1 && $k_m===1 && $developers>=1&&$both<2;
 
             return $correctGroup;
 

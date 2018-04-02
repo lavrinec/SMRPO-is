@@ -2,7 +2,7 @@
 
 @section('content')
 
-
+    <link rel="stylesheet" href="/dependencies/select2/dist/css/select2.min.css">
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -86,6 +86,21 @@
                                                placeholder="Zaključek" required>
                                         @if ($errors->has('end_date'))
                                             <span class="help-block">{{ $errors->first('end_date') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="group_id" class="col-sm-2 control-label">Skupina</label>
+
+                                    <div class="col-sm-10">                    
+                                        <select class="form-control" name="group_id" id="group_id">
+                                            @foreach($groups as $group)
+                                                <option value="{{$group->id}}">{{$group->group_name}}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('group'))
+                                            <span class="help-block">{{ $errors->first('group') }}</span>
                                         @endif
                                     </div>
                                 </div>

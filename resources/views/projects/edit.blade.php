@@ -94,6 +94,24 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="group_id" class="col-sm-2 control-label">Skupina</label>
+
+                                    <div class="col-sm-10">                    
+                                        <select class="form-control" name="group_id" id="group_id">
+                                            @foreach($groups as $group)
+                                                @if ($group->id == $projects->group_id)
+                                                <option value="{{$group->id}}" selected>{{$group->group_name}}</option>
+                                                @else
+                                                <option value="{{$group->id}}">{{$group->group_name}}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('group'))
+                                            <span class="help-block">{{ $errors->first('group') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-4">

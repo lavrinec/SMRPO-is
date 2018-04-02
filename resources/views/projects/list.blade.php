@@ -49,6 +49,7 @@
                                     <th>Naročnik</th>
                                     <th>Datum začetka</th>
                                     <th>Datum zaključka</th>
+                                    <th>Skupina</th>
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
                                         <th>Izbriši</th>
@@ -65,6 +66,7 @@
                                         <td>{{ $project->buyer_name }}</td>
                                         <td>{{ date("d-m-Y", strtotime($project->start_date)) }}</td>
                                         <td>{{ date("d-m-Y", strtotime($project->end_date)) }}</td>
+                                        <td>{{ $project->group->group_name }}</td>
 
                                         @if(Auth::user()->isKM())
                                             <td>
@@ -99,6 +101,7 @@
                                     <th>Naročnik</th>
                                     <th>Datum začetka</th>
                                     <th>Datum zaključka</th>
+                                    <th>Skupina</th>
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
                                         <th>Izbriši</th>

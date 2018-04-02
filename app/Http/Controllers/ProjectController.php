@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 use App\Models\Project;
+use App\Models\Group;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProjectController extends Controller
 {
@@ -15,7 +17,10 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::with("group")->get();
+        //$projects = Project::all();
+       // $books = App\Book::with('author')->get();
+        //  $groups = Group::all();
         return view('projects.list')->with('projects', $projects);
     }
 
@@ -27,7 +32,8 @@ class ProjectController extends Controller
     public function create()
     {
         //
-        return view('projects.create');
+        $groups = Group::all();
+        return view('projects.create')->with("groups", $groups);
     }
 
     /**
@@ -61,8 +67,9 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $project = Project::withTrashed()->where('id', $id)->first();        
-        return view('projects.show')->with('projects', $project);
+        $project = Project::withTrashed()->where('id', $id)->first();  
+        $group = Group::where("id", $project->group_id)->first();      
+        return view('projects.show')->with('projects', $project)->with("group", $group);
     }
 
     /**
@@ -73,7 +80,7 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Project $project)
-    {
+    {   
         $data = request()->except(['_token']);
         $startRequired = true;
         if($this->areThereCards($project)){
@@ -94,9 +101,10 @@ class ProjectController extends Controller
     public function edit($id)
     {
         //
+        $groups = Group::all();
         $project = Project::where('id', $id)->first();
         $hasCards = $this->areThereCards($project);
-        return view('projects.edit')->with('projects', $project)->with('hasCards', $hasCards);
+        return view('projects.edit')->with('projects', $project)->with('hasCards', $hasCards)->with("groups", $groups);
     }
 
 
@@ -109,13 +117,15 @@ class ProjectController extends Controller
             'end_date' => 'required|date|after:start_date',
 
 
+
         ],
             [
                 'required' => 'Polje ne sme ostati prazno!',
                 'max' => 'Maksimalna dolžina je največ 255 znakov!',
                 'date'  => 'Vpišite datum v obliki dd.mm.llll',
                 'before_or_equal' => "Projekt se lahko začne najkasneje z današnjim dnem!",
-                'after'=> "Datum konca projekta mora biti kasnejši od datuma začetka!"
+                'after'=> "Datum konca projekta mora biti kasnejši od datuma začetka!",
+                
                 
             ]);
         if ($validator->fails()) {
