@@ -61,6 +61,7 @@
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="description" name="description"
                                                value="{{ $groups->description }}" required>
+                                        <input type="text" hidden name="usersgroups" id="usersgroups-input" />
                                         @if ($errors->has('description'))
                                             <span class="help-block">{{ $errors->first('description') }}</span>
                                         @endif
@@ -68,7 +69,7 @@
                                 </div>
 
                                 {{-- this needs to be implemented!!!!  @include('groups.roles')  --}}
-                                @include('groups.usersgroup');
+                                @include('groups.usersgroup')
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-4">

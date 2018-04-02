@@ -30,6 +30,6 @@ class UsersGroup extends Model
     }
 
     public function role(){
-        return $this->hasMany('App\Models\UsersGroupRoles', 'users_group_id');
+        return $this->hasMany('App\Models\UsersGroupsRoles', 'users_group_id');
     }
 }

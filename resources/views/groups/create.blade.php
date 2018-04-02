@@ -2,7 +2,6 @@
 
 @section('content')
 
-
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -48,6 +47,7 @@
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="description" name="description"
                                                placeholder="Opis">
+                                        <input type="text" hidden name="usersgroups" id="usersgroups-input" />
                                         @if ($errors->has('description'))
                                             <span class="help-block">{{ $errors->first('description') }}</span>
                                         @endif
@@ -55,13 +55,25 @@
                                 </div>
 
                                 @include('groups.usersgroup')
-
+                                <hr/>
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-10">
-                                        <button type="submit" class="btn btn-danger">Ustvari</button>
+                                        <button type="submit" class="btn btn-danger" onclick="createGroup()">Ustvari
+                                        </button>
                                     </div>
+                                    @if($errors->has('noUsersSelected'))
+                                        <span class="col-sm-offset-2 col-sm-10 help-block">
+                                            {{$errors->first('noUsersSelected')}}
+                                        </span>
+                                    @endif
+                                    @if($errors->has('invalidGroup'))
+                                        <span class="col-sm-offset-2 col-sm-10 help-block">
+                                            {{$errors->first('invalidGroup')}}
+                                        </span>
+                                    @endif
                                 </div>
+
                             </form>
 
 
@@ -79,5 +91,38 @@
         </section>
         <!-- /.content -->
     </div>
+    <script type="text/javascript">
+
+        /*
+        * Each value in users array is object. this object has following structure:
+        * {
+        *   userId: ___id_of_selected_user___,
+        *   roles: ___array_of_selected_roles_for_selected_user___
+        * }
+        * */
+        // var dataToSend = {
+        //     users: {}
+        // };
+        var dataToSend = {};
+
+
+        {{--function createGroup() {--}}
+            {{--$.ajax({--}}
+                {{--type:'POST',--}}
+                {{--url:"{{action('GroupController@store')}}",--}}
+                {{--data:{--}}
+                    {{--"_token": "{{ csrf_token() }}",--}}
+                    {{--data:dataToSend--}}
+                {{--},--}}
+                {{--done: function (response){--}}
+                    {{--alert('you are in done');--}}
+                {{--},--}}
+                {{--fail : function (response) {--}}
+                    {{--alert('you are in fail');--}}
+                {{--}--}}
+            {{--})--}}
+        {{--}--}}
+
+    </script>
     <!-- /.content-wrapper -->
 @endsection
