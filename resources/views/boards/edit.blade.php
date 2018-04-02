@@ -371,13 +371,13 @@
         
         function redoLeftIds() {
             $(".column").each(function(i, current) {
-                var prev_id = null;
+                var left_id = null;
                 if($("#" + current.id).prev()[0]) {
-                    prev_id = $("#" + current.id).prev()[0].id; // prev_id
+                    left_id = $("#" + current.id).prev()[0].id; // left_id
                 }
 
                 // set left_id of curr to prev_id
-                $("#"+current.id+"_left_id")[0].value = prev_id;
+                $("#"+current.id+"_left_id")[0].value = left_id;
             });
         }
         
