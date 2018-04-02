@@ -116,10 +116,10 @@ class BoardController extends Controller
      */
     public function update(Request $request, Board $board)
     {
-        dd($request);
+        dd($request, $board);
 
         $id = $board->id;
-        if ($validator = $this->validateUser($request, $id)) {
+        if ($validator = $this->validateBoard($request, $id)) {
             return redirect()->route('boards.edit', $id)->withErrors($validator);
         }
         $data = request()->except('_token');
