@@ -59,7 +59,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="buyer_name" name="buyer_name"
-                                               placeholder="Naročnik" required>
+                                               placeholder="Naročnik"  required>
                                         @if ($errors->has('buyer_name'))
                                             <span class="help-block">{{ $errors->first('buyer_name') }}</span>
                                         @endif
@@ -83,7 +83,7 @@
 
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="end_date" name="end_date"
-                                               placeholder="Zaključek" required>
+                                               placeholder="Zaključek" value="{{old('end_date')}}" required>
                                         @if ($errors->has('end_date'))
                                             <span class="help-block">{{ $errors->first('end_date') }}</span>
                                         @endif

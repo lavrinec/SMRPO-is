@@ -78,7 +78,7 @@
 
                             </table>
 
-
+                         @if(Auth::user()->isKM())
                             <div class="row">
                                 <div class="col-sm-offset-0 col-sm-4">
                                     @if($projects->deleted_at == null )
@@ -107,6 +107,7 @@
 
                                 </div>
                             </div>
+                        @endif
 
 
                         </div>
