@@ -18,7 +18,8 @@
 
         <p>
 
-            <button type="button" class="btn btn-primary openCard" data-card-id="0" data-board-id="{{ $board->id }}">Dodaj kartico</button>
+            <button type="button" class="btn btn-primary openCard" data-card-id="0" data-collumn-id="{{ $board->id }}">Dodaj kartico</button>
+            <button type="button" class="btn btn-primary openCard" data-card-id="1" data-board-id="{{ $board->id }}">Uredi kartico</button>
             @include('modals.modal')
         </p>
         {{--<a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>--}}
