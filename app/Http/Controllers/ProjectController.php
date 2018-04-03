@@ -81,6 +81,10 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {   
+        if($validator = $this->validateProject($request)){
+            return redirect()->route('projects.edit', $project->id)->withErrors($validator);
+        }
+
         $data = request()->except(['_token']);
         $startRequired = true;
         if($this->areThereCards($project)){
@@ -109,6 +113,7 @@ class ProjectController extends Controller
 
 
     public function validateProject(Request $request, $startRequired = true){
+
         $validator = Validator::make($request->all(), [
             'board_name' => 'required|max:255',
             'description' => 'required|max:255',

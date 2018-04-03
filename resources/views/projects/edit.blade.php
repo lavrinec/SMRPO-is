@@ -20,7 +20,7 @@
 
               
                 <div class="col-md-9">
-
+  
                     {{-- div for user data form --}}
                     <div class="box">
                         <div class="box-header">
@@ -76,8 +76,8 @@
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="start_date" name="start_date"
                                         value="{{ $projects->start_date }}" {{ $hasCards ? 'readonly' : 'required' }}>
-                                        @if ($errors->has('startDate'))
-                                            <span class="help-block">{{ $errors->first('startDate') }}</span>
+                                        @if ($errors->has('start_date'))
+                                            <span class="help-block">{{ $errors->first('start_date') }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -88,8 +88,8 @@
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="end_date" name="end_date"
                                         value="{{ $projects->end_date }}" required>
-                                        @if ($errors->has('endDate'))
-                                            <span class="help-block">{{ $errors->first('endDate') }}</span>
+                                        @if ($errors->has('end_date'))
+                                            <span class="help-block">{{ $errors->first('end_date') }}</span>
                                         @endif
                                     </div>
                                 </div>
