@@ -64,8 +64,8 @@
                                         </td>
                                         <td>{{ $project->description }}</td>
                                         <td>{{ $project->buyer_name }}</td>
-                                        <td>{{ date("d-m-Y", strtotime($project->start_date)) }}</td>
-                                        <td>{{ date("d-m-Y", strtotime($project->end_date)) }}</td>
+                                        <td>{{ date("d.m.Y", strtotime($project->start_date)) }}</td>
+                                        <td>{{ date("d.m.Y", strtotime($project->end_date)) }}</td>
                                         <td>{{ $project->group->group_name }}</td>
 
                                         @if(Auth::user()->isKM())
@@ -78,16 +78,9 @@
                                             </td>
                                             <td>
                                                 @if($project->deleted_at == null )
-                                                    <a href="javascript:reallyDelete()"><i class="fa fa-remove"></i></a>
+                                                    <a href="javascript:reallyDelete({{$project->id}})"><i class="fa fa-remove"></i></a>
 
-                                                    <script>
-                                                        function reallyDelete() {
-                                                            var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
-                                                            if (r == true) {
-                                                                window.location.href = "{{ action('ProjectController@destroy', $project->id) }}";
-                                                            }
-                                                        }
-                                                    </script>
+                                                    
                                                 @endif
                                             </td>
                                             @endif
@@ -120,4 +113,12 @@
         </section>
         <!-- /.content -->
     </div>
+    <script>
+        function reallyDelete(id) {
+        var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
+        if (r == true) {
+            window.location.href ="/projects/"+id+"/delete" //{{ action('ProjectController@destroy', $project->id) }}";
+        }
+    }
+                                                    </script>
 @endsection

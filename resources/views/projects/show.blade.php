@@ -59,13 +59,13 @@
                                 <tr>
                                     <td>Datum začetka</td>
                                     
-                                    <td>{{ date("d-m-Y", strtotime($projects->start_date)) }}</td>
+                                    <td>{{ date("d.m.Y", strtotime($projects->start_date)) }}</td>
 
                                 </tr>
 
                                 <tr>
                                     <td>Datum zaključka</td>
-                                    <td>{{ date("d-m-Y", strtotime($projects->end_date)) }}</td>
+                                    <td>{{ date("d.m.Y", strtotime($projects->end_date)) }}</td>
 
                                 </tr>
 
