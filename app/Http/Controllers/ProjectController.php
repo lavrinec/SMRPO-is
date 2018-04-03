@@ -150,6 +150,7 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         if($this->areThereCards($project)){
+            $project->update(['deactivated' => true]);
             return redirect()->back()->withErrors(['msg' => 'Izbris ni mogoč. Najprej izbrišite kartice v projektu!']);
         }
         $project->delete();
