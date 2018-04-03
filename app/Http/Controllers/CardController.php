@@ -76,6 +76,7 @@ class CardController extends Controller
         } else if(! isset($board)) {
             $data['board'] = $data['column']->board()->first();
         }
+        $data['projects'] = $data['board']->projects()->get();
 
         $data['users'] = User::
             join('users_groups', 'users_groups.user_id', '=', 'users.id')
@@ -102,6 +103,7 @@ class CardController extends Controller
         $data = request()->except('_token');
         if(!isset($data['user_id']) || $data['user_id'] == 0) $data['user_id'] = null;
         if(!isset($data['deadline']) || $data['deadline'] == '') $data['deadline'] = null;
+        if(!isset($data['estimation']) || $data['estimation'] == '') $data['estimation'] = 0;
         $data['is_critical'] = (! (!isset($data['is_critical']) || $data['is_critical'] == '' || $data['is_critical'] == 'off'));
         $data['is_rejected'] = (! (!isset($data['is_rejected']) || $data['is_rejected'] == '' || $data['is_rejected'] == 'off'));
         if($id == 0){

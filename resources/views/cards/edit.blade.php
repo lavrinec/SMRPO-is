@@ -16,10 +16,18 @@
             <textarea class="form-control" id="description" name="description">{{ isset($card) ? $card->description : '' }}</textarea>
         </div>
         <div class="form-group">
+            <label for="user_id" class="col-form-label">Projekt:</label>
+            <select class="form-control select2" id="project_id" name="project_id">
+                @foreach($projects as $project)
+                    <option value="{{$project->id}}" {{ isset($card) && $project->id == $card->project_id ? 'selected' : ''}}>{{$project->board_name}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
             <label for="user_id" class="col-form-label">Lastnik:</label>
             <select class="form-control select2" id="user_id" name="user_id">
+                <option value="0"></option>
                 @foreach($users as $user)
-                    <option value="0"></option>
                     <option value="{{$user->id}}" {{ isset($card) && $user->id == $card->user_id ? 'selected' : ''}}>{{$user->first_name}} {{$user->last_name}}</option>
                 @endforeach
             </select>
