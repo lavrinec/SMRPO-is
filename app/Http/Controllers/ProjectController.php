@@ -45,6 +45,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         //
+        $request->flash();
         if($validator = $this->validateProject($request)) return redirect()->route('projects.create')->withErrors($validator);
 
 
@@ -80,7 +81,7 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Project $project)
-    {   
+    {   $request->flash();
         if($validator = $this->validateProject($request)){
             return redirect()->route('projects.edit', $project->id)->withErrors($validator);
         }

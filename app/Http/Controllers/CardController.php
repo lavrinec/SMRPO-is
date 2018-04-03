@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Card;
+use App\Models\Column;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -65,12 +66,15 @@ class CardController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id, Board $board = null)
+    public function edit($id, Column $column = null, Board $board = null)
     {
-        $data = ['card' => null, 'board' => $board];
+        $data = ['card' => null, 'column' => $column, 'board' => $board];
         if($id != 0){
             $data['card'] = Card::findOrFail($id);
-            if(!isset($board)) $data['board'] = $data['card']->project()->first();
+            if(!isset($board)) $data['board'] = $data['card']->board()->first();
+            if(!isset($column)) $data['column'] = $data['card']->column()->first();
+        } else if(! isset($board)) {
+            $data['board'] = $data['column']->board()->first();
         }
 
         $data['users'] = User::
@@ -78,7 +82,7 @@ class CardController extends Controller
             ->join('groups', 'users_groups.group_id', '=', 'groups.id')
             ->join('projects', 'projects.group_id', '=', 'groups.id')
             ->join('boards', 'projects.board_id', '=', 'boards.id')
-            ->where('boards.id', $board->id)
+            ->where('boards.id', $data['board']->id)
             //->groupBy('users_groups.user_id')
             ->distinct('users_groups.user_id')
             ->get();
@@ -97,6 +101,9 @@ class CardController extends Controller
     {
         $data = request()->except('_token');
         if(!isset($data['user_id']) || $data['user_id'] == 0) $data['user_id'] = null;
+        if(!isset($data['deadline']) || $data['deadline'] == '') $data['deadline'] = null;
+        $data['is_critical'] = (! (!isset($data['is_critical']) || $data['is_critical'] == '' || $data['is_critical'] == 'off'));
+        $data['is_rejected'] = (! (!isset($data['is_rejected']) || $data['is_rejected'] == '' || $data['is_rejected'] == 'off'));
         if($id == 0){
             $card = Card::create($data);
         } else {
