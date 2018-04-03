@@ -48,6 +48,7 @@
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="group_name" name="group_name"
                                                value="{{ $groups->group_name }}" required>
+                                         {{--value="{{ $groups->group_name }}"--}}
                                         @if ($errors->has('group_name'))
                                             <span class="help-block">{{ $errors->first('group_name') }}</span>
                                         @endif

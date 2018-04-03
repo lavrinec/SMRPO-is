@@ -59,9 +59,9 @@
 
                                         <td>
                                             @if($group->deleted_at != null )
-                                                Izbrisan
+                                                Izbrisana
                                             @else
-                                                Aktiven
+                                                Aktivna
                                             @endif
                                         </td>
                                         <td>

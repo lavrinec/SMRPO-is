@@ -18,6 +18,11 @@ class Card extends Model
         return $this->belongsTo('App\Models\Column', 'column_id');
     }
 
+    public function project()
+    {
+        return $this->belongsTo('App\Models\Project', 'project_id');
+    }
+
     public function board()
     {
         return $this->column()->first()->board();

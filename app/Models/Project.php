@@ -25,6 +25,11 @@ class Project extends Model
         return $this->belongsTo('App\Models\Group');
     }
 
+    public function columns()
+    {
+        return $this->belongsTo('App\Models\Column');
+    }
+
     public function board()
     {
         return $this->belongsTo('App\Models\Board');

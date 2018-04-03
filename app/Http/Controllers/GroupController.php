@@ -9,6 +9,7 @@ use App\Models\UsersGroup;
 use App\Models\UsersRole;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -19,10 +20,20 @@ class GroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private function redirectIfNotAdmin($id = null){
+        $user = Auth::user();
+        if(!$user->isKM() && $user->id != $id) {
+            //dd('tukaj');
+            return redirect()->route('dashboard.index');
+        } else return null;
+    }
+
     public function index()
     {
         //
         $groups = Group::withTrashed()->get();
+        $redirect = $this->redirectIfNotAdmin();
         return view('groups.list')->with('groups', $groups);
     }
 
@@ -134,7 +145,6 @@ class GroupController extends Controller
          * }
          * */
         //dd(json_encode($testObjectCreation));
-
         $groups = Group::where('id', $id)->first();
         $users = User::all();
         $roles = Role::all();
@@ -186,6 +196,7 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $request->flash();
         $usersgroups = (json_decode($request->usersgroups));
         if ($validator = $this->validateGroup($request, $id)) {
             return redirect()->route('groups.edit', $id)->withErrors($validator);
@@ -201,6 +212,7 @@ class GroupController extends Controller
         $group = Group::where('id', $id)->update($data);
         $this->updateUsersGroup($id, $usersgroups);
         $updatedUsersGroupsRoles = (UsersGroup::where("group_id", $id)->with('role')->get());//for future use if we need to show roles cards on show.page
+        $request->flash();
         return redirect()->route('groups.show', $id);
     }
 

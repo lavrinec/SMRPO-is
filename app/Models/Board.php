@@ -18,7 +18,7 @@ class Board extends Model
         'board_name', 'description', 'meta'
     ];
 
-    public function project()
+    public function projects()
     {
         return $this->hasMany('App\Models\Project', 'board_id');
     }
