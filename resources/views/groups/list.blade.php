@@ -73,16 +73,9 @@
                                         </td>
                                         <td>
                                             @if($group->deleted_at == null )
-                                                <a href="javascript:reallyDelete()"><i class="fa fa-remove"></i></a>
+                                                <a href="javascript:reallyDelete({{$group->id}})"><i class="fa fa-remove"></i></a>
 
-                                                <script>
-                                                    function reallyDelete() {
-                                                        var r = confirm("Ali ste prepričani, da želite izbrisati uporabnika?");
-                                                        if (r == true) {
-                                                            window.location.href = "{{ action('GroupController@destroy', $group->id) }}";
-                                                        }
-                                                    }
-                                                </script>
+
                                             @endif
                                         </td>
                                     </tr>
@@ -109,5 +102,13 @@
             <!-- /.row -->
         </section>
         <!-- /.content -->
+        <script type="text/javascript">
+            function reallyDelete(groupid) {
+                var r = confirm("Ali ste prepričani, da želite izbrisati skupino?");
+                if (r == true) {
+                    window.location.href = "/groups/" + groupid +"/delete";//"{{ action('GroupController@destroy', $group->id) }}";
+                }
+            }
+        </script>
     </div>
 @endsection

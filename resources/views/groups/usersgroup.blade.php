@@ -206,6 +206,9 @@
             var checboxesToReturn = "";
             for (var i = 0; i < roles.length; i++) {
                 var roleExists = false;
+                if(roles[i].id === 1) {
+                    continue;
+                }
                 if(usersToCheck !== null && usersToCheck[userid].roles[roles[i].id] !== undefined &&
                     usersToCheck[userid].roles[roles[i].id] !== null &&
                     parseInt(usersToCheck[userid].roles[roles[i].id])===parseInt(roles[i].id)){
