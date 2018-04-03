@@ -117,7 +117,7 @@
         function reallyDelete(id) {
         var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
         if (r == true) {
-            window.location.href ="/projects/"+id+"/delete" //{{ action('ProjectController@destroy', $project->id) }}";
+            window.location.href ="/projects/"+id+"/delete";
         }
     }
                                                     </script>
