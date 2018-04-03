@@ -58,28 +58,32 @@
 
                             <div class="row">
                                 <div class="col-sm-offset-0 col-sm-4">
-                                    @if($groups->deleted_at == null )
-                                        <a href="{{ action('GroupController@edit', $groups->id) }}"
-                                           class="btn btn-primary btn-block">
-                                            <b>Uredi</b>
-                                        </a>
+                                    @if(Auth::user()->isKM() || Auth::user()->isAdmin())
+                                        @if($groups->deleted_at == null )
+                                            <a href="{{ action('GroupController@edit', $groups->id) }}"
+                                               class="btn btn-primary btn-block">
+                                                <b>Uredi</b>
+                                            </a>
+                                        @endif
                                     @endif
                                 </div>
                                 <div class="col-sm-offset-6 col-sm-2">
-                                    @if($groups->deleted_at == null )
-                                        <a href="javascript:reallyDelete()"
-                                           class="btn btn-danger btn-block">
-                                            <b>Izbriši</b>
-                                        </a>
+                                    @if(Auth::user()->isKM() || Auth::user()->isAdmin())
+                                        @if($groups->deleted_at == null )
+                                            <a href="javascript:reallyDelete()"
+                                               class="btn btn-danger btn-block">
+                                                <b>Izbriši</b>
+                                            </a>
 
-                                        <script>
-                                            function reallyDelete() {
-                                                var r = confirm("Ali ste prepričani, da želite izbrisati skupino?");
-                                                if (r == true) {
-                                                    window.location.href = "{{ action('GroupController@destroy', $groups->id) }}";
+                                            <script>
+                                                function reallyDelete() {
+                                                    var r = confirm("Ali ste prepričani, da želite izbrisati skupino?");
+                                                    if (r == true) {
+                                                        window.location.href = "{{ action('GroupController@destroy', $groups->id) }}";
+                                                    }
                                                 }
-                                            }
-                                        </script>
+                                            </script>
+                                        @endif
                                     @endif
 
                                 </div>
