@@ -31,10 +31,8 @@
                     <li class="{{ $routeGroup == 'users' ? 'active' : '' }}"><a href="/users"><i class="fa fa-user"></i> <span>Uporabniki</span></a>
                 @endif
                 </li>
-                @if(Auth::user()->isKM())
                     <li class="{{ $routeGroup == 'groups' ? 'active' : '' }}"><a href="/groups"><i class="fa fa-users"></i>
                             <span>Skupine</span></a></li>
-                @endif
                 <li class="{{ $routeGroup == 'boards' ? 'active' : '' }}"><a href="/boards"><i class="fa fa-table"></i>
                         <span>Table</span></a></li>
                 <li class="{{ $routeGroup == 'projects' ? 'active' : '' }}"><a href="/projects"><i class="fa fa-briefcase"></i>

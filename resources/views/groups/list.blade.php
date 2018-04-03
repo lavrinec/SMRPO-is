@@ -65,18 +65,22 @@
                                             @endif
                                         </td>
                                         <td>
+                                        @if(Auth::user()->isKM() || Auth::user()->isAdmin())
                                             @if($group->deleted_at == null )
                                                 <a href="{{ action('GroupController@edit', [$group->id]) }}">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                             @endif
+                                        @endif
                                         </td>
                                         <td>
+                                        @if(Auth::user()->isKM() || Auth::user()->isAdmin())
                                             @if($group->deleted_at == null )
                                                 <a href="javascript:reallyDelete({{$group->id}})"><i class="fa fa-remove"></i></a>
 
 
                                             @endif
+                                        @endif
                                         </td>
                                     </tr>
                                 @endforeach

@@ -33,7 +33,7 @@ class GroupController extends Controller
     {
         //
         $groups = Group::withTrashed()->get();
-        $redirect = $this->redirectIfNotAdmin();
+        //$redirect = $this->redirectIfNotAdmin();
         return view('groups.list')->with('groups', $groups);
     }
 
@@ -196,7 +196,7 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $request->flash();
+        //$request->flash();
         $usersgroups = (json_decode($request->usersgroups));
         if ($validator = $this->validateGroup($request, $id)) {
             return redirect()->route('groups.edit', $id)->withErrors($validator);
