@@ -57,7 +57,7 @@ class ProjectController extends Controller
        
         
         $project->save();
-        return redirect()->route('projects.show', $project->id);
+        return redirect()->route('projects.list');  //route('projects.show', $project->id);
     }
 
     /**
@@ -71,6 +71,13 @@ class ProjectController extends Controller
         $project = Project::withTrashed()->where('id', $id)->first();  
         $group = Group::where("id", $project->group_id)->first();      
         return view('projects.show')->with('projects', $project)->with("group", $group);
+    }
+
+    public function activate($id)
+    {
+        $project = Project::withTrashed()->where('id', $id)->first();  
+        $project->update(['deactivated'=>false]);  
+        return redirect()->route('projects.list');
     }
 
     /**
@@ -113,6 +120,7 @@ class ProjectController extends Controller
     }
 
 
+
     public function validateProject(Request $request, $startRequired = true){
 
         $validator = Validator::make($request->all(), [
@@ -141,6 +149,14 @@ class ProjectController extends Controller
         return false;
     }
 
+    private function areThereCards(Project $project){
+        $cards = $project->cards()->count();
+        if($cards > 0){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -148,20 +164,16 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Project $project)
-    {
+    {   //return (string)($this->areThereCards($project));
         if($this->areThereCards($project)){
             $project->update(['deactivated' => true]);
-            return redirect()->back()->withErrors(['msg' => 'Izbris ni mogoč. Najprej izbrišite kartice v projektu!']);
+            return redirect()->back()->withErrors(['msg' => 'Projekt je deaktiviran. Za izbris najprej izbrišite kartice v projektu']);
+        }else{
+            $project->delete();
         }
-        $project->delete();
+        
         return redirect()->route('projects.list');
     }
 
-    private function areThereCards(Project $project){
-        $board = $project->board()->first();
-        if(!empty($board) && $board->cards()->count() > 0){
-            return true;
-        }
-        return false;
-    }
+
 }

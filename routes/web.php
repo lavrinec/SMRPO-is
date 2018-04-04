@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('{id}/show', 'BoardController@show')->name('boards.show');
         Route::get('{id}/edit', 'BoardController@edit')->name('boards.edit');
         Route::get('{id}/delete', 'BoardController@destroy')->name('boards.delete');
-        Route::post('{board}', 'BoardController@update')->name('boards.update');
+        Route::post('{id}', 'BoardController@update')->name('boards.update');
 
     });
 
@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('store', 'ProjectController@store')->name('projects.store');
         Route::get('', 'ProjectController@index')->name('projects.list');
         Route::get('{id}/show', 'ProjectController@show')->name('projects.show');
+        Route::post('{id}/show', 'ProjectController@activate')->name('projects.activate');
         Route::get('{id}/edit', 'ProjectController@edit')->name('projects.edit');
         Route::get('{project}/delete', 'ProjectController@destroy')->name('projects.delete');
         Route::post('{project}', 'ProjectController@update')->name('projects.update');
@@ -66,13 +67,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('{id}/edit', 'GroupController@edit')->name('groups.edit');
         Route::get('{id}/delete', 'GroupController@destroy')->name('groups.delete');
         Route::post('{id}', 'GroupController@update')->name('groups.update');
-        Route::get('getUsersGroupInitialData', 'GroupController@getUsersGroupInitialData')->name('groups.getUsersGroupInitialData');
 
     });
 
     Route::prefix('cards')->group(function () {
         Route::post('store', 'CardController@store')->name('cards.store');
-        Route::get('{id}/edit/{column?}/{board?}', 'CardController@edit')->name('cards.edit');
+        Route::get('{id}/edit/{board?}', 'CardController@edit')->name('cards.edit');
         Route::get('{id}/delete', 'CardController@destroy')->name('cards.delete');
         Route::post('{id}', 'CardController@update')->name('cards.update');
 

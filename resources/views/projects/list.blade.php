@@ -50,6 +50,8 @@
                                     <th>Datum začetka</th>
                                     <th>Datum zaključka</th>
                                     <th>Skupina</th>
+                                    <th>Status</th>
+            
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
                                         <th>Izbriši</th>
@@ -67,8 +69,14 @@
                                         <td>{{ date("d.m.Y", strtotime($project->start_date)) }}</td>
                                         <td>{{ date("d.m.Y", strtotime($project->end_date)) }}</td>
                                         <td>{{ $project->group->group_name }}</td>
+                                        <td>@if($project->deactivated || $project->deactivated!=null)
+                                                Neaktiven
+                                            @else
+                                                Aktiven
+                                            @endif                                        
+                                        </td>
 
-                                        @if(Auth::user()->isKM())
+                                        @if(Auth::user()->isKM()&& !$project->deactivated)
                                             <td>
                                                 @if($project->deleted_at == null )
                                                     <a href="{{ action('ProjectController@edit', [$project->id]) }}">
@@ -95,6 +103,7 @@
                                     <th>Datum začetka</th>
                                     <th>Datum zaključka</th>
                                     <th>Skupina</th>
+                                    <th>Status</th>
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
                                         <th>Izbriši</th>

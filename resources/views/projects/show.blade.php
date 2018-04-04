@@ -78,7 +78,7 @@
 
                             </table>
 
-                         @if(Auth::user()->isKM())
+                         @if(Auth::user()->isKM()&&!$projects->deactivated)
                             <div class="row">
                                 <div class="col-sm-offset-0 col-sm-4">
                                     @if($projects->deleted_at == null )
@@ -108,7 +108,19 @@
                                 </div>
                             </div>
                         @endif
-
+                        @if(Auth::user()->isKM()&&$projects->deactivated)
+                            <div class="row">
+                                <div class="col-sm-offset-0 col-sm-4">
+                                    @if($projects->deleted_at == null )
+                                    <!-- TO DO: klici aktivacijsko funkcijo iz projectControllerja -->
+                                        <a href=""
+                                           class="btn btn-danger btn-block"><b>Aktiviraj</b></a>
+                        
+                                        
+                                    @endif
+                                </div>
+                        </div>
+                        @endif
 
                         </div>
                         <!-- /.box-body -->
