@@ -90,7 +90,7 @@ class BoardController extends Controller
     {
         $board = Board::where('id', $id)->with('projects', 'structuredColumns')->first();
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
-        dd($board);
+        //dd($board);
         $projects = Project::all();
         return view('boards.edit')->with('board', $board)->with('projects', $projects);
     }
