@@ -209,7 +209,7 @@ class GroupController extends Controller
         }
         $data = request()->only(['group_name', 'description']);
         //$users = request()->only('users');
-        //$group = Group::where('id', $id)->update($data);
+        $group = Group::where('id', $id)->update($data);
         $this->updateUsersGroup($id, $usersgroups);
         //$updatedUsersGroupsRoles = (UsersGroup::where("group_id", $id)->with('role')->get());//for future use if we need to show roles cards on show.page
         $request->flash();
