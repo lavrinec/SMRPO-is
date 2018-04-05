@@ -58,7 +58,7 @@
 
                             <div class="row">
                                 <div class="col-sm-offset-0 col-sm-4">
-                                    @if(Auth::user()->isKM() || Auth::user()->isAdmin())
+                                    @if(Auth::user()->isKM())
                                         @if($groups->deleted_at == null )
                                             <a href="{{ action('GroupController@edit', $groups->id) }}"
                                                class="btn btn-primary btn-block">
@@ -68,7 +68,7 @@
                                     @endif
                                 </div>
                                 <div class="col-sm-offset-6 col-sm-2">
-                                    @if(Auth::user()->isKM() || Auth::user()->isAdmin())
+                                    @if(Auth::user()->isKM())
                                         @if($groups->deleted_at == null )
                                             <a href="javascript:reallyDelete()"
                                                class="btn btn-danger btn-block">
