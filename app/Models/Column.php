@@ -44,6 +44,6 @@ class Column extends Model
 
     public function cards()
     {
-        return $this->hasMany('App\Models\Cards', 'column_id');
+        return $this->hasMany('App\Models\Card', 'column_id');
     }
 }

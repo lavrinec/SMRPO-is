@@ -135,6 +135,7 @@ class CardController extends Controller
             $data['order'] = $maxOrder ? $maxOrder->order + 1 : 1;
             //dd($data);
             $card = Card::create($data);
+            checkWipViolation($card, "Dodajanje nove kartice");
         } else {
             $card = Card::where('id', $id)->update($data);
         }

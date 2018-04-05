@@ -146,6 +146,7 @@ class BoardController extends Controller
         Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->update(['board_id' => null]);
 
         $order = 0;
+        if(! isset($request->column) || count($request->column) < 1) return redirect()->back()->withErrors(['msg' => 'Tabla je brez stolpcev!']);
         foreach ($request->column as $column){
             $order++;
             $this->processColumn($board->id, $column, $order);
