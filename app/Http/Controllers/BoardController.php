@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Board;
+use App\Models\Column;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -109,6 +110,8 @@ class BoardController extends Controller
         ]);
     }
 
+    private $tranmitionArray = [];
+
 
     /**
      * Update the specified resource in storage.
@@ -122,7 +125,7 @@ class BoardController extends Controller
         //dd($request, $board);
         //return "test";
         if ($validator = $this->validateBoard($request, $board->id)) {
-            return redirect()->route('boards.edit', $id)->withErrors($validator);
+            return redirect()->route('boards.edit', $board->id)->withErrors($validator);
         }
 
         $boardData = request()->except('_token', 'projects', 'column');
@@ -139,6 +142,13 @@ class BoardController extends Controller
             $project_ids = [];
         Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->update(['board_id' => null]);
 
+        $order = 0;
+        foreach ($request->column as $column){
+            $order++;
+            $this->processColumn($board->id, $column, $order);
+        }
+
+
 
         return redirect()->route('boards.show', $board);
     }
@@ -153,5 +163,58 @@ class BoardController extends Controller
     {
         $board->delete();
         return redirect()->route('boards.list');
+    }
+
+    private function processColumn($boardId, $column, $order, $parent = null)
+    {
+        //$column['parent_id'] = $this->processThroughArray($column, 'parent_id');
+        $column['parent_id'] = $parent;
+        $column['left_id'] = $this->processThroughArray($column, 'left_id');
+        $column['start_border'] = $this->checkTypes($column, 'start_border');
+        $column['end_border'] = $this->checkTypes($column, 'end_border');
+        $column['high_priority'] = $this->checkTypes($column, 'high_priority');
+        $column['acceptance_testing'] = $this->checkTypes($column, 'acceptance_testing');
+        $column['board_id'] = $boardId;
+        $column['order'] = $order;
+        $column['WIP'] = $column['wip'];
+
+        $children = isset($column['childs']) ? $column['childs'] : [];
+
+        unset($column['parent_name'], $column['level'], $column['types'], $column['childs']);
+
+        if( !is_int ($column['id'])){
+            $old = $column['id'];
+            $new = Column::create($column);
+            $this->tranmitionArray[$old] = $new->id;
+
+            $order = 0;
+            foreach ($children as $child){
+                $order++;
+                $this->processColumn($boardId, $child, $order, $new->id);
+            }
+
+        }
+        //dd($column);
+    }
+
+    private function processThroughArray($column, $key){
+        if(!empty($column[$key])){
+            if( !is_int ($column[$key])){
+                if(isset($this->tranmitionArray[$column[$key]]))
+                    return $this->tranmitionArray[$column[$key]];
+                else
+                    dd("Ni nastavljen", $column['parent_id'], $this->tranmitionArray[$column[$key]]);
+            } else
+                return $column[$key];
+        } else
+            return null;
+    }
+
+    private function checkTypes($column, $key)
+    {
+        if(isset($column['types']))
+            return (! (empty($column['types'][$key])));
+        else
+            return false;
     }
 }
