@@ -32,7 +32,7 @@
                                     {{--Vloge--}}
                                 {{--</small>--}}
                             {{--</h4>--}}
-                            <ul class="">
+                            <ul class="" style="list-style: none;">
                                 @foreach($usersGroupRoles as $userGroupRole)
                                     {{--@dd($userGroupRole)--}}
                                     @if($userGroupRole->user_id == $user->id && $userGroupRole->deleted_at == null)
