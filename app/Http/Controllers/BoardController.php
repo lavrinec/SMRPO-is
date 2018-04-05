@@ -87,9 +87,8 @@ class BoardController extends Controller
      */
     public function edit($id)
     {
-        $board = Board::where('id', $id)->first();
+        $board = Board::where('id', $id)->with('projects')->first();
         $projects = Project::all();
-
         return view('boards.edit')->with('board', $board)->with('projects', $projects);
     }
 
