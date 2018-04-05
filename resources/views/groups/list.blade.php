@@ -45,7 +45,7 @@
                                 <tr>
                                     <th>Ime</th>
                                     <th>Opis</th>
-                                    <th>Status</th>
+                                    {{--<th>Status</th>--}}
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
                                         <th>Izbriši</th>
@@ -61,13 +61,13 @@
                                         </td>
                                         <td>{{ $group->description }}</td>
 
-                                        <td>
-                                            @if($group->deleted_at != null )
-                                                Izbrisana
-                                            @else
-                                                Aktivna
-                                            @endif
-                                        </td>
+                                        {{--<td>--}}
+                                            {{--@if($group->deleted_at != null )--}}
+                                                {{--Izbrisana--}}
+                                            {{--@else--}}
+                                                {{--Aktivna--}}
+                                            {{--@endif--}}
+                                        {{--</td>--}}
                                         @if(Auth::user()->isKM())
                                             <td>
                                                 @if($group->deleted_at == null )
@@ -92,7 +92,7 @@
                                 <tr>
                                     <th>Ime</th>
                                     <th>Opis</th>
-                                    <th>Status</th>
+                                    {{--<th>Status</th>--}}
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
                                         <th>Izbriši</th>

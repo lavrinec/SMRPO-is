@@ -1,23 +1,10 @@
 <!-- Profile Image -->
 <div class="box box-primary">
     <div class="box-body box-profile">
-        <h3 class="profile-username text-center">{{ $groups->group_name }}</h3>
+        {{--<h3 class="profile-username text-center">{{ $groups->group_name }}</h3>--}}
 
-        <p class="text-muted text-center">{{ $groups->description }}</p>
+        {{--<p class="text-muted text-center">{{ $groups->description }}</p>--}}
 
-        {{--@if(isset($groups) && isset($groups->users) && $groups->users->first() != null)--}}
-            {{--<ul class="list-group list-group-unbordered">--}}
-                {{--@foreach($groups->users as $user)--}}
-                    {{--@dd($role['group_id'])--}}
-                    {{--<li class="list-group-item">--}}
-                        {{--{{ $user->first_name }} {{ $user->last_name }}--}}
-                    {{--</li>--}}
-                {{--@endforeach--}}
-
-
-            {{--</ul>--}}
-        {{--@else--}}
-        <hr>
         <h3 class="profile-username text-center">Uporabniki v skupini</h3>
         @if(isset($usersGroup) && $usersGroup->first() != null)
             <ul class="list-group list-group-unbordered list-unstyled">
