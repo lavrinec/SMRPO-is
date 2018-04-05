@@ -46,8 +46,10 @@
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Status</th>
-                                    <th>Uredi</th>
-                                    <th>Izbriši</th>
+                                    @if(Auth::user()->isKM())
+                                        <th>Uredi</th>
+                                        <th>Izbriši</th>
+                                    @endif
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -66,24 +68,22 @@
                                                 Aktivna
                                             @endif
                                         </td>
-                                        <td>
                                         @if(Auth::user()->isKM())
-                                            @if($group->deleted_at == null )
-                                                <a href="{{ action('GroupController@edit', [$group->id]) }}">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                            @endif
-                                        @endif
-                                        </td>
-                                        <td>
-                                        @if(Auth::user()->isKM())
-                                            @if($group->deleted_at == null )
-                                                <a href="javascript:reallyDelete({{$group->id}})"><i class="fa fa-remove"></i></a>
+                                            <td>
+                                                @if($group->deleted_at == null )
+                                                    <a href="{{ action('GroupController@edit', [$group->id]) }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($group->deleted_at == null )
+                                                    <a href="javascript:reallyDelete({{$group->id}})"><i class="fa fa-remove"></i></a>
 
 
-                                            @endif
+                                                @endif
+                                            </td>
                                         @endif
-                                        </td>
                                     </tr>
                                 @endforeach
 
@@ -93,8 +93,10 @@
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Status</th>
-                                    <th>Uredi</th>
-                                    <th>Izbriši</th>
+                                    @if(Auth::user()->isKM())
+                                        <th>Uredi</th>
+                                        <th>Izbriši</th>
+                                    @endif
                                 </tr>
                                 </tfoot>
                             </table>

@@ -18,15 +18,14 @@
             <div class="row">
 
                 {{-- left narrow column --}}
-                <div class="col-md-3">
-                    @include('groups.detail')
-
-                    {{--here my be included some other part --}}
-                </div>
+                {{--<div class="col-md-3">--}}
+                    {{--@include('groups.detail')--}}
+                    {{----}}
+                {{--</div>--}}
                 <!-- /.col -->
 
                 {{-- right wide column --}}
-                <div class="col-md-9">
+                <div class="col-md-12">
 
                     {{-- div for user data form --}}
                     <div class="box">

@@ -124,9 +124,20 @@ class GroupController extends Controller
         $groups = Group::withTrashed()->where('id', $id)->first();
 //        $users = Group::find(1)->users()->get();
         $usersGroup =UsersGroup::join('users', "users.id","=", 'users_groups.user_id')->where('users_groups.group_id', $id)->get();
+        $usersGroupRoles =UsersGroup::join('users', "users.id","=", 'users_groups.user_id')
+            ->join("users_groups_roles", "users_groups_roles.users_group_id", "=", "users_groups.id")
+            ->join("roles", "roles.id", "=", "users_groups_roles.role_id")
+            ->where('users_groups.group_id', $id)
+            ->where('users_groups_roles.deleted_at', "=", null)
+            ->get();
+//        $usersGroupRoles =UsersGroupsRoles::join('users_groups', "users_groups.id","=", 'users_groups_roles.users_group_id')
+//            ->join("users_groups_roles", "users_groups_roles.users_group_id", "=", "users_groups.id")
+//            ->where('users_groups.group_id', $id)
+//            ->get();
         return view('groups.show')
             ->with('groups', $groups)
-            ->with('usersGroup', $usersGroup);
+            ->with('usersGroup', $usersGroup)
+            ->with('usersGroupRoles', $usersGroupRoles);
 
     }
 
