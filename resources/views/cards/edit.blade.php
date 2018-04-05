@@ -31,7 +31,7 @@
                 </div>
                 <div class="form-group">
                     <label for="user_id" class="col-form-label">Projekt:</label>
-                    <select class="form-control select2" id="project_id" name="project_id">
+                    <select class="form-control select2" id="project_id" name="project_id" required>
                         @foreach($projects as $project)
                             <option value="{{$project->id}}" {{ isset($card) && $project->id == $card->project_id ? 'selected' : ''}} {{ $project->deactivated ? 'disabled' : ''}}>{{$project->board_name}}</option>
                         @endforeach
