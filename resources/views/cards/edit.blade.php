@@ -3,7 +3,7 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Kartica
             @if(isset($card))
-                <small class="pull-right" style="margin-top: 2px;">ID: {{ $card->id }}, Št. v stolpcu: {{ $card->order }}&nbsp;&nbsp;&nbsp;</small>
+                <small class="pull-right" style="margin-top: 2px;">ID: <b>{{ $card->id }}</b>, Stolpec: <b>{{ $column->column_name }}</b>, Zaporedna št.: <b>{{ $card->order }}</b> &nbsp;&nbsp;</small>
             @endif
         </h4>
     </div>

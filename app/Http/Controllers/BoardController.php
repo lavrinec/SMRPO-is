@@ -59,7 +59,7 @@ class BoardController extends Controller
      */
     public function show($id)
     {
-        $board = Board::withTrashed()->where('id', $id)->first();
+        $board = Board::withTrashed()->with('cards')->where('id', $id)->first();
 
         return view('boards.show')->with('board', $board);
     }
