@@ -88,7 +88,9 @@ class BoardController extends Controller
      */
     public function edit($id)
     {
-        $board = Board::where('id', $id)->with('projects')->first();
+        $board = Board::where('id', $id)->with('projects', 'structuredColumns')->first();
+        //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
+        dd($board);
         $projects = Project::all();
         return view('boards.edit')->with('board', $board)->with('projects', $projects);
     }
@@ -111,6 +113,7 @@ class BoardController extends Controller
     }
 
     private $tranmitionArray = [];
+    private $allArray = [];
 
 
     /**
@@ -148,7 +151,7 @@ class BoardController extends Controller
             $this->processColumn($board->id, $column, $order);
         }
 
-
+        Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->delete();
 
         return redirect()->route('boards.show', $board);
     }
@@ -185,14 +188,20 @@ class BoardController extends Controller
         if( !is_int ($column['id'])){
             $old = $column['id'];
             $new = Column::create($column);
-            $this->tranmitionArray[$old] = $new->id;
+            $newId = $new->id;
+            $this->tranmitionArray[$old] = $newId;
 
-            $order = 0;
-            foreach ($children as $child){
-                $order++;
-                $this->processColumn($boardId, $child, $order, $new->id);
-            }
+        } else {
+            $newId = $column['id'];
+            Column::where('id', $newId)->update($column);
+        }
 
+        $this->allArray[] = $newId;
+
+        $order = 0;
+        foreach ($children as $child){
+            $order++;
+            $this->processColumn($boardId, $child, $order, $newId);
         }
         //dd($column);
     }
