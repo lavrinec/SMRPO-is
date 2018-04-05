@@ -10,7 +10,7 @@ class Card extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'card_name', 'description', 'color', 'deadline', 'estimation', 'column_id', 'user_id', 'meta'
+        'card_name', 'description', 'order', 'color', 'deadline', 'estimation', 'column_id', 'user_id', 'meta'
     ];
 
     public function column()
@@ -26,5 +26,10 @@ class Card extends Model
     public function board()
     {
         return $this->column()->first()->board();
+    }
+
+    public function moves()
+    {
+        return $this->hasMany('App\Models\Move', 'card_id');
     }
 }

@@ -47,7 +47,8 @@
 
         $('.openCard').on('click',function(e){
             var target = $(e.target), cardId = target.data('cardId'), boardId = target.data('boardId'), collumnId = target.data('collumnId');
-            var param = collumnId ? ( '/' + collumnId + (boardId ? ( '/' + boardId ) : '')) : '';
+            var param = boardId ? ( '/' + boardId + (collumnId ? ( '/' + collumnId ) : '')) : '';
+            console.log(cardId, boardId, collumnId, param);
             $('#cardModal .modal-content').load('/cards/' + cardId + '/edit' + param ,function(){
                 $('#cardModal').modal({show:true});
                 $('#updateCard').on('submit',function(e){
