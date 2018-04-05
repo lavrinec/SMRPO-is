@@ -21,11 +21,11 @@ class GroupController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    private function redirectIfNotAdmin($id = null){
+    private function redirectIfNotKM($id = null){
         $user = Auth::user();
         if(!$user->isKM() && $user->id != $id) {
             //dd('tukaj');
-            return redirect()->route('dashboard.index');
+            return redirect()->route('groups.list');
         } else return null;
     }
 
@@ -45,6 +45,9 @@ class GroupController extends Controller
     public function create()
     {
         //
+
+        $redirect = $this->redirectIfNotKM();
+        if(isset($redirect)) return $redirect;
         $usersgroup = UsersGroup::all();
         $users = User::all();
         $roles = Role::all();
@@ -72,6 +75,8 @@ class GroupController extends Controller
         /*
             This is where we put code to insert data of groups...
         */
+        $redirect = $this->redirectIfNotKM();
+        if(isset($redirect)) return $redirect;
         $users = request()->only('users');
         $data = request()->only(['group_name', 'description']);
         $usersgroups = (json_decode($request->usersgroups));
@@ -149,6 +154,8 @@ class GroupController extends Controller
          *          }
          * }
          * */
+        $redirect = $this->redirectIfNotKM();
+        if(isset($redirect)) return $redirect;
         $groups = Group::where('id', $id)->first();
         $users = User::all();
         $testGroups = (UsersGroup::where("group_id", $id)->with('role')->get());
@@ -197,6 +204,8 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $redirect = $this->redirectIfNotKM();
+        if(isset($redirect)) return $redirect;
         $usersgroups = (json_decode($request->usersgroups));
         if ($validator = $this->validateGroup($request, $id)) {
             return redirect()->route('groups.edit', $id)->withErrors($validator);
@@ -225,6 +234,8 @@ class GroupController extends Controller
     public function destroy($id)
     {
         //
+        $redirect = $this->redirectIfNotKM();
+        if(isset($redirect)) return $redirect;
         $group = Group::where('id', $id);
         if ($group->first() != null) {
             $group->delete();
@@ -386,7 +397,7 @@ class GroupController extends Controller
          * If there are no user groups we get
          * Collection { #items : [] }
          * */
-
+        $redirect = $this->redirectIfNotKM();
         $usersGroupsRolesPerGroup = UsersGroup::where("group_id", $group_id)->with('usersGroupsRoles');
 
         if (property_exists($users_data, "users")) {
@@ -455,6 +466,7 @@ class GroupController extends Controller
          * Parameters are actually stored in $request --- retireve them by using following notatiton:
          * $request->_____name_of_the_parameter_set_in_dataAttribute_in_ajax_call_____
          * */
+
         $group_id = $request->group_id;
         $users = User::all();
         $roles = Role::all();
