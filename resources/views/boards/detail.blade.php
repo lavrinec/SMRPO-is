@@ -7,11 +7,16 @@
 
         <h4>Projekti na tabli</h4>
         <ul class="list-group list-group-unbordered">
-            {{--@foreach($users->usersRoles as $role)--}}
+        @if($board->projects->first()!=null)
+            @foreach($board->projects as $project)
                 <li class="list-group-item">
-                    Projekti na tabli TODO
+                    {{$project->board_name}}
                 </li>
-            {{--@endforeach--}}
+            @endforeach
+        @else
+            {{"Tej tabli še ni dodeljen projekt"}}
+        @endif
+    
 
 
         </ul>
