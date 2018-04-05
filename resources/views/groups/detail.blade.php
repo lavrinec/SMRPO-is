@@ -6,9 +6,21 @@
         <p class="text-muted text-center">{{ $groups->description }}</p>
 
         <h4>Uporabniki v skupini</h4>
-        @if(isset($groups) && isset($groups->users) && $groups->users->first() != null)
+        {{--@if(isset($groups) && isset($groups->users) && $groups->users->first() != null)--}}
+            {{--<ul class="list-group list-group-unbordered">--}}
+                {{--@foreach($groups->users as $user)--}}
+                    {{--@dd($role['group_id'])--}}
+                    {{--<li class="list-group-item">--}}
+                        {{--{{ $user->first_name }} {{ $user->last_name }}--}}
+                    {{--</li>--}}
+                {{--@endforeach--}}
+
+
+            {{--</ul>--}}
+        {{--@else--}}
+        @if(isset($usersGroup) && $usersGroup->first() != null)
             <ul class="list-group list-group-unbordered">
-                @foreach($groups->users as $user)
+                @foreach($usersGroup as $user)
                     {{--@dd($role['group_id'])--}}
                     <li class="list-group-item">
                         {{ $user->first_name }} {{ $user->last_name }}
