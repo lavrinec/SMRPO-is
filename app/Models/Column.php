@@ -24,7 +24,12 @@ class Column extends Model
 
     public function children()
     {
-        return $this->hasMany('App\Models\Column', 'parent_id');
+        return $this->hasMany('App\Models\Column', 'parent_id')->orderBy('order');
+    }
+
+    public function allChildren()
+    {
+        return $this->children()->with('allChildren');
     }
 
     public function leftChild()
