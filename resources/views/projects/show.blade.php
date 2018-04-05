@@ -113,8 +113,10 @@
                                 <div class="col-sm-offset-0 col-sm-4">
                                     @if($projects->deleted_at == null )
                                     <!-- TO DO: klici aktivacijsko funkcijo iz projectControllerja -->
-                                        <a href=""
-                                           class="btn btn-danger btn-block"><b>Aktiviraj</b></a>
+                                    <button id="actovate" type="button" class="btn btn-success"
+                                                onclick="activate({{$projects->id}})">
+                                            Aktiviraj
+                                        </button>
                         
                                         
                                     @endif
@@ -134,5 +136,22 @@
         </section>
         <!-- /.content -->
     </div>
+<script>
+     function activate(id) {
+        $.ajax({
+                type: 'POST',
+                url: "{{ action('ProjectController@activate',$projects->id) }}",
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function () {
+                    console.log("uspesno potegnien id" + id);
+                    document.location.href = "/projects";
+                }
+
+            });
+        //console.log(id);
+        }
+        </script>
     <!-- /.content-wrapper -->
 @endsection

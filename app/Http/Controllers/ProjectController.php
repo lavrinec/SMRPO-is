@@ -77,7 +77,6 @@ class ProjectController extends Controller
     {
         $project = Project::withTrashed()->where('id', $id)->first();  
         $project->update(['deactivated'=>false]);  
-        return redirect()->route('projects.list');
     }
 
     /**
