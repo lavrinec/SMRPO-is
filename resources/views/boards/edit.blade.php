@@ -41,7 +41,9 @@
                                         <select class="form-control" name="projects[]" id="usersgroupsselect" multiple="multiple">
         
                                         @foreach($projects as $project)
-                                            <option value="{{$project->id}}">{{$project->board_name}}</option>
+                                            <option value="{{ $project->id }}"
+                                                    {{ $board->projects->contains('id', $project->id) ? 'selected' : '' }}
+                                                    {{ $project->deactivated ? 'disabled' : '' }}>{{ $project->board_name }}</option>
                                         @endforeach
                                         </select>
                                             </div>
