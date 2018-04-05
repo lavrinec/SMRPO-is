@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('{id}/show', 'BoardController@show')->name('boards.show');
         Route::get('{id}/edit', 'BoardController@edit')->name('boards.edit');
         Route::get('{id}/delete', 'BoardController@destroy')->name('boards.delete');
-        Route::post('{id}', 'BoardController@update')->name('boards.update');
+        Route::post('{board}', 'BoardController@update')->name('boards.update');
 
     });
 

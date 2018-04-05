@@ -80,7 +80,8 @@ class CardController extends Controller
         } else if(! isset($column)) {
             $data['column'] = $data['board']->columns();
             if(Auth::user()->isPO()){
-                $data['column'] = $data['column']->where('order', '<', 2)->where('left_id', null)->first();
+                $column = $data['column']->where('parent_id', null)->where('left_id', null)->with('leftChild')->orderBy('order')->first();
+                $data['column'] = $this->getLowestLeftColumn($column);
                 if(! isset($data['column'])){
                     return view('cards.error')->with(['error' => 'Tabela je brez stolpcev! Najprej dodajte stolpce!']);
                 }
@@ -150,5 +151,15 @@ class CardController extends Controller
     {
         $card->delete();
         return redirect()->route('boards.list');
+    }
+
+    private function getLowestLeftColumn($column)
+    {
+        if(! $column || ! $column->leftChild) return $column;
+        $column = $column->leftChild()->with('leftChild')->first();
+        if(! $column || ! $column->leftChild)
+            return $column;
+        else
+            return $this->getLowestLeftColumn($column);
     }
 }

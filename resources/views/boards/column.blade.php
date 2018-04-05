@@ -2,7 +2,12 @@
     <div class="box">
         <pre style="width: 100%; text-align: center; line-height: 0.2em;">začasni id: {{ substr($column_id, 0, 6) }}
         </pre>
+
         <input type="hidden" id="{{ $column_id }}_parent_id" name="column[{{ $column_id }}][parent_id]" value="{{ $parent_id }}">
+
+        <input type="hidden" id="{{ $column_id }}_parent_name" name="column[{{ $column_id }}][parent_name]" value="{{ $parent_name }}[{{ $column_id }}]">
+
+
         <input type="hidden" id="{{ $column_id }}_left_id" name="column[{{ $column_id }}][left_id]" value="{{ $left_id }}">
 
         {{--<input type="hidden" id="{{ $column_id }}_column_id" name="{{ $column_id }}_column_id" value="{{ $column_id }}">--}}
