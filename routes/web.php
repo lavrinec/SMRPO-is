@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('{id}/edit', 'GroupController@edit')->name('groups.edit');
         Route::get('{id}/delete', 'GroupController@destroy')->name('groups.delete');
         Route::post('{id}', 'GroupController@update')->name('groups.update');
+        Route::get('getUsersGroupInitialData', 'GroupController@getUsersGroupInitialData')->name('groups.getUsersGroupInitialData');
 
     });
 

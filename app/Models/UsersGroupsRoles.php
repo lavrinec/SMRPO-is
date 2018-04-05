@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UsersGroupsRoles extends Model
 {
-    //use SoftDeletes;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

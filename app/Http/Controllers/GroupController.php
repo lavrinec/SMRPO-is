@@ -49,9 +49,14 @@ class GroupController extends Controller
         $users = User::all();
         $roles = Role::all();
         $currentUsersGroupsRoles = array();
+        //$usersAndRoles = User::join("users_roles", "users.id", "=", "users_roles.user_id")->join("roles","roles.id", "=", "users_roles.role_id")->get();
         //$users = collect();
         //$role = $user->usersRoles;
-        return view('groups.create')->with('usersgroup', $usersgroup)->with('users', $users)->with('roles', $roles)->with('currentUsersGroupsRoles', $currentUsersGroupsRoles);
+        return view('groups.create')
+            ->with('usersgroup', $usersgroup)
+            ->with('users', $users)
+            ->with('roles', $roles)
+            ->with('currentUsersGroupsRoles', $currentUsersGroupsRoles);
     }
 
     /**
@@ -113,10 +118,14 @@ class GroupController extends Controller
 
         $groups = Group::withTrashed()->where('id', $id)->first();
         $users = Group::find(1)->users()->get();
+        $usersGroup =UsersGroup::join('users', "users.id","=", 'users_groups.user_id')->where('users_groups.group_id', $id)->get();
         /*return view('groups.show', [
             "groups"=>$groups, "users"=>$users
         ]);*/
-        return view('groups.show')->with('groups', $groups)->with('users', $users);
+        return view('groups.show')
+            ->with('groups', $groups)
+            ->with('users', $users)
+            ->with('usersGroup', $usersGroup);
 
     }
 
@@ -151,14 +160,19 @@ class GroupController extends Controller
         $testGroups = (UsersGroup::where("group_id", $id)->with('role')->get());
         $theArray = array();
         $objectToSendInJson = $this-> generateUsersGroupsRolesStructureForClient($testGroups, $id); //$objectToSend;//json_encode($objectToSend);
-
+        $usersGroup =UsersGroup::join('users', "users.id","=", 'users_groups.user_id')->where('users_groups.group_id', $id)->get();
 
 
 
 
 
         //$this->updateUsersGroup($id, json_decode(json_encode($objectToSend)));
-        return view('groups.edit')->with('groups', $groups)->with('users', $users)->with('currentUsersGroupsRoles', $objectToSendInJson)->with('roles', $roles);
+        return view('groups.edit')
+            ->with('groups', $groups)
+            ->with('users', $users)
+            ->with('currentUsersGroupsRoles', $objectToSendInJson)
+            ->with('roles', $roles)
+            ->with('usersGroup', $usersGroup);
     }
 
     private function generateUsersGroupsRolesStructureForClient ($users_group, $group_id){
@@ -459,12 +473,14 @@ class GroupController extends Controller
         $users = User::all();
         $roles = Role::all();
         $usersGroups = UsersGroup::where('group_id', $group_id)->get();
+        $usersAndRoles = User::join("users_roles", "users.id", "=", "users_roles.user_id")->join("roles","roles.id", "=", "users_roles.role_id")->get();
 
         return array(
             'users' => $users,
             'usersGroups' => $usersGroups,
             'roles' => $roles,
-            'currentUsersGroups' => array()
+            'currentUsersGroups' => array(),
+            'usersAndRoles' => $usersAndRoles
         );
 
     }

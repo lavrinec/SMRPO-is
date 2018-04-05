@@ -11,7 +11,8 @@
             <script type="text/javascript">
                 var allUsers = [],
                     allRoles = [],
-                    allUsersGroups = [];
+                    allUsersGroups = [],
+                    usersAndRoles = [];
                 (function () {
                     console.log('to je input');
                     console.log($('#usersgroups-input').val());
@@ -36,6 +37,7 @@
                             allRoles = data.roles;
                             allUsers = data.users;
                             allUsersGroups = data.usersGroups;
+                            usersAndRoles = data.usersAndRoles;
                             var currentUsersGroupsRoles = @json($currentUsersGroupsRoles);
                             var oldDataToSend = $('#usersgroups-input').val();
                             if(oldDataToSend !== null && oldDataToSend !== undefined && oldDataToSend !== ''){
@@ -192,29 +194,45 @@
             var dynamicCard = "" +
                 "<div id='user-" + userid + "-roles-card' class='col-sm-3'>" +
                 "<div class='box box-primary'>" +
-                "<h2 class='profile-username text-center'>" + username + "</h2>" + createRoles(userid, allRoles) +
+                "<h2 class='profile-username text-center'>" + username + "</h2>" + createRoles(userid, allRoles, usersAndRoles) +
                 "</div>" +
                 "</div>";
             return dynamicCard;
         }
 
-        function createRoles(userid, roles) {
+        function createRoles(userid, roles, usersAndRoles) {
             var usersToCheck = null;
             if(dataToSend.users !== undefined && dataToSend.users !== null){
                 usersToCheck = dataToSend.users;
             }
             var checboxesToReturn = "";
-            for (var i = 0; i < roles.length; i++) {
+            // for (var i = 0; i < roles.length; i++) {
+            //     var roleExists = false;
+            //     if(roles[i].id === 1) {
+            //         continue;
+            //     }
+            //     if(usersToCheck !== null && usersToCheck[userid].roles[roles[i].id] !== undefined &&
+            //         usersToCheck[userid].roles[roles[i].id] !== null &&
+            //         parseInt(usersToCheck[userid].roles[roles[i].id])===parseInt(roles[i].id)){
+            //         roleExists=true;
+            //     }
+            //     checboxesToReturn += "<div class='col-sm-12'><label class='col-sm-8' for='user-" + userid + "-role-checkbox'>" + roles[i].role_name + "</label> <div id='user-" + userid + "-role-checkbox' class='col-sm-4'> <input "+(roleExists === true ? "checked":"")+" onchange='roleCheckboxChange(" + userid + "," + roles[i].id + ")' type='checkbox' /></div></div>"
+            // }
+            for (var i = 0; i < usersAndRoles.length; i++) {
                 var roleExists = false;
-                if(roles[i].id === 1) {
+                if(parseInt(usersAndRoles[i].user_id) === parseInt(userid)) {
+                    if (usersAndRoles[i].role_id === 1) {
+                        continue;
+                    }
+                    if (usersToCheck !== null && usersToCheck[userid].roles[usersAndRoles[i].role_id] !== undefined &&
+                        usersToCheck[userid].roles[usersAndRoles[i].role_id] !== null &&
+                        parseInt(usersToCheck[userid].roles[usersAndRoles[i].role_id]) === parseInt(usersAndRoles[i].role_id)) {
+                        roleExists = true;
+                    }
+                    checboxesToReturn += "<div class='col-sm-12'><label class='col-sm-8' for='user-" + userid + "-role-checkbox'>" + usersAndRoles[i].role_name + "</label> <div id='user-" + userid + "-role-checkbox' class='col-sm-4'> <input " + (roleExists === true ? "checked" : "") + " onchange='roleCheckboxChange(" + userid + "," + usersAndRoles[i].role_id + ")' type='checkbox' /></div></div>"
+                }else{
                     continue;
                 }
-                if(usersToCheck !== null && usersToCheck[userid].roles[roles[i].id] !== undefined &&
-                    usersToCheck[userid].roles[roles[i].id] !== null &&
-                    parseInt(usersToCheck[userid].roles[roles[i].id])===parseInt(roles[i].id)){
-                    roleExists=true;
-                }
-                checboxesToReturn += "<div class='col-sm-12'><label class='col-sm-8' for='user-" + userid + "-role-checkbox'>" + roles[i].role_name + "</label> <div id='user-" + userid + "-role-checkbox' class='col-sm-4'> <input "+(roleExists === true ? "checked":"")+" onchange='roleCheckboxChange(" + userid + "," + roles[i].id + ")' type='checkbox' /></div></div>"
             }
             return checboxesToReturn;
         }
