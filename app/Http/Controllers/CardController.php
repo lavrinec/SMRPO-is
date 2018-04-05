@@ -126,7 +126,8 @@ class CardController extends Controller
         if(!isset($data['user_id']) || $data['user_id'] == 0) $data['user_id'] = null;
         if(!isset($data['deadline']) || $data['deadline'] == '') $data['deadline'] = null;
         if(!isset($data['estimation']) || $data['estimation'] == '') $data['estimation'] = 0;
-        $data['is_critical'] = (! (!isset($data['is_critical']) || $data['is_critical'] == '' || $data['is_critical'] == 'off'));
+        if(Auth::user()->isPo())
+            $data['is_critical'] = (! (!isset($data['is_critical']) || $data['is_critical'] == '' || $data['is_critical'] == 'off'));
         $data['is_rejected'] = (! (!isset($data['is_rejected']) || $data['is_rejected'] == '' || $data['is_rejected'] == 'off'));
         if($id == 0){
             $maxOrder = Card::where('column_id', $data['column_id'])->orderBy('order','desc')->first();

@@ -59,7 +59,7 @@
                     <input type="number" class="form-control" id="estimation" name="estimation"  value="{{ isset($card) ? $card->estimation : '' }}">
                 </div>
                 <div class="checkbox">
-                    <label><input type="checkbox" name="is_critical" {{ isset($card) && $card->is_critical ? 'checked' : '' }}>Kritičen</label>
+                    <label><input type="checkbox" name="is_critical" {{ isset($card) && $card->is_critical ? 'checked' : '' }} {{ Auth::user()->isPo() ? '' : 'disabled' }}>Kritičen</label>
                 </div>
                 <div class="checkbox">
                     <label><input type="checkbox" name="is_rejected" {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
@@ -67,7 +67,7 @@
                 <!--<input type="submit" style="display: none;">-->
             </div>
             @if(isset($card))
-                <div id="moves" class="tab-pane fade in active">
+                <div id="moves" class="tab-pane fade">
                     @if(count($moves) > 0)
                         <table class="table table-bordered">
                             <thead>
@@ -91,7 +91,7 @@
                         Ni premikov!
                     @endif
                 </div>
-                <div id="wip" class="tab-pane fade in active">
+                <div id="wip" class="tab-pane fade">
                     @if(count($WipViolations) > 0)
                         <table class="table table-bordered">
                             <thead>
