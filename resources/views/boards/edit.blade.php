@@ -30,9 +30,36 @@
                                   action="{{ action('BoardController@update', $board->id) }}">
 
                                 @csrf
-
+                               
+                               
+                               
                                 <div class="form-group">
+                                
+                                        <div class="col-sm-3">  
+                                        <label for="test" class="col-sm-2 control-label">Projekti</label>
+                                        <div class="col-sm-10">
+                                        <select class="form-control" name="projects[]" id="usersgroupsselect" multiple="multiple">
+        
+                                        @foreach($projects as $project)
+                                            <option value="{{$project->id}}">{{$project->board_name}}</option>
+                                        @endforeach
+                                        </select>
+                                            </div>
+                                    </div>
 
+                                     
+
+                                    <div class="col-sm-3">
+                                        <label for="board_name" class="col-sm-2 control-label">Ime</label>
+
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="test" name="board_name"
+                                                   value="{{ $board->board_name }}" required>
+                                            @if ($errors->has('board_name'))
+                                                <span class="help-block">{{ $errors->first('board_name') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
 
                                     <div class="col-sm-3">
                                         <label for="board_name" class="col-sm-2 control-label">Ime</label>

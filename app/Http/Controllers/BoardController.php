@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Board;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -87,8 +88,9 @@ class BoardController extends Controller
     public function edit($id)
     {
         $board = Board::where('id', $id)->first();
+        $projects = Project::all();
 
-        return view('boards.edit')->with('board', $board);
+        return view('boards.edit')->with('board', $board)->with('projects', $projects);
     }
 
     public function addColumn(Request $request)
@@ -116,14 +118,23 @@ class BoardController extends Controller
      */
     public function update(Request $request, Board $board)
     {
-        dd($request, $board);
-
+        //dd($request, $board);
+        return "test";
         $id = $board->id;
         if ($validator = $this->validateBoard($request, $id)) {
             return redirect()->route('boards.edit', $id)->withErrors($validator);
         }
-        $data = request()->except('_token');
+        $data = request()->except('_token');        
         $board->update($data);
+        
+        //add project data - ni potestirano, update board ni se narejen
+        $project_ids = $request->input('projects');
+        foreach($project_ids as $id){
+            $project = Project::where('id', $id)->first();
+            $project->update(['board_id'=>$board->id]);
+        }
+        
+
         return redirect()->route('boards.show', $board);
     }
 

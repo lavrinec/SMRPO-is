@@ -15,7 +15,7 @@ class Project extends Model
      * @var array
      */
     protected $fillable = [
-        'board_name', 'description', 'buyer_name', 'start_date','end_date', 'lane_number', "group_id", "deactivated",
+        'board_name', 'description', 'buyer_name', 'start_date','end_date', 'lane_number', "group_id", "deactivated", "board_id",
     ];
 
     
