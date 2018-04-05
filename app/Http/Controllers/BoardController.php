@@ -97,12 +97,14 @@ class BoardController extends Controller
     {
         $column_id = "aa" . str_random(20);
         $parent_id = $request->parent_id;
+        $parent_name = $request->parent_name;
         $left_id = $request->left_id;
         $level = $request->level;
 
         return view('boards.column')->with([
             'column_id' => $column_id,
             'parent_id' => $parent_id,
+            'parent_name' => $parent_name,
             'left_id' => $left_id,
             'level' => $level,
         ]);

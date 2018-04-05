@@ -303,6 +303,7 @@
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "parent_id": null,
+                    "parent_name": null,
                     'level': 0
                 },
                 success: function (data) {
@@ -325,6 +326,7 @@
                 data: {
                     "_token": "{{ csrf_token() }}",
                     'parent_id': $("#"+column.id+"_parent_id")[0].value,
+                    'parent_name': $("#"+column.id+"_parent_name")[0].value.replace('[' + column.id + ']',''),
                     'level': parseInt($("#"+column.id+"_level")[0].value)
                 },
                 success: function (data) {
@@ -342,6 +344,7 @@
                 data: {
                     "_token": "{{ csrf_token() }}",
                     'parent_id': $("#"+column.id+"_parent_id")[0].value,
+                    'parent_name': $("#"+column.id+"_parent_name")[0].value.replace('[' + column.id + ']',''),
                     'level': parseInt($("#"+column.id+"_level")[0].value)
                 },
                 success: function (data) {
@@ -359,6 +362,7 @@
                 data: {
                     "_token": "{{ csrf_token() }}",
                     'parent_id': column.id,
+                    'parent_name': $("#"+column.id+"_parent_name")[0].value + '[childs]',
                     'level': parseInt($("#"+column.id+"_level")[0].value)+1
                 },
                 success: function (data) {
