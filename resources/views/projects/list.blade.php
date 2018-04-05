@@ -76,16 +76,16 @@
                                             @endif                                        
                                         </td>
 
-                                        @if(Auth::user()->isKM()&& !$project->deactivated)
+                                        @if(Auth::user()->isKM())
                                             <td>
-                                                @if($project->deleted_at == null )
+                                                @if($project->deleted_at == null && !$project->deactivated)
                                                     <a href="{{ action('ProjectController@edit', [$project->id]) }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($project->deleted_at == null )
+                                                @if($project->deleted_at == null && !$project->deactivated )
                                                     <a href="javascript:reallyDelete({{$project->id}})"><i class="fa fa-remove"></i></a>
 
                                                     
