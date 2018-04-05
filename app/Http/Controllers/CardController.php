@@ -80,7 +80,7 @@ class CardController extends Controller
         } else if(! isset($column)) {
             $data['column'] = $data['board']->columns();
             if(Auth::user()->isPO()){
-                $data['column'] = $data['column']->where('order', '<', 2)->where('left_id', null)->first();
+                $data['column'] = $data['column']->where('order', '<', 2)->where('left_id', null)->orderBy('order')->first();
                 if(! isset($data['column'])){
                     return view('cards.error')->with(['error' => 'Tabela je brez stolpcev! Najprej dodajte stolpce!']);
                 }

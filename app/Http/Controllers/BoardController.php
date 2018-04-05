@@ -119,21 +119,25 @@ class BoardController extends Controller
     public function update(Request $request, Board $board)
     {
         //dd($request, $board);
-        return "test";
-        $id = $board->id;
-        if ($validator = $this->validateBoard($request, $id)) {
+        //return "test";
+        if ($validator = $this->validateBoard($request, $board->id)) {
             return redirect()->route('boards.edit', $id)->withErrors($validator);
         }
-        $data = request()->except('_token');        
-        $board->update($data);
-        
+
+        $boardData = request()->except('_token', 'projects', 'column');
+        $board->update($boardData);
+
         //add project data - ni potestirano, update board ni se narejen
         $project_ids = $request->input('projects');
-        foreach($project_ids as $id){
-            $project = Project::where('id', $id)->first();
-            $project->update(['board_id'=>$board->id]);
-        }
-        
+        if(isset($project_ids) && count($project_ids) > 0) {
+            Project::where(function ($query) use ($board) {
+                $query->where('board_id', '!=', $board->id)
+                    ->orWhereNull('board_id');
+            })->whereIn('id', $project_ids)->update(['board_id' => $board->id]);
+        } else
+            $project_ids = [];
+        Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->update(['board_id' => null]);
+
 
         return redirect()->route('boards.show', $board);
     }
