@@ -80,7 +80,7 @@
                             <tbody>
                                 @foreach($moves as $move)
                                     <tr>
-                                        <th scope="row">{{ $move->id }}</th>
+                                        <td>{{ $move->id }}</th>
                                         <td>{{ $move->old_column->column_name }} (#{{ $move->old_column->id }})</td>
                                         <td>{{ $move->new_column->column_name }} (#{{ $move->new_column->id }})</td>
                                     </tr>
@@ -92,7 +92,30 @@
                     @endif
                 </div>
                 <div id="wip" class="tab-pane fade in active">
-                    Seznam WIP kršitev
+                    @if(count($WipViolations) > 0)
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Razlog</th>
+                                <th scope="col">Iz stolpca</th>
+                                <th scope="col">V stolpec</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($WipViolations as $violation)
+                                <tr>
+                                    <td>{{ $violation->id }}</th>
+                                    <td>{{ $violation->reason }}</td>
+                                    <td>{{ $violation->old_column->column_name }} (#{{ $violation->old_column->id }})</td>
+                                    <td>{{ $violation->new_column->column_name }} (#{{ $violation->new_column->id }})</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        Ni WIP kršitev!
+                    @endif
                 </div>
             @endif
         </div>

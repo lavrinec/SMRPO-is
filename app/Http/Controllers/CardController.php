@@ -75,6 +75,7 @@ class CardController extends Controller
             if(!isset($board)) $data['board'] = $data['card']->board()->first();
             if(!isset($column)) $data['column'] = $data['card']->column()->first();
             $data['moves'] = $data['card']->moves()->with('old_column', 'new_column')->get();
+            $data['WipViolations'] = $data['card']->wipViolations()->with('old_column', 'new_column')->get();
             //dd($data);
         } else if(! isset($column)) {
             $data['column'] = $data['board']->columns();

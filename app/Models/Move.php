@@ -27,4 +27,14 @@ class Move extends Model
     {
         return $this->belongsTo('App\Models\Card', 'card_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
+
+    public function move_reason()
+    {
+        return $this->belongsTo('App\Models\MoveReason', 'move_reason_id');
+    }
 }

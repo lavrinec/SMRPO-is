@@ -32,4 +32,9 @@ class Card extends Model
     {
         return $this->hasMany('App\Models\Move', 'card_id');
     }
+
+    public function wipViolations()
+    {
+        return $this->hasMany('App\Models\WipViolation', 'card_id');
+    }
 }
