@@ -117,14 +117,10 @@ class GroupController extends Controller
     {
 
         $groups = Group::withTrashed()->where('id', $id)->first();
-        $users = Group::find(1)->users()->get();
+//        $users = Group::find(1)->users()->get();
         $usersGroup =UsersGroup::join('users', "users.id","=", 'users_groups.user_id')->where('users_groups.group_id', $id)->get();
-        /*return view('groups.show', [
-            "groups"=>$groups, "users"=>$users
-        ]);*/
         return view('groups.show')
             ->with('groups', $groups)
-            ->with('users', $users)
             ->with('usersGroup', $usersGroup);
 
     }
@@ -153,25 +149,16 @@ class GroupController extends Controller
          *          }
          * }
          * */
-        //dd(json_encode($testObjectCreation));
         $groups = Group::where('id', $id)->first();
         $users = User::all();
-        $roles = Role::all();
         $testGroups = (UsersGroup::where("group_id", $id)->with('role')->get());
-        $theArray = array();
-        $objectToSendInJson = $this-> generateUsersGroupsRolesStructureForClient($testGroups, $id); //$objectToSend;//json_encode($objectToSend);
+        $objectToSendInJson = $this-> generateUsersGroupsRolesStructureForClient($testGroups, $id);
         $usersGroup =UsersGroup::join('users', "users.id","=", 'users_groups.user_id')->where('users_groups.group_id', $id)->get();
 
-
-
-
-
-        //$this->updateUsersGroup($id, json_decode(json_encode($objectToSend)));
         return view('groups.edit')
             ->with('groups', $groups)
             ->with('users', $users)
             ->with('currentUsersGroupsRoles', $objectToSendInJson)
-            ->with('roles', $roles)
             ->with('usersGroup', $usersGroup);
     }
 
@@ -210,7 +197,6 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
         //
-        //$request->flash();
         $usersgroups = (json_decode($request->usersgroups));
         if ($validator = $this->validateGroup($request, $id)) {
             return redirect()->route('groups.edit', $id)->withErrors($validator);
@@ -222,10 +208,10 @@ class GroupController extends Controller
             ]);
         }
         $data = request()->only(['group_name', 'description']);
-        $users = request()->only('users');
-        $group = Group::where('id', $id)->update($data);
+        //$users = request()->only('users');
+        //$group = Group::where('id', $id)->update($data);
         $this->updateUsersGroup($id, $usersgroups);
-        $updatedUsersGroupsRoles = (UsersGroup::where("group_id", $id)->with('role')->get());//for future use if we need to show roles cards on show.page
+        //$updatedUsersGroupsRoles = (UsersGroup::where("group_id", $id)->with('role')->get());//for future use if we need to show roles cards on show.page
         $request->flash();
         return redirect()->route('groups.show', $id);
     }
