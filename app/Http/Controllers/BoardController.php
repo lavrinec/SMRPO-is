@@ -152,7 +152,7 @@ class BoardController extends Controller
             $this->processColumn($board->id, $column, $order);
         }
 
-        Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->delete();
+        Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->doesnthave('cards')->delete();
 
         return redirect()->route('boards.show', $board);
     }
