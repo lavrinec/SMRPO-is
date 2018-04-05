@@ -26,7 +26,11 @@ class Board extends Model
     public function columns()
     {
         return $this->hasMany('App\Models\Column', 'board_id');
+    }
 
+    public function structuredColumns()
+    {
+        return $this->columns()->whereNull('parent_id')->orderBy('order')->with('allChildren');
     }
 
     public function cards()
