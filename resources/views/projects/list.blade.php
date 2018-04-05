@@ -68,7 +68,7 @@
                                         <td>{{ $project->buyer_name }}</td>
                                         <td>{{ date("d.m.Y", strtotime($project->start_date)) }}</td>
                                         <td>{{ date("d.m.Y", strtotime($project->end_date)) }}</td>
-                                        <td>{{ $project->group->group_name }}</td>
+                                        <td>{{ isset($project->group->group_name) ? $project->group->group_name : '' }}</td>
                                         <td>@if($project->deactivated || $project->deactivated!=null)
                                                 Neaktiven
                                             @else
