@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Column extends Model
 {
     use SoftDeletes;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'column_name', 'description', 'order', 'WIP','start_border', 'end_border', "high_priority", "acceptance_testing", "meta", "parent_id", "board_id", "left_id",
+    ];
 
     public function parent()
     {
