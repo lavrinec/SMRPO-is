@@ -202,7 +202,7 @@ class BoardController extends Controller
         $column['acceptance_testing'] = $this->checkTypes($column, 'acceptance_testing');
         $column['board_id'] = $boardId;
         $column['order'] = $order;
-        $column['WIP'] = $column['wip'] ? $column['wip'] : 0;
+        $column['WIP'] = isset($column['wip']) ? $column['wip'] : 0;
 
         $children = isset($column['childs']) ? $column['childs'] : [];
 
