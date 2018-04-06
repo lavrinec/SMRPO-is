@@ -97,19 +97,41 @@ class BoardController extends Controller
 
     public function addColumn(Request $request)
     {
-        $column_id = "aa" . str_random(20);
-        $parent_id = $request->parent_id;
-        $parent_name = $request->parent_name;
-        $left_id = $request->left_id;
-        $level = $request->level;
 
-        return view('boards.column')->with([
-            'column_id' => $column_id,
-            'parent_id' => $parent_id,
-            'parent_name' => $parent_name,
-            'left_id' => $left_id,
-            'level' => $level,
-        ]);
+        if($request->column_data){
+
+//            dd($request->column_data);
+
+            return view('boards.column')->with([
+                'column_id' => $request->column_data['id'],
+                'parent_id' => $request->column_data['parent_id'],
+                'parent_name' => $request->column_data['parent_name'],
+                'left_id' => $request->column_data['left_id'],
+                'level' => $request->column_data['level'],
+
+                'column_name' => $request->column_data['column_name'],
+                'description' => $request->column_data['description'],
+                'WIP' => $request->column_data['WIP'],
+
+            ]);
+        }
+
+        else{
+            $column_id = "aa" . str_random(20);
+            $parent_id = $request->parent_id;
+            $parent_name = $request->parent_name;
+            $left_id = $request->left_id;
+            $level = $request->level;
+
+            return view('boards.column')->with([
+                'column_id' => $column_id,
+                'parent_id' => $parent_id,
+                'parent_name' => $parent_name,
+                'left_id' => $left_id,
+                'level' => $level,
+            ]);
+        }
+
     }
 
     private $tranmitionArray = [];

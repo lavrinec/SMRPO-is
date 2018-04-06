@@ -30,26 +30,25 @@
                                   action="{{ action('BoardController@update', $board->id) }}">
 
                                 @csrf
-                               
-                               
-                               
+
+
                                 <div class="form-group">
-                                
-                                        <div class="col-sm-3">  
+
+                                    <div class="col-sm-3">
                                         <label for="test" class="col-sm-2 control-label">Projekti</label>
                                         <div class="col-sm-10">
-                                        <select class="form-control" name="projects[]" id="usersgroupsselect" multiple="multiple">
-        
-                                        @foreach($projects as $project)
-                                            <option value="{{ $project->id }}"
-                                                    {{ $board->projects->contains('id', $project->id) ? 'selected' : '' }}
-                                                    {{ $project->deactivated ? 'disabled' : '' }}>{{ $project->board_name }}</option>
-                                        @endforeach
-                                        </select>
-                                            </div>
+                                            <select class="form-control" name="projects[]" id="usersgroupsselect"
+                                                    multiple="multiple">
+
+                                                @foreach($projects as $project)
+                                                    <option value="{{ $project->id }}"
+                                                            {{ $board->projects->contains('id', $project->id) ? 'selected' : '' }}
+                                                            {{ $project->deactivated ? 'disabled' : '' }}>{{ $project->board_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
 
-                                     
 
                                     <div class="col-sm-3">
                                         <label for="board_name" class="col-sm-2 control-label">Ime</label>
@@ -173,6 +172,16 @@
                                 <div style="height:200px;"></div>
 
 
+                                <div class="container testimonial-group">
+                                    <div class="row canvas" id="test-canvas">
+                                        {{-- Here go the columns! --}}
+
+                                        {{--@include('boards.column')--}}
+
+                                    </div>
+                                </div>
+
+
                                 <!--DEMO DIVs FOR DRAG & DROP -->
                                 <div class="container" style="width: 100%;">
 
@@ -293,12 +302,92 @@
 
     <script>
 
+
+        window.onload = function () {
+            makeExisting();
+        };
+
+        /*
+         * Create and Show already existing columns (if editing saved board)
+         *
+         * */
+
+        function makeExisting() {
+            var board = {!! $board !!};
+
+            var rootColumns = board.structured_columns;
+
+            if (rootColumns.length > 0) {
+                $("#buttonFirstColumn")[0].setAttribute('disabled', 'disabled');
+
+                // sort by order (currently on each level starts from beginning)
+                rootColumns.sort(compare);
+
+                // array, location, parent-name, level
+                forColumns(rootColumns, 'board-canvas', '', 0);
+
+            }
+
+
+//            console.log(board.structured_columns);
+        }
+
+
+        function compare(a, b) {
+            if (a.order < b.order)
+                return -1;
+            if (a.order > b.order)
+                return 1;
+            return 0;
+        }
+
+
+        function forColumns(columns, place, parent_name, level) {
+            // just append to the board-canvas (testing on test-canvas)
+
+            columns.sort(compare);
+
+            for (var key in columns) {
+                if (columns.hasOwnProperty(key)) {
+                    columns[key]['level'] = level;
+
+
+                    parent_name += '['+ columns[key].id + ']';
+
+                    columns[key]['parent_name'] = parent_name;
+
+                    parent_name.replace('['+ columns[key].id + ']', '');
+
+                    addExistingColumn(columns[key], place);
+                    forColumns(columns[key].all_children, columns[key].id + "_subcanvas", parent_name += "[childs]", level++);
+
+
+                }
+            }
+        }
+
+
+        function addExistingColumn(columnData, place) {
+            $.ajax({
+                type: 'POST',
+                url: "{{ action('BoardController@addColumn') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'column_data': columnData
+                },
+                success: function (data) {
+                    $("#" + place).append(data);
+                }
+            });
+        }
+
+
         /*
          * Addding and deleting columns
          *
          * */
 
-        function addFirstColumn(obj) {
+        function addFirstColumn(triggerButton) {
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
@@ -310,7 +399,7 @@
                 },
                 success: function (data) {
                     // disable [add first column] button
-                    obj.setAttribute('disabled', 'disabled');
+                    triggerButton.setAttribute('disabled', 'disabled');
 
                     // collapse sidebar and focus the board
                     $('body').addClass('sidebar-collapse');
@@ -322,14 +411,17 @@
         }
 
         function addColumnBefore(column) {
+            if (typeof column == 'number') {
+                column = $("#" + column)[0];
+            }
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    'parent_id': $("#"+column.id+"_parent_id")[0].value,
-                    'parent_name': $("#"+column.id+"_parent_name")[0].value.replace('[' + column.id + ']',''),
-                    'level': parseInt($("#"+column.id+"_level")[0].value)
+                    'parent_id': $("#" + column.id + "_parent_id")[0].value,
+                    'parent_name': $("#" + column.id + "_parent_name")[0].value.replace('[' + column.id + ']', ''),
+                    'level': parseInt($("#" + column.id + "_level")[0].value)
                 },
                 success: function (data) {
                     $(data).insertBefore($("#" + column.id));
@@ -340,14 +432,20 @@
         }
 
         function addColumnAfter(column) {
+            console.log(typeof column);
+
+            if (typeof column == 'number') {
+                column = $("#" + column)[0];
+            }
+
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    'parent_id': $("#"+column.id+"_parent_id")[0].value,
-                    'parent_name': $("#"+column.id+"_parent_name")[0].value.replace('[' + column.id + ']',''),
-                    'level': parseInt($("#"+column.id+"_level")[0].value)
+                    'parent_id': $("#" + column.id + "_parent_id")[0].value,
+                    'parent_name': $("#" + column.id + "_parent_name")[0].value.replace('[' + column.id + ']', ''),
+                    'level': parseInt($("#" + column.id + "_level")[0].value)
                 },
                 success: function (data) {
                     $(data).insertAfter($("#" + column.id));
@@ -358,14 +456,17 @@
 
 
         function addFirstSubColumnTo(column) {
+            if (typeof column == 'number') {
+                column = $("#" + column)[0];
+            }
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
                     'parent_id': column.id,
-                    'parent_name': $("#"+column.id+"_parent_name")[0].value + '[childs]',
-                    'level': parseInt($("#"+column.id+"_level")[0].value)+1
+                    'parent_name': $("#" + column.id + "_parent_name")[0].value + '[childs]',
+                    'level': parseInt($("#" + column.id + "_level")[0].value) + 1
                 },
                 success: function (data) {
                     // disable [add first subcolumn] button
@@ -401,19 +502,18 @@
                 }
             }
         }
-        
+
         function redoLeftIds() {
-            $(".column").each(function(i, current) {
+            $(".column").each(function (i, current) {
                 var left_id = null;
-                if($("#" + current.id).prev()[0]) {
+                if ($("#" + current.id).prev()[0]) {
                     left_id = $("#" + current.id).prev()[0].id; // left_id
                 }
 
                 // set left_id of curr to prev_id
-                $("#"+current.id+"_left_id")[0].value = left_id;
+                $("#" + current.id + "_left_id")[0].value = left_id;
             });
         }
-        
 
 
         /*
