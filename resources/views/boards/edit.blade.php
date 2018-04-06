@@ -174,15 +174,6 @@
                                 <div style="height:200px;"></div>
 
 
-                                <div class="container testimonial-group">
-                                    <div class="row canvas" id="test-canvas">
-                                        {{-- Here go the columns! --}}
-
-                                        {{--@include('boards.column')--}}
-
-                                    </div>
-                                </div>
-
 
                                 <!--DEMO DIVs FOR DRAG & DROP -->
                                 <div class="container" style="width: 100%;">
@@ -345,25 +336,24 @@
 
 
         function forColumns(columns, place, parent_name, level) {
-            // just append to the board-canvas (testing on test-canvas)
+            // just append to the canvas
 
             columns.sort(compare);
 
             for (var key in columns) {
                 if (columns.hasOwnProperty(key)) {
-                    columns[key]['level'] = level;
 
+                    var lvl = Number(level);
+                    columns[key]['level'] = lvl;
 
-                    parent_name += '['+ columns[key].id + ']';
-
-                    columns[key]['parent_name'] = parent_name;
-
-                    parent_name.replace('['+ columns[key].id + ']', '');
+                    var pn = parent_name.slice(0);
+                    columns[key]['parent_name'] = pn;
 
                     addExistingColumn(columns[key], place);
-                    forColumns(columns[key].all_children, columns[key].id + "_subcanvas", parent_name += "[childs]", level++);
 
-
+                    lvl += 1;
+                    pn += '['+ columns[key].id + '][childs]';
+                    forColumns(columns[key].all_children, columns[key].id + "_subcanvas", pn, lvl);
                 }
             }
         }
@@ -481,6 +471,9 @@
 
 
         function deleteColumn(column) {
+            if (typeof column == 'number') {
+                column = $("#" + column)[0];
+            }
             var parent = column.parentNode;
             column.parentNode.removeChild(column);
             checkIfEmpty(parent);
