@@ -26,8 +26,11 @@
             @if(Auth::user()->isPO() || Auth::user()->isKM())
                 <button type="button" class="btn btn-primary openCard" data-card-id="0" data-board-id="{{ $board->id }}">Dodaj kartico</button>
             @endif
-            <button type="button" class="btn btn-primary openCard" data-card-id="1">Uredi kartico 1</button>
-            <button type="button" class="btn btn-primary openCard" data-card-id="2">Uredi kartico 2</button>
+            <br><br>
+            @foreach($board->cards as $card)
+                <p><button type="button" class="btn btn-primary openCard" data-card-id="{{ $card->id }}">{{ $card->card_name }}</button></p>
+            @endforeach
+
             @include('modals.modal')
         </p>
         {{--<a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>--}}

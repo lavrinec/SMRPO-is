@@ -44,12 +44,9 @@
 
 
                                 <tr>
-                                    <td>Status</td>
-                                    <td>@if($groups->deleted_at != null )
-                                            Izbrisana
-                                        @else
-                                            Aktivna
-                                        @endif
+                                    <td>Opis</td>
+                                    <td>
+                                        {{$groups->description}}
                                     </td>
                                 </tr>
 

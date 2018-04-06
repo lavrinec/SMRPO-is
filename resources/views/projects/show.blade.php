@@ -71,7 +71,7 @@
 
                                 <tr>
                                     <td>Skupina</td>
-                                    <td>{{ $group->group_name }}</td>
+                                    <td>{{ isset($group->group_name) ? $group->group_name : '' }}</td>
 
                                 </tr>
                                 
