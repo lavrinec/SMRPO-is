@@ -24,7 +24,7 @@
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="{{ $column_id }}_column_name"
                                name="column{{ $parent_name }}[{{ $column_id }}][column_name]" placeholder="Ime" pattern=".{1,255}" required
-                               title="Ime naj bo dolgo med 8 in 255 znakov" value="{{ $column_name }}">
+                               title="Ime naj bo dolgo med 8 in 255 znakov" value="{{ isset($column_name) ? $column_name : '' }}">
                     </div>
                 </div>
 
@@ -39,7 +39,7 @@
 
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="{{ $column_id }}_description"
-                               name="column{{ $parent_name }}[{{ $column_id }}][description]" placeholder="Opis" value="{{ $description }}">
+                               name="column{{ $parent_name }}[{{ $column_id }}][description]" placeholder="Opis" value="{{ isset($description) ? $description : '' }}">
                     </div>
                 </div>
 
@@ -48,7 +48,7 @@
 
                     <div class="col-sm-9">
                         <input type="number" class="form-control" id="{{ $column_id }}_wip" name="column{{ $parent_name }}[{{ $column_id }}][wip]"
-                               required title="Vpišite omejitev WIP" value="{{ $WIP }}">
+                               required title="Vpišite omejitev WIP" value="{{ isset($WIP) ? $WIP : '' }}" min="0">
                     </div>
                 </div>
 
