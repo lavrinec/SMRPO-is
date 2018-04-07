@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('{id}/show', 'BoardController@show')->name('boards.show');
         Route::get('{id}/focus', 'BoardController@focus')->name('boards.focus');
         Route::get('{id}/edit', 'BoardController@edit')->name('boards.edit');
+        Route::post('{board}/copy', 'BoardController@copy')->name('boards.copy');
         Route::get('{id}/delete', 'BoardController@destroy')->name('boards.delete');
         Route::post('{board}', 'BoardController@update')->name('boards.update');
 

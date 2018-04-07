@@ -95,6 +95,25 @@ class BoardController extends Controller
         return view('boards.edit')->with('board', $board)->with('projects', $projects);
     }
 
+    /**
+     * copy board
+     *
+     * @param  \App\Models\Board $board
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Board $board)
+    {
+        $new = $board->replicate();
+        $new->board_name .= ' _copy';
+        $new->save();
+
+        $columns = $board->structuredColumns()->get();
+        $this->recursiveSaveColumns($new->id, null, $columns);
+
+        //dd($board);
+        return redirect()->route('boards.show', $new);
+    }
+
     public function addColumn(Request $request)
     {
 
@@ -309,5 +328,20 @@ class BoardController extends Controller
             return (! (empty($column['types'][$key])));
         else
             return false;
+    }
+
+    private function recursiveSaveColumns($boardId, $parentId, $columns){
+        $previous = null;
+        foreach ($columns as $column){
+            $new = $column->replicate();
+            $new->board_id = $boardId;
+            $new->parent_id = $parentId;
+            $new->left_id = $previous;
+            $new->save();
+
+            $this->recursiveSaveColumns($boardId, $new->id, $column->allChildren);
+
+            $previous = $new->id;
+        }
     }
 }

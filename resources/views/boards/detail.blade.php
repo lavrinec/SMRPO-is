@@ -23,6 +23,14 @@
         <p>
 
             @if(Auth::user()->isPO() || Auth::user()->isKM())
+                <form action="{{ route('boards.copy', ['board' => $board]) }}" method="POST">
+                    <input type="hidden" class="form-control" id="_token" name="_token" value="{{ csrf_token() }}">
+                    <button type="submit"
+                       class="btn btn-primary btn-block">
+                        <b>Kopiraj</b>
+                    </button>
+                </form>
+                <hr>
                 <button type="button" class="btn btn-primary openCard" data-card-id="0"
                         data-board-id="{{ $board->id }}">Dodaj kartico
                 </button>
