@@ -19,7 +19,7 @@
   <!- iCheck ->
   <link rel="stylesheet" href="../../plugins/iCheck/square/blue.css">
   -->
-  @include('dependencies.basic_head_link_dependencies');
+  @include('dependencies.basic_head_link_dependencies')
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

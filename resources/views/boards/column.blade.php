@@ -3,17 +3,23 @@
         <pre style="width: 100%; text-align: center; line-height: 0.2em;">začasni id: {{ substr($column_id, 0, 6) }}
         </pre>
 
-        <input type="hidden" id="{{ $column_id }}_parent_id" name="column{{ $parent_name }}[{{ $column_id }}][parent_id]" value="{{ $parent_id }}">
+        <input type="hidden" id="{{ $column_id }}_parent_id"
+               name="column{{ $parent_name }}[{{ $column_id }}][parent_id]" value="{{ $parent_id }}">
 
-        <input type="hidden" id="{{ $column_id }}_parent_name" name="column{{ $parent_name }}[{{ $column_id }}][parent_name]" value="{{ $parent_name }}[{{ $column_id }}]">
+        <input type="hidden" id="{{ $column_id }}_parent_name"
+               name="column{{ $parent_name }}[{{ $column_id }}][parent_name]"
+               value="{{ $parent_name }}[{{ $column_id }}]">
 
 
-        <input type="hidden" id="{{ $column_id }}_left_id" name="column{{ $parent_name }}[{{ $column_id }}][left_id]" value="{{ $left_id }}">
+        <input type="hidden" id="{{ $column_id }}_left_id" name="column{{ $parent_name }}[{{ $column_id }}][left_id]"
+               value="{{ $left_id }}">
 
         {{--<input type="hidden" id="{{ $column_id }}_column_id" name="{{ $column_id }}_column_id" value="{{ $column_id }}">--}}
-        <input type="hidden" id="{{ $column_id }}_column_id" name="column{{ $parent_name }}[{{ $column_id }}][id]" value="{{ $column_id }}">
+        <input type="hidden" id="{{ $column_id }}_column_id" name="column{{ $parent_name }}[{{ $column_id }}][id]"
+               value="{{ $column_id }}">
 
-        <input type="hidden" id="{{ $column_id }}_level" name="column{{ $parent_name }}[{{ $column_id }}][level]" value="{{ $level }}">
+        <input type="hidden" id="{{ $column_id }}_level" name="column{{ $parent_name }}[{{ $column_id }}][level]"
+               value="{{ $level }}">
 
         <div class="box-header">
             <h5 class="box-title">
@@ -23,8 +29,10 @@
 
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="{{ $column_id }}_column_name"
-                               name="column{{ $parent_name }}[{{ $column_id }}][column_name]" placeholder="Ime" pattern=".{1,255}" required
-                               title="Ime naj bo dolgo med 8 in 255 znakov" value="{{ isset($column_name) ? $column_name : '' }}">
+                               name="column{{ $parent_name }}[{{ $column_id }}][column_name]" placeholder="Ime"
+                               pattern=".{1,255}" required
+                               title="Ime naj bo dolgo med 8 in 255 znakov"
+                               value="{{ isset($column_name) ? $column_name : '' }}">
                     </div>
                 </div>
 
@@ -39,7 +47,8 @@
 
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="{{ $column_id }}_description"
-                               name="column{{ $parent_name }}[{{ $column_id }}][description]" placeholder="Opis" value="{{ isset($description) ? $description : '' }}">
+                               name="column{{ $parent_name }}[{{ $column_id }}][description]" placeholder="Opis"
+                               value="{{ isset($description) ? $description : '' }}">
                     </div>
                 </div>
 
@@ -47,7 +56,8 @@
                     <label for="{{ $column_id }}_wip" class="col-sm-3 control-label">WIP</label>
 
                     <div class="col-sm-9">
-                        <input type="number" class="form-control" id="{{ $column_id }}_wip" name="column{{ $parent_name }}[{{ $column_id }}][wip]"
+                        <input type="number" class="form-control" id="{{ $column_id }}_wip"
+                               name="column{{ $parent_name }}[{{ $column_id }}][wip]"
                                required title="Vpišite omejitev WIP" value="{{ isset($WIP) ? $WIP : '' }}" min="0">
                     </div>
                 </div>
@@ -58,26 +68,38 @@
                     <div class="col-sm-9">
 
                         <label for="{{ $column_id }}_start_border" class="control-sidebar-subheading">
-                            <input id="{{ $column_id }}_start_border" name="column{{ $parent_name }}[{{ $column_id }}][types][start_border]"
-                                   value="start_border" type="checkbox" class="pull-left">
+                            <input id="{{ $column_id }}_start_border"
+                                   name="column{{ $parent_name }}[{{ $column_id }}][types][start_border]"
+                                   value="start_border" type="checkbox" class="pull-left"
+                                   onclick="checkChecked({{ $column_id }},'start_border')"
+                                   {{ isset($start_border)&&$start_border==1 ? 'checked' : ''}}>
                             Začetni robni
                         </label>
 
                         <label for="{{ $column_id }}_end_border" class="control-sidebar-subheading">
-                            <input id="{{ $column_id }}_end_border" name="column{{ $parent_name }}[{{ $column_id }}][types][end_border]"
-                                   value="end_border" type="checkbox" class="pull-left">
+                            <input id="{{ $column_id }}_end_border"
+                                   name="column{{ $parent_name }}[{{ $column_id }}][types][end_border]"
+                                   value="end_border" type="checkbox" class="pull-left"
+                                   onclick="checkChecked({{ $column_id }},'end_border')"
+                                    {{ isset($end_border)&&$end_border==1 ? 'checked' : ''}}>
                             Končni robni
                         </label>
 
                         <label for="{{ $column_id }}_high_priority" class="control-sidebar-subheading">
-                            <input id="{{ $column_id }}_high_priority" name="column{{ $parent_name }}[{{ $column_id }}][types][high_priority]"
-                                   value="high_priority" type="checkbox" class="pull-left">
+                            <input id="{{ $column_id }}_high_priority"
+                                   name="column{{ $parent_name }}[{{ $column_id }}][types][high_priority]"
+                                   value="high_priority" type="checkbox" class="pull-left"
+                                   onclick="checkChecked({{ $column_id }},'high_priority')"
+                                    {{ isset($high_priority)&&$high_priority==1 ? 'checked' : ''}}>
                             Za nujne kartice
                         </label>
 
                         <label for="{{ $column_id }}_acceptance_testing" class="control-sidebar-subheading">
-                            <input id="{{ $column_id }}_acceptance_testing" name="column{{ $parent_name }}[{{ $column_id }}][types][acceptance_testing]"
-                                   value="acceptance_testing" type="checkbox" class="pull-left">
+                            <input id="{{ $column_id }}_acceptance_testing"
+                                   name="column{{ $parent_name }}[{{ $column_id }}][types][acceptance_testing]"
+                                   value="acceptance_testing" type="checkbox" class="pull-left"
+                                   onclick="checkChecked({{ $column_id }},'acceptance_testing')"
+                                    {{ isset($acceptance_testing)&&$acceptance_testing==1 ? 'checked' : ''}}>
                             Sprejemno testiranje
                         </label>
 

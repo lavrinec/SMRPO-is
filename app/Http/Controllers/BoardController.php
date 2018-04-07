@@ -132,6 +132,11 @@ class BoardController extends Controller
                 'description' => $request->column_data['description'],
                 'WIP' => $request->column_data['WIP'],
 
+                'start_border' => $request->column_data['start_border'],
+                'end_border' => $request->column_data['end_border'],
+                'high_priority' => $request->column_data['high_priority'],
+                'acceptance_testing' => $request->column_data['acceptance_testing'],
+
             ]);
         }
 

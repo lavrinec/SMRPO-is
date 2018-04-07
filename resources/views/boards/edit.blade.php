@@ -289,6 +289,7 @@
             makeExisting();
         };
 
+
         /*
          * Create and Show already existing columns (if editing saved board)
          *
@@ -498,6 +499,26 @@
                 $("#" + current.id + "_left_id")[0].value = left_id;
             });
         }
+
+        function checkChecked(clickedItem, group) {
+            if (typeof clickedItem == 'number') {
+                clickedItem = $("#"+clickedItem+"_"+group)[0];
+            }
+            else{
+                clickedItem = $("#"+clickedItem.id+"_"+group)[0];
+            }
+
+            var groupItems = $( "input[name*="+group+"]");
+
+            if(clickedItem.checked){
+                groupItems.each(function (i, current) {
+                    if(current != clickedItem){
+                        $("#"+current.id).prop('checked', false);
+                    }
+                });
+            }
+        }
+
 
 
         /*
