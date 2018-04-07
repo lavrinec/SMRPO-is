@@ -61,7 +61,7 @@
 
 
                             <div class="row">
-                                <div class="col-sm-offset-0 col-sm-4">
+                                <div class="col-sm-4">
                                     {{-- @if() check if there are cards in columns --}}
                                         <a href="{{ action('BoardController@edit', $board->id) }}"
                                            class="btn btn-primary btn-block">
@@ -69,6 +69,7 @@
                                         </a>
                                     {{--@endif--}}
                                 </div>
+
                                 <div class="col-sm-offset-6 col-sm-2">
                                     @if($board->deleted_at == null )
                                         <a href="javascript:reallyDelete()"
