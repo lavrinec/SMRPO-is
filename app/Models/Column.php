@@ -32,6 +32,11 @@ class Column extends Model
         return $this->children()->with('allChildren');
     }
 
+    public function allChildrenCards()
+    {
+        return $this->children()->with('allChildrenCards', 'cards');
+    }
+
     public function leftChild()
     {
         return $this->hasOne('App\Models\Column', 'parent_id')->where('left_id', null);
