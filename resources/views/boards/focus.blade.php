@@ -72,9 +72,9 @@
                                         white-space: nowrap;
                                     }
 
-                                    /*.subcanvas {*/
-                                    /*overflow-x: hidden;*/
-                                    /*}*/
+                                    .subcanvas {
+                                        min-height: 200px;
+                                    }
 
                                     .canvas > .column {
                                         display: inline-block;
@@ -82,7 +82,7 @@
 
                                         min-width: 320px;
                                         /*min-height: 434px;*/
-                                        /*min-height: 100%;*/
+                                        /*min-height: 100vh;*/
 
                                         /*padding: 5px;*/
                                         border: 5px solid #69c;
@@ -94,6 +94,7 @@
                                     .column > .box {
                                         /*display: inline-block;*/
                                         margin: 0px;
+                                        /*min-height: 100vh;*/
                                     }
 
                                     /*.column:nth-child(3n+1) {*/
@@ -240,7 +241,7 @@
                 },
                 success: function (data) {
                     $("#" + place).append(data);
-
+                    
                     // allChildrenCards
                     if(columnData.all_children_cards.length == 0){
                         var container = $("#"+columnData.id+"_subcanvas")[0];

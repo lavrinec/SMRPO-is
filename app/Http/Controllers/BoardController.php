@@ -177,7 +177,11 @@ class BoardController extends Controller
 
         if($request->column_data){
 
-//            dd($request->column_data);
+            $cards = [];
+
+            if (array_key_exists('cards', $request->column_data)) {
+                $cards = $request->column_data['cards'];
+            }
 
             return view('boards.columnShow')->with([
                 'column_id' => $request->column_data['id'],
@@ -195,7 +199,7 @@ class BoardController extends Controller
                 'high_priority' => $request->column_data['high_priority'],
                 'acceptance_testing' => $request->column_data['acceptance_testing'],
 
-
+                'cards' => $cards
             ]);
         }
 

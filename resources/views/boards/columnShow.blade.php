@@ -24,7 +24,7 @@
         <div class="box-header">
             <h5 class="box-title">
 
-                {{ $column_name }} &nbsp;[{{ $WIP }}]
+                {{ $column_name }} &nbsp;[ {{ count($cards) }} | {{ $WIP }} ]
 
             </h5>
             <div>
@@ -67,8 +67,14 @@
         <div class="box-body" style="border-top: solid black 1px;">
             <div class="canvas subcanvas row" id="{{ $column_id }}_subcanvas"
                  style="margin-left: 0px; margin-right: 0px">
-                tu se bodo prikazale kartice, če stolpec nima otrok
-                <br>
+
+
+
+                @foreach($cards as $card)
+                    @include("boards.card")
+
+                @endforeach
+
             </div>
         </div>
     </div>
