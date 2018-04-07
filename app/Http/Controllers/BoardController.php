@@ -295,7 +295,7 @@ class BoardController extends Controller
 
         $children = isset($column['childs']) ? $column['childs'] : [];
 
-        unset($column['parent_name'], $column['level'], $column['types'], $column['childs']);
+        unset($column['parent_name'], $column['level'], $column['types'], $column['childs'], $column['wip']);
 
         if( !is_numeric ($column['id'])){
             $old = $column['id'];
