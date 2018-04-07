@@ -39,8 +39,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('create', 'BoardController@create')->name('boards.create');
         Route::post('store', 'BoardController@store')->name('boards.store');
         Route::post('column', 'BoardController@addColumn')->name('boards.column');
+        Route::post('columnShow', 'BoardController@columnShow')->name('boards.columnShow');
         Route::get('', 'BoardController@index')->name('boards.list');
         Route::get('{id}/show', 'BoardController@show')->name('boards.show');
+        Route::get('{id}/focus', 'BoardController@focus')->name('boards.focus');
         Route::get('{id}/edit', 'BoardController@edit')->name('boards.edit');
         Route::get('{id}/delete', 'BoardController@destroy')->name('boards.delete');
         Route::post('{board}', 'BoardController@update')->name('boards.update');

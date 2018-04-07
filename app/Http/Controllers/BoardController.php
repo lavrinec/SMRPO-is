@@ -134,6 +134,67 @@ class BoardController extends Controller
 
     }
 
+    /*
+     * returns view for board with projects and cards
+     *
+     * */
+    public function focus($id)
+    {
+        $board = Board::where('id', $id)->with('projects', 'structuredColumns')->first();
+        //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
+        //dd($board);
+        $projects = Project::all();
+        return view('boards.focus')->with('board', $board)->with('projects', $projects);
+    }
+
+
+    public function columnShow(Request $request)
+    {
+
+        if($request->column_data){
+
+//            dd($request->column_data);
+
+            return view('boards.columnShow')->with([
+                'column_id' => $request->column_data['id'],
+                'parent_id' => $request->column_data['parent_id'],
+                'parent_name' => $request->column_data['parent_name'],
+                'left_id' => $request->column_data['left_id'],
+                'level' => $request->column_data['level'],
+
+                'column_name' => $request->column_data['column_name'],
+                'description' => $request->column_data['description'],
+                'WIP' => $request->column_data['WIP'],
+
+                'start_border' => $request->column_data['start_border'],
+                'end_border' => $request->column_data['end_border'],
+                'high_priority' => $request->column_data['high_priority'],
+                'acceptance_testing' => $request->column_data['acceptance_testing'],
+
+
+            ]);
+        }
+
+        else{
+            $column_id = "aa" . str_random(20);
+            $parent_id = $request->parent_id;
+            $parent_name = $request->parent_name;
+            $left_id = $request->left_id;
+            $level = $request->level;
+
+            return view('boards.column')->with([
+                'column_id' => $column_id,
+                'parent_id' => $parent_id,
+                'parent_name' => $parent_name,
+                'left_id' => $left_id,
+                'level' => $level,
+            ]);
+        }
+
+    }
+
+
+
     private $tranmitionArray = [];
     private $allArray = [];
 
