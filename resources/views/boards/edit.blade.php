@@ -513,7 +513,19 @@
             if(clickedItem.checked){
                 groupItems.each(function (i, current) {
                     if(current != clickedItem){
-                        $("#"+current.id).prop('checked', false);
+                        console.log(current.checked);
+
+                        if(current.checked){
+                            if (confirm("Kot " + group + "je že označen drug stolpec." +
+                                    "\n Ali želite spremeniti?")) {
+                                $("#"+current.id).prop('checked', false);
+                            } else {
+                                $("#"+clickedItem.id).prop('checked', false);
+                            }
+                        }
+
+                        
+
                     }
                 });
             }
