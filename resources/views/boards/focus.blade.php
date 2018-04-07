@@ -166,8 +166,6 @@
 
         window.onload = function () {
             makeExisting();
-            
-            console.log(drake.containers);
         };
 
 
@@ -181,9 +179,9 @@
         function makeExisting() {
             var board = {!! $board !!};
 
-            var rootColumns = board.structured_columns;
+            var rootColumns = board.structured_columns_cards;
             // structuredColumnsCards
-
+            
             if (rootColumns.length > 0) {
 
                 // sort by order (currently on each level starts from beginning)
@@ -220,9 +218,12 @@
 
                     addExistingColumn(columns[key], place);
 
+                    addExistingCards(columns[key].cards, columns[key].id + "_subcanvas");
+
+
                     lvl += 1;
                     pn += '['+ columns[key].id + '][childs]';
-                    forColumns(columns[key].all_children, columns[key].id + "_subcanvas", pn, lvl);
+                    forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);
                     // allChildrenCards
                 }
             }
@@ -241,7 +242,7 @@
                     $("#" + place).append(data);
 
                     // allChildrenCards
-                    if(columnData.all_children.length == 0){
+                    if(columnData.all_children_cards.length == 0){
                         var container = $("#"+columnData.id+"_subcanvas")[0];
                         drake.containers.push(container);
                     }
@@ -250,6 +251,12 @@
             });
         }
 
+
+        function addExistingCards(cards, place) {
+            console.log("function for viewing the cards");
+            console.log(cards);
+            console.log(place);
+        }
 
 
 
