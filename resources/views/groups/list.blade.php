@@ -115,7 +115,7 @@
                 var r = confirm("Ali ste prepričani, da želite izbrisati skupino?");
                 if (r == true) {
                     window.location.href = "/groups/" + groupid +"/delete";
-                    {{--//"{{ action('GroupController@destroy', $group->id) }}";--}}
+                    // {{--//"{{ action('GroupController@destroy', $group->id) }}";--}}
                 }
             }
         </script>

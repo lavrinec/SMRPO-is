@@ -69,6 +69,7 @@
                  style="margin-left: 0px; margin-right: 0px">
                 tu se bodo prikazale kartice, če stolpec nima otrok
                 <br>
+                <div style="background: lightblue;">test1</div>
             </div>
         </div>
     </div>

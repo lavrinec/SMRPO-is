@@ -160,101 +160,6 @@
                                 </div>
 
 
-                                <div style="height:200px;"></div>
-
-
-
-                                <!--DEMO DIVs FOR DRAG & DROP -->
-                                <div class="container" style="width: 100%;">
-
-                                    <div class="box" style="float:left;">
-                                        <div class="box-header">stolpec 0</div>
-
-                                        <div id="column0" class="container box-body"
-                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-                                            <div style="background: lightblue;">test1</div>
-                                            <div style="background: lightgreen;">test2</div>
-                                            <div style="background: lightgrey;">test3</div>
-
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row" style="float:left;">
-                                        <div class="col-sm-12">stolpec 1</div>
-
-                                        <div id="column1" class="container col-sm-12"
-                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-                                            <div style="background: lightblue;">test1</div>
-                                            <div style="background: lightgreen;">test2</div>
-                                            <div style="background: lightgrey;">test3</div>
-
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row" style="float:left;">
-                                        <div class="col-sm-12">stolpec 2</div>
-                                        <div id="column2" class="container col-sm-12"
-                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-
-
-                                            <div class="row" style="float:left; width: 80px;">
-                                                <div class="col-sm-12">st 2_1</div>
-                                                <div id="column21" class="container col-sm-12"
-                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                                </div>
-                                            </div>
-
-                                            <div class="row" style="float:left; width: 70px;">
-                                                <div class="col-sm-12">st 2_2</div>
-                                                <div id="column22" class="container col-sm-12"
-                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="row" style="float:left;">
-                                        <div class="col-sm-12">stolpec 3</div>
-
-                                        <div id="column3" class="container col-sm-12"
-                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row" style="float:left;">
-                                        <div class="col-sm-12">stolpec 4</div>
-                                        <div id="column4" class="container col-sm-12"
-                                             style="border: solid black 1px; width: 150px; height: 200px; float: left;">
-
-
-                                            <div class="row" style="float:left; width: 80px;">
-                                                <div class="col-sm-12">st 4_1</div>
-                                                <div id="column41" class="container col-sm-12"
-                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                                </div>
-                                            </div>
-
-                                            <div class="row" style="float:left; width: 70px;">
-                                                <div class="col-sm-12">st 4_2</div>
-                                                <div id="column42" class="container col-sm-12"
-                                                     style="border: solid deeppink 1px; width: 50px; height: 180px; float: left;">
-
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--DEMO DIVs FOR DRAG & DROP -->
-
 
                             </form>
 
@@ -310,9 +215,6 @@
                 forColumns(rootColumns, 'board-canvas', '', 0);
 
             }
-
-
-//            console.log(board.structured_columns);
         }
 
 
@@ -524,32 +426,10 @@
                             }
                         }
 
-                        
-
                     }
                 });
             }
         }
-
-
-
-        /*
-         * Drag&Drop functionality provided by Dragula
-         *
-         * array of divs that should be drag&drop enabled
-         * */
-        dragula([
-            document.querySelector('#column0'),
-            document.querySelector('#column1'),
-            // document.querySelector('#column2'),
-            document.querySelector('#column21'),
-            document.querySelector('#column22'),
-
-            document.querySelector('#column3'),
-            // document.querySelector('#column4'),
-            document.querySelector('#column41'),
-            document.querySelector('#column42'),
-        ]);
 
 
     </script>
