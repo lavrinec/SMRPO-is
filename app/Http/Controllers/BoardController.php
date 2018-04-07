@@ -164,7 +164,7 @@ class BoardController extends Controller
      * */
     public function focus($id)
     {
-        $board = Board::where('id', $id)->with('projects', 'structuredColumns')->first();
+        $board = Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first();
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();

@@ -30,7 +30,17 @@ class Board extends Model
 
     public function structuredColumns()
     {
-        return $this->columns()->whereNull('parent_id')->orderBy('order')->with('allChildren');
+        return $this->orderdParentColumns()->with('allChildren');
+    }
+
+    public function orderdParentColumns()
+    {
+        return $this->columns()->whereNull('parent_id')->orderBy('order');
+    }
+
+    public function structuredColumnsCards()
+    {
+        return $this->orderdParentColumns()->with('allChildrenCards', 'cards');
     }
 
     public function cards()
