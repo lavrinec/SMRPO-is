@@ -269,7 +269,7 @@ class BoardController extends Controller
 
         unset($column['parent_name'], $column['level'], $column['types'], $column['childs']);
 
-        if( !is_int ($column['id'])){
+        if( !is_numeric ($column['id'])){
             $old = $column['id'];
             $new = Column::create($column);
             $newId = $new->id;
@@ -292,7 +292,7 @@ class BoardController extends Controller
 
     private function processThroughArray($column, $key){
         if(!empty($column[$key])){
-            if( !is_int ($column[$key])){
+            if( !is_numeric($column[$key])){
                 if(isset($this->tranmitionArray[$column[$key]]))
                     return $this->tranmitionArray[$column[$key]];
                 else
