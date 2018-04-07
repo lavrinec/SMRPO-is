@@ -24,7 +24,9 @@
         <div class="box-header">
             <h5 class="box-title">
 
-                {{ $column_name }} &nbsp;[ {{ count($cards) }} | {{ $WIP }} ]
+                {{ $column_name }} &nbsp;[  | {{ $WIP }} ]
+
+                {{--{{ count($cards) }}--}}
 
             </h5>
             <div>
@@ -68,10 +70,13 @@
             <div class="canvas subcanvas row" id="{{ $column_id }}_subcanvas"
                  style="margin-left: 0px; margin-right: 0px">
 
+                {{--{{ $cards }}--}}
 
+
+                
 
                 @foreach($cards as $card)
-                    @include("boards.card")
+                    @include("boards.card", ['card' => (object)$card])
 
                 @endforeach
 

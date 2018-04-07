@@ -254,9 +254,9 @@
 
 
         function addExistingCards(cards, place) {
-            console.log("function for viewing the cards");
-            console.log(cards);
-            console.log(place);
+//            console.log("function for viewing the cards");
+//            console.log(cards);
+//            console.log(place);
         }
 
 

@@ -7,6 +7,7 @@ use App\Models\Column;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class BoardController extends Controller
 {
@@ -183,6 +184,7 @@ class BoardController extends Controller
                 $cards = $request->column_data['cards'];
             }
 
+
             return view('boards.columnShow')->with([
                 'column_id' => $request->column_data['id'],
                 'parent_id' => $request->column_data['parent_id'],
@@ -295,7 +297,7 @@ class BoardController extends Controller
 
         $children = isset($column['childs']) ? $column['childs'] : [];
 
-        unset($column['parent_name'], $column['level'], $column['types'], $column['childs'], $column['wip']);
+        unset($column['parent_name'], $column['level'], $column['types'], $column['childs']);
 
         if( !is_numeric ($column['id'])){
             $old = $column['id'];
