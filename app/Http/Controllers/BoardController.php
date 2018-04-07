@@ -7,7 +7,6 @@ use App\Models\Column;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Expr\Cast\Object_;
 
 class BoardController extends Controller
 {
@@ -297,7 +296,7 @@ class BoardController extends Controller
 
         $children = isset($column['childs']) ? $column['childs'] : [];
 
-        unset($column['parent_name'], $column['level'], $column['types'], $column['childs']);
+        unset($column['parent_name'], $column['level'], $column['types'], $column['childs'], $column['wip']);
 
         if( !is_numeric ($column['id'])){
             $old = $column['id'];
