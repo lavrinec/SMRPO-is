@@ -200,7 +200,8 @@ class BoardController extends Controller
                 'high_priority' => $request->column_data['high_priority'],
                 'acceptance_testing' => $request->column_data['acceptance_testing'],
 
-                'cards' => $cards
+                'cards' => $cards,
+                'projects' => $request->column_data['projects'],
             ]);
         }
 

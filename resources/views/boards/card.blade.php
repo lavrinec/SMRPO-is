@@ -11,6 +11,8 @@
         </button>
         <br>
         <small>pooblaščeni (id): {{ $card->user_id }}</small>
+        <br>
+        <small>Projekt (id): {{ $card->project_id }}</small>
 
     </div>
 

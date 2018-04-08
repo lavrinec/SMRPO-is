@@ -20,110 +20,78 @@
 
                 <div class="col-md-12">
 
-                    {{-- div for data form --}}
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">{{ $board->board_name }}</h3>
                             <div>
                                 {{ $board->description }}
+                                <br>
+                                <div>Projekti:
+                                    @foreach($board->projects as $project)
+                                        {{ $project->board_name }},
+                                    @endforeach
+
+                                </div>
                             </div>
+
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
 
-                            <form class="form-horizontal" method="POST"
-                                  action="{{ action('BoardController@update', $board->id) }}">
 
-                                @csrf
+                            <style>
+                                /* The heart of the matter */
+                                .testimonial-group {
+                                    width: 100%;
+                                    min-height: 100vh;
+                                    background: lightgrey;
+
+                                    /*overflow-y: auto;*/
+                                }
+
+                                .canvas {
+                                    overflow-x: auto;
+                                    white-space: nowrap;
+                                }
+
+                                .subcanvas {
+                                    min-height: 200px;
+                                }
+
+                                .canvas > .column {
+                                    display: inline-block;
+                                    /*float: none;*/
+
+                                    min-width: 320px;
+                                    /*min-height: 434px;*/
+                                    /*min-height: 100vh;*/
+
+                                    /*padding: 5px;*/
+                                    border: 5px solid #69c;
+                                    vertical-align: top;
+                                }
+
+                                /* Decorations */
+
+                                .column > .box {
+                                    /*display: inline-block;*/
+                                    margin: 0px;
+                                    /*min-height: 100vh;*/
+                                }
 
 
-                                <div class="form-group">
+                            </style>
 
-                                    <div class="col-sm-3">
-                                        <label for="test" class="col-sm-3 control-label">Projekti</label>
-                                        <div class="col-sm-9">
-                                            <select class="form-control" name="projects[]" id="usersgroupsselect"
-                                                    multiple="multiple">
 
-                                                @foreach($projects as $project)
-                                                    <option value="{{ $project->id }}"
-                                                            {{ $board->projects->contains('id', $project->id) ? 'selected' : '' }}
-                                                            {{ $project->deactivated ? 'disabled' : '' }}>{{ $project->board_name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
+                            <div class="container testimonial-group">
+                                <div class="row canvas" id="board-canvas">
+                                    {{-- Here go the columns! --}}
+
+                                    {{--@include('boards.column')--}}
 
                                 </div>
+                            </div>
 
-
-                                <style>
-                                    /* The heart of the matter */
-                                    .testimonial-group {
-                                        width: 100%;
-                                        min-height: 100vh;
-                                        background: lightgrey;
-
-                                        /*overflow-y: auto;*/
-                                    }
-
-                                    .canvas {
-                                        overflow-x: auto;
-                                        white-space: nowrap;
-                                    }
-
-                                    .subcanvas {
-                                        min-height: 200px;
-                                    }
-
-                                    .canvas > .column {
-                                        display: inline-block;
-                                        /*float: none;*/
-
-                                        min-width: 320px;
-                                        /*min-height: 434px;*/
-                                        /*min-height: 100vh;*/
-
-                                        /*padding: 5px;*/
-                                        border: 5px solid #69c;
-                                        vertical-align: top;
-                                    }
-
-                                    /* Decorations */
-
-                                    .column > .box {
-                                        /*display: inline-block;*/
-                                        margin: 0px;
-                                        /*min-height: 100vh;*/
-                                    }
-
-                                    /*.column:nth-child(3n+1) {*/
-                                    /*background: #c69;*/
-                                    /*}*/
-
-                                    /*.column:nth-child(3n+2) {*/
-                                    /*background: #9c6;*/
-                                    /*}*/
-
-                                    /*.column:nth-child(3n+3) {*/
-                                    /*background: #69c;*/
-                                    /*}*/
-
-
-                                </style>
-
-
-                                <div class="container testimonial-group">
-                                    <div class="row canvas" id="board-canvas">
-                                        {{-- Here go the columns! --}}
-
-                                        {{--@include('boards.column')--}}
-
-                                    </div>
-                                </div>
-
-
-                            </form>
 
                         </div>
                         <!-- /.box-body -->
@@ -157,8 +125,7 @@
          *
          * array of divs that should be drag&drop enabled
          * */
-        var containers = [
-        ];
+        var containers = [];
 
         var drake = dragula({
             containers: containers
@@ -168,8 +135,6 @@
         window.onload = function () {
             makeExisting();
         };
-
-
 
 
         /*
@@ -182,7 +147,7 @@
 
             var rootColumns = board.structured_columns_cards;
             // structuredColumnsCards
-            
+
             if (rootColumns.length > 0) {
 
                 // sort by order (currently on each level starts from beginning)
@@ -217,13 +182,15 @@
                     var pn = parent_name.slice(0);
                     columns[key]['parent_name'] = pn;
 
+                    columns[key]['projects'] = {!! $board->projects !!};
+
                     addExistingColumn(columns[key], place);
 
                     addExistingCards(columns[key].cards, columns[key].id + "_subcanvas");
 
 
                     lvl += 1;
-                    pn += '['+ columns[key].id + '][childs]';
+                    pn += '[' + columns[key].id + '][childs]';
                     forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);
                     // allChildrenCards
                 }
@@ -241,10 +208,10 @@
                 },
                 success: function (data) {
                     $("#" + place).append(data);
-                    
+
                     // allChildrenCards
-                    if(columnData.all_children_cards.length == 0){
-                        var container = $("#"+columnData.id+"_subcanvas")[0];
+                    if (columnData.all_children_cards.length == 0) {
+                        var container = $("#" + columnData.id + "_subcanvas")[0];
                         drake.containers.push(container);
                     }
 
@@ -258,9 +225,6 @@
 //            console.log(cards);
 //            console.log(place);
         }
-
-
-
 
 
     </script>
