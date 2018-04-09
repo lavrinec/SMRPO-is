@@ -32,7 +32,11 @@ class BoardController extends Controller
                 $projects=[];
                 foreach($usersGroup as $gr){
                     $group = Group::where('id', $gr->group_id)->first();
+                    if($group == null){
+                        continue;
+                    }
                     $project = $group->project->all();
+
                     $projects = array_merge($projects, $project);
                 }
                 $projects = array_unique($projects);
