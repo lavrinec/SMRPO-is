@@ -122,6 +122,9 @@ class GroupController extends Controller
     {
 
         $groups = Group::where('id', $id)->first();
+        if($groups == null){
+            return redirect()->route('groups.list')->withErrors(['groupUndefined'=>'Skupina ne obstaja, ali je izbrisana.']);
+        }
 //        $users = Group::find(1)->users()->get();
         $usersGroup =UsersGroup::join('users', "users.id","=", 'users_groups.user_id')->where('users_groups.group_id', $id)->get();
         $usersGroupRoles =UsersGroup::join('users', "users.id","=", 'users_groups.user_id')
@@ -167,7 +170,10 @@ class GroupController extends Controller
          * */
         $redirect = $this->redirectIfNotKM();
         if(isset($redirect)) return $redirect;
-        $groups = Group::where('id', $id)->first();
+        $groups = Group::where('id', $id)->where('deleted_at', '=', null)->first();
+        if($groups == null){
+            return redirect()->route('groups.list')->withErrors(['groupUndefined'=>'Skupina ne obstaja, ali je izbrisana.']);
+        }
         $users = User::all();
         $testGroups = (UsersGroup::where("group_id", $id)->with('role')->get());
         $objectToSendInJson = $this-> generateUsersGroupsRolesStructureForClient($testGroups, $id);
@@ -249,11 +255,26 @@ class GroupController extends Controller
         if(isset($redirect)) return $redirect;
         $group = Group::where('id', $id);
         if ($group->first() != null) {
+            $users_groups = UsersGroup::where('group_id', '=', $id)->get();
+            $this->deleteGroupRelatedData($id, $users_groups);
             $group->delete();
+
         } else {
-            return redirect()->route('groups.show')->withErrors(['someError' => 'yes']);
+            return redirect()->route('groups.show',$id)->withErrors(['someError' => 'yes']);
         }
         return redirect()->route('groups.list');
+    }
+
+    private function deleteGroupRelatedData ($group_id, $users_groups){
+        foreach($users_groups as $users_group){
+            $usersGroupRoles = UsersGroupsRoles::where('users_group_id','=', $users_group->id)->get();
+            if($usersGroupRoles != null){
+                foreach($usersGroupRoles as $usersGroupRole){
+                    $usersGroupRole->delete();
+                }
+            }
+            $users_group->delete();
+        }
     }
 
     public function validateGroup(Request $request, $group = false)
@@ -482,7 +503,9 @@ class GroupController extends Controller
         $users = User::all();
         $roles = Role::all();
         $usersGroups = UsersGroup::where('group_id', $group_id)->get();
-        $usersAndRoles = User::join("users_roles", "users.id", "=", "users_roles.user_id")->join("roles","roles.id", "=", "users_roles.role_id")->get();
+        $usersAndRoles = User::join("users_roles", "users.id", "=", "users_roles.user_id")
+            ->join("roles","roles.id", "=", "users_roles.role_id")
+            ->where('users_roles.deleted_at', '=', null)->get();
 
         return array(
             'users' => $users,

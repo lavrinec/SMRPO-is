@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Board;
 use App\Models\Column;
 use App\Models\Project;
+use App\Models\UsersGroup;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class BoardController extends Controller
 {
@@ -18,6 +21,37 @@ class BoardController extends Controller
     public function index()
     {
         $boards = Board::withTrashed()->get();
+        $user = Auth::user();
+
+        //poisci vse table, na katerih so projekti tega userja
+        if (!$user->isAdmin() && !$user->isKM()) {
+            $usersGroup = UsersGroup::join('groups', "groups.id", "=", 'users_groups.group_id')->where('users_groups.user_id', $user->id)->get();
+            //return $usersGroup;
+            $groups = $user->groups()->get(); //NAPAKA - vrne tudi izbrisane iz skupine!!!
+            //return $groups;
+            $projects = [];
+            foreach ($usersGroup as $gr) {
+                $group = Group::where('id', $gr->group_id)->first();
+                if ($group == null) {
+                    continue;
+                }
+                $project = $group->project->all();
+
+                $projects = array_merge($projects, $project);
+            }
+            $projects = array_unique($projects);
+            //return $projects;
+            $boards = [];
+            foreach ($projects as $project) {
+                if ($board = $project->board == null) continue;
+                $board = $project->board;
+                $boards = array_merge($boards, [$board]);
+
+            }
+
+            $boards = array_unique($boards);
+        }
+
         return view('boards.list')->with('boards', $boards);
     }
 
@@ -93,7 +127,8 @@ class BoardController extends Controller
         $board = Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first();
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
-        $projects = Project::all();
+        //na izbiro so samo projekti te table in projekti, ki se niso dodeljeni
+        $projects = Project::where('board_id', null)->orWhere('board_id', $id)->get();
         return view('boards.edit')->with('board', $board)->with('projects', $projects);
     }
 
@@ -173,6 +208,9 @@ class BoardController extends Controller
     public function focus($id)
     {
         $board = Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first();
+        if ($board == null) {
+            return redirect()->route('boards.list')->withErrors(['NoBoard' => 'Tabla ne obstaja, ali je bila zbrisana']);
+        }
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();
@@ -291,14 +329,27 @@ class BoardController extends Controller
 
         //add project data - ni potestirano, update board ni se narejen
         $project_ids = $request->input('projects');
+
         if (isset($project_ids) && count($project_ids) > 0) {
             Project::where(function ($query) use ($board) {
                 $query->where('board_id', '!=', $board->id)
                     ->orWhereNull('board_id');
             })->whereIn('id', $project_ids)->update(['board_id' => $board->id]);
+
+
         } else
             $project_ids = [];
-        Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->update(['board_id' => null]);
+
+
+        $deleted = Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->get();//->update(['board_id' => null]);
+
+        //prepreci brisanje projektov, ki ze imajo kartice        
+        foreach ($deleted as $project) {
+            if ($this->project_has_cards($project)) {
+                return redirect()->back()->withErrors(['msg' => 'Projekt ' . $project->board_name . ' že ima kartice. Odstranite ga lahko šele po tem ko jih izbrišete.']);
+            } else $project->update(['board_id' => null]);
+        }
+
 
         $order = 0;
         if (!isset($request->column) || count($request->column) < 1) return redirect()->back()->withErrors(['msg' => 'Tabla je brez stolpcev!']);
@@ -318,8 +369,13 @@ class BoardController extends Controller
      * @param  \App\Models\Board $board
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Board $board)
+    public function destroy($id)
     {
+        $board = Board::where('id', $id)->first();
+        //return $board;
+        if ($this->board_has_cards($board)) {
+            return redirect()->back()->withErrors(['msg' => 'Na tabli so kartice. Za izbris odstranite vse kartice']);
+        }
         $board->delete();
         return redirect()->route('boards.list');
     }
@@ -398,5 +454,18 @@ class BoardController extends Controller
 
             $previous = $new->id;
         }
+    }
+
+    private function board_has_cards(Board $board)
+    {
+        foreach ($board->projects as $project) {
+            if ($project->cards->count() > 0) return true;
+        }
+        return false;
+    }
+
+    private function project_has_cards(Project $project)
+    {
+        return $project->cards->count() > 0;
     }
 }

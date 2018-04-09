@@ -127,5 +127,5 @@
 </form>
 <script>
     var $disabledResults = $(".select2");
-    $disabledResults.select2();
+    $disabledResults.select2({ width: resolve });
 </script>

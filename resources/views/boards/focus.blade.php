@@ -22,6 +22,18 @@
 
                     <div class="box">
                         <div class="box-header">
+                            @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
+                                @if($isKM)
+                                    <a href="{{ action('BoardController@edit', $board->id) }}"
+                                       class="btn btn-primary pull-right">
+                                        <b>Uredi</b>
+                                    </a>
+                                    <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
+                                @endif
+                                <button type="button" class="btn btn-primary openCard pull-right" data-card-id="0"
+                                        data-board-id="{{ $board->id }}">Dodaj kartico
+                                </button>
+                            @endif
                             <h3 class="box-title">{{ $board->board_name }}</h3>
                             <div>
                                 {{ $board->description }}
@@ -502,5 +514,5 @@
     </script>
 
 
-
+    @include('modals.modal')
 @endsection
