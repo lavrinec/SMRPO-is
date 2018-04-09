@@ -291,8 +291,12 @@ class BoardController extends Controller
      * @param  \App\Models\Board $board
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Board $board)
-    {
+    public function destroy($id)
+    {   $board = Board::where('id', $id)->first();
+        //return $board;
+        if ($this->board_has_cards($board)){
+            return redirect()->back()->withErrors(['msg' => 'Na tabli so kartice. Za izbris odstranite vse kartice']);
+        }
         $board->delete();
         return redirect()->route('boards.list');
     }
@@ -369,5 +373,12 @@ class BoardController extends Controller
 
             $previous = $new->id;
         }
+    }
+
+    private function board_has_cards(Board $board){
+        foreach($board->projects as $project){
+            if ($project ->cards->count()>0) return true;
+        }
+        return false;
     }
 }
