@@ -88,7 +88,9 @@ class BoardController extends Controller
      */
     public function edit($id)
     {
-        $board = Board::where('id', $id)->with('projects', 'structuredColumns')->first();
+//        $board = Board::where('id', $id)->with('projects', 'structuredColumns')->first();
+
+        $board = Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first();
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();
@@ -116,10 +118,15 @@ class BoardController extends Controller
 
     public function addColumn(Request $request)
     {
+        $cards = [];
 
         if($request->column_data){
 
 //            dd($request->column_data);
+
+            if (array_key_exists('cards', $request->column_data)) {
+                $cards = $request->column_data['cards'];
+            }
 
             return view('boards.column')->with([
                 'column_id' => $request->column_data['id'],
@@ -137,6 +144,8 @@ class BoardController extends Controller
                 'high_priority' => $request->column_data['high_priority'],
                 'acceptance_testing' => $request->column_data['acceptance_testing'],
 
+                'cards' => $cards
+
             ]);
         }
 
@@ -153,6 +162,7 @@ class BoardController extends Controller
                 'parent_name' => $parent_name,
                 'left_id' => $left_id,
                 'level' => $level,
+                'cards' => $cards
             ]);
         }
 

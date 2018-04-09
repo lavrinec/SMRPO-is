@@ -114,7 +114,8 @@
                         <i class="fa fa-arrow-left"></i>
                     </button>
 
-                    <button type="button" class="btn btn-danger col-sm-3" onclick="deleteColumn({{ $column_id }})">
+
+                    <button type="button" class="btn btn-danger col-sm-3" onclick="deleteColumn({{ $column_id }})" {{ count($cards) > 0? 'disabled' : '' }}>
                         <i class="fa fa-trash"></i>
                     </button>
 

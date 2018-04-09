@@ -203,7 +203,7 @@
         function makeExisting() {
             var board = {!! $board !!};
 
-            var rootColumns = board.structured_columns;
+            var rootColumns = board.structured_columns_cards;
 
             if (rootColumns.length > 0) {
                 $("#buttonFirstColumn")[0].setAttribute('disabled', 'disabled');
@@ -245,7 +245,7 @@
 
                     lvl += 1;
                     pn += '['+ columns[key].id + '][childs]';
-                    forColumns(columns[key].all_children, columns[key].id + "_subcanvas", pn, lvl);
+                    forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);
                 }
             }
         }
@@ -261,6 +261,7 @@
                 },
                 success: function (data) {
                     $("#" + place).append(data);
+                    console.log(columnData);
                 }
             });
         }
