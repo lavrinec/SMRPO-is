@@ -503,7 +503,9 @@ class GroupController extends Controller
         $users = User::all();
         $roles = Role::all();
         $usersGroups = UsersGroup::where('group_id', $group_id)->get();
-        $usersAndRoles = User::join("users_roles", "users.id", "=", "users_roles.user_id")->join("roles","roles.id", "=", "users_roles.role_id")->get();
+        $usersAndRoles = User::join("users_roles", "users.id", "=", "users_roles.user_id")
+            ->join("roles","roles.id", "=", "users_roles.role_id")
+            ->where('users_roles.deleted_at', '=', null)->get();
 
         return array(
             'users' => $users,
