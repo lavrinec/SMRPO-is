@@ -23,6 +23,29 @@
 <script src="/dependencies/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
 <script>
+
+    function openCard(cardId, boardId, collumnId) {
+        var param = boardId ? ( '/' + boardId + (collumnId ? ( '/' + collumnId ) : '')) : '';
+        console.log(cardId, boardId, collumnId, param);
+        $('#cardModal .modal-content').load('/cards/' + cardId + '/edit' + param ,function(){
+            $('#cardModal').modal({show:true});
+            $('#updateCard').on('submit',function(e){
+                e.preventDefault();
+                var $form = $('#updateCard');
+                $('#cardModal .modal-content').html("");
+                $.ajax({
+                    url: $form.attr('action'),
+                    type: 'POST',
+                    data: $form.serialize(),
+                    success: function (result) {
+                        $('#cardModal').modal('hide');
+                        $('#saveCard').show();
+                    }
+                });
+            });
+        });
+    }
+
     $(function () {
         $('#example1').DataTable({
             'paging'      : true,
@@ -47,25 +70,7 @@
 
         $('.openCard').on('click',function(e){
             var target = $(e.target), cardId = target.data('cardId'), boardId = target.data('boardId'), collumnId = target.data('collumnId');
-            var param = boardId ? ( '/' + boardId + (collumnId ? ( '/' + collumnId ) : '')) : '';
-            console.log(cardId, boardId, collumnId, param);
-            $('#cardModal .modal-content').load('/cards/' + cardId + '/edit' + param ,function(){
-                $('#cardModal').modal({show:true});
-                $('#updateCard').on('submit',function(e){
-                    e.preventDefault();
-                    var $form = $('#updateCard');
-                    $('#cardModal .modal-content').html("");
-                    $.ajax({
-                        url: $form.attr('action'),
-                        type: 'POST',
-                        data: $form.serialize(),
-                        success: function (result) {
-                            $('#cardModal').modal('hide');
-                            $('#saveCard').show();
-                        }
-                    });
-                });
-            });
+            openCard(cardId,boardId,collumnId);
         });
 /*
         $('#saveCard').on('click',function(e) {
