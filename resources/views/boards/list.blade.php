@@ -84,17 +84,6 @@
                                         <td>
                                         @if($board->deleted_at == null )
                                                 <a href="javascript:reallyDelete({{$board->id}})"><i class="fa fa-remove"></i></a>
-
-                                                <script>
-                                                    function reallyDelete(boardid) {
-                                                        console.log(boardid);
-                                                        var r = confirm("Ali ste prepričani, da želite izbrisati tablo?");
-                                                        
-                                                        if (r == true) {
-                                                             window.location.href = "/boards/" + boardid +"/delete";
-                                                        }
-                                                    }
-                                                </script>
                                             @endif
                                         </td>
                                         @endif
@@ -125,4 +114,14 @@
         </section>
         <!-- /.content -->
     </div>
+    <script>
+        function reallyDelete(boardid) {
+            console.log(boardid);
+            var r = confirm("Ali ste prepričani, da želite izbrisati tablo?");
+
+            if (r == true) {
+                window.location.href = "/boards/" + boardid +"/delete";
+            }
+        }
+    </script>
 @endsection
