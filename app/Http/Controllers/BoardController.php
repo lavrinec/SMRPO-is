@@ -206,6 +206,9 @@ class BoardController extends Controller
     public function focus($id)
     {
         $board = Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first();
+        if($board == null){
+            return redirect()->route('boards.list')->withErrors(['NoBoard'=>'Tabla ne obstaja, ali je bila zbrisana']);
+        }
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();

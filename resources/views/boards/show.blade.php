@@ -59,7 +59,7 @@
 
                             </table>
 
-                            @if(Auth::user()->isKM())
+                            @if(Auth::user()->isKM() && $board->deleted_at==null)
                             <div class="row">
                                 <div class="col-sm-4">
                                     {{-- @if() check if there are cards in columns --}}

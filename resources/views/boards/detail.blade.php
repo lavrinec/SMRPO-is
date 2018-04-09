@@ -21,7 +21,7 @@
         </ul>
 
         <p>
-
+        @if($board->deleted_at == null)
             @if($isKM = Auth::user()->isKM() || Auth::user()->isPO())
                 @if($isKM)
                     <form action="{{ route('boards.copy', ['board' => $board]) }}" method="POST">
@@ -53,6 +53,7 @@
                class="btn btn-success btn-block">
                 <b>Prikaži</b>
             </a>
+        @endif
 
 
 

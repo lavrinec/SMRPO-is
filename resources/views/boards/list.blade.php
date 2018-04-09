@@ -38,6 +38,9 @@
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
+                            @if ($errors->has('NoBoard'))
+                                <span class="help-block">{{ $errors->first('NoBoard') }}</span>
+                            @endif
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
                                 <tr>
