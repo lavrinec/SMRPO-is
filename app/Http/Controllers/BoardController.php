@@ -120,7 +120,7 @@ class BoardController extends Controller
     {
         $cards = [];
 
-        if($request->column_data){
+        if ($request->column_data) {
 
 //            dd($request->column_data);
 
@@ -147,9 +147,7 @@ class BoardController extends Controller
                 'cards' => $cards
 
             ]);
-        }
-
-        else{
+        } else {
             $column_id = "aa" . str_random(20);
             $parent_id = $request->parent_id;
             $parent_name = $request->parent_name;
@@ -181,11 +179,43 @@ class BoardController extends Controller
         return view('boards.focus')->with('board', $board)->with('projects', $projects);
     }
 
+    public function columnHeader(Request $request)
+    {
+        return view('boards.columnHeader')->with(['column' => $request->column_data]);
+    }
+
+    public function columnBody(Request $request)
+    {
+        $cards = [];
+
+        if (array_key_exists('cards', $request->column_data)) {
+            $cards = $request->column_data['cards'];
+        }
+
+        $project_id = $request->project_id;
+
+//        dd($cards);
+
+
+        foreach ($cards as $card) {
+            if ($card["project_id"] != $project_id) {
+                unset($card);
+            }
+        }
+
+        return view('boards.columnBody')->with(['cards' => $cards, 'project_id' => $project_id]);
+    }
+
+
+    function filterArray($value)
+    {
+        return ($value == 2);
+    }
 
     public function columnShow(Request $request)
     {
 
-        if($request->column_data){
+        if ($request->column_data) {
 
             $cards = [];
             $projects = [];
@@ -194,7 +224,7 @@ class BoardController extends Controller
                 $cards = $request->column_data['cards'];
             }
 
-            if(array_key_exists('projects', $request->column_data)){
+            if (array_key_exists('projects', $request->column_data)) {
                 $projects = $request->column_data['projects'];
             }
 
@@ -218,9 +248,7 @@ class BoardController extends Controller
                 'cards' => $cards,
                 'projects' => $projects,
             ]);
-        }
-
-        else{
+        } else {
             $column_id = "aa" . str_random(20);
             $parent_id = $request->parent_id;
             $parent_name = $request->parent_name;
@@ -237,7 +265,6 @@ class BoardController extends Controller
         }
 
     }
-
 
 
     private $tranmitionArray = [];
@@ -264,7 +291,7 @@ class BoardController extends Controller
 
         //add project data - ni potestirano, update board ni se narejen
         $project_ids = $request->input('projects');
-        if(isset($project_ids) && count($project_ids) > 0) {
+        if (isset($project_ids) && count($project_ids) > 0) {
             Project::where(function ($query) use ($board) {
                 $query->where('board_id', '!=', $board->id)
                     ->orWhereNull('board_id');
@@ -274,8 +301,8 @@ class BoardController extends Controller
         Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->update(['board_id' => null]);
 
         $order = 0;
-        if(! isset($request->column) || count($request->column) < 1) return redirect()->back()->withErrors(['msg' => 'Tabla je brez stolpcev!']);
-        foreach ($request->column as $column){
+        if (!isset($request->column) || count($request->column) < 1) return redirect()->back()->withErrors(['msg' => 'Tabla je brez stolpcev!']);
+        foreach ($request->column as $column) {
             $order++;
             $this->processColumn($board->id, $column, $order);
         }
@@ -314,7 +341,7 @@ class BoardController extends Controller
 
         unset($column['parent_name'], $column['level'], $column['types'], $column['childs'], $column['wip']);
 
-        if( !is_numeric ($column['id'])){
+        if (!is_numeric($column['id'])) {
             $old = $column['id'];
             $new = Column::create($column);
             $newId = $new->id;
@@ -328,17 +355,18 @@ class BoardController extends Controller
         $this->allArray[] = $newId;
 
         $order = 0;
-        foreach ($children as $child){
+        foreach ($children as $child) {
             $order++;
             $this->processColumn($boardId, $child, $order, $newId);
         }
         //dd($column);
     }
 
-    private function processThroughArray($column, $key){
-        if(!empty($column[$key])){
-            if( !is_numeric($column[$key])){
-                if(isset($this->tranmitionArray[$column[$key]]))
+    private function processThroughArray($column, $key)
+    {
+        if (!empty($column[$key])) {
+            if (!is_numeric($column[$key])) {
+                if (isset($this->tranmitionArray[$column[$key]]))
                     return $this->tranmitionArray[$column[$key]];
                 else
                     dd("Ni nastavljen", $column['parent_id'], $this->tranmitionArray[$column[$key]]);
@@ -350,15 +378,16 @@ class BoardController extends Controller
 
     private function checkTypes($column, $key)
     {
-        if(isset($column['types']))
-            return (! (empty($column['types'][$key])));
+        if (isset($column['types']))
+            return (!(empty($column['types'][$key])));
         else
             return false;
     }
 
-    private function recursiveSaveColumns($boardId, $parentId, $columns){
+    private function recursiveSaveColumns($boardId, $parentId, $columns)
+    {
         $previous = null;
-        foreach ($columns as $column){
+        foreach ($columns as $column) {
             $new = $column->replicate();
             $new->board_id = $boardId;
             $new->parent_id = $parentId;

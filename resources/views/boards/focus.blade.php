@@ -33,7 +33,6 @@
 
                                 </div>
                             </div>
-
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -79,15 +78,58 @@
                                     /*min-height: 100vh;*/
                                 }
 
+                                tbody>tr {
+                                    border-bottom: 4px solid black;
+                                    border-top: 4px solid black;
+                                }
+
+                                td {
+                                    min-width: 300px;
+                                    vertical-align: top;
+                                }
+
 
                             </style>
 
 
-                            <div class="container testimonial-group">
-                                <div class="row canvas" id="board-canvas">
+                            {{--<div class="container testimonial-group">--}}
+                                {{--<div class="row canvas" id="board-canvas">--}}
                                     {{-- Here go the columns! --}}
 
                                     {{--@include('boards.column')--}}
+
+                                {{--</div>--}}
+                            {{--</div>--}}
+
+
+
+                            <div class="container testimonial-group">
+                                <div class="row canvas" id="board-canvas">
+
+
+                                    <table border="1px">
+                                        <thead id="thead">
+
+                                        {{--<tr>--}}
+                                        {{--@foreach($board->structuredColumnsCards as $rootColumn)--}}
+
+                                        {{--<td id="{{ $rootColumn->board_id }}_thead_td">--}}
+                                        {{--{{ $rootColumn->column_name }}--}}
+
+                                        {{--</td>--}}
+
+                                        {{--@endforeach--}}
+                                        {{--</tr>--}}
+
+
+                                        </thead>
+
+                                        <tbody id="tbody">
+
+
+                                        </tbody>
+                                    </table>
+
 
                                 </div>
                             </div>
@@ -131,30 +173,243 @@
             containers: containers
         });
 
+        var board = {!! $board !!};
+        var projects = {!! $board->projects !!};
+
+
+        var rootColumns = board.structured_columns_cards;
+
+        var allLeaves = [];
+        var allCards = [];
+
+        var maxDepth = 0;
+
+        var numAllLeaves = 0;
+
 
         window.onload = function () {
-            makeExisting();
+//            makeExisting();
+
+            maxDepth = getMaxDepth();
+            numAllLeaves = getNumAllLeaves();
+
+            allLeaves = getAllLeaves();
+
+
+            makeHader();
+            makeBody();
+
+
         };
 
-
         /*
-         * Create and Show already existing columns (if editing saved board)
-         *
-         * */
+        * NEW design
+        *
+        * */
 
-        function makeExisting() {
-            var board = {!! $board !!};
+        function makeHader() {
 
-            var rootColumns = board.structured_columns_cards;
-            // structuredColumnsCards
+            numOfTrs = getMaxDepth();
+
+            for (var i = 0; i < numOfTrs; i++) {
+                $("#thead").append("<tr id='thead_tr_" + i + "'></tr>");
+            }
+
+            makeHeaderTr(rootColumns, 0);
+        }
+
+
+        function makeHeaderTr(row, level) {
+            row.sort(compare);
+
+            $.each(row, function (i, current) {
+
+                var rowspan = 1;
+                if (current.all_children_cards.length == 0) {
+                    rowspan = maxDepth - level;
+                }
+
+                $("#thead_tr_" + level).append(
+                    "<td id='thead_td_" + current.id + "' colspan='" + getNumOfLeaves(current) + "' rowspan='" + rowspan + "'></td>"
+                );
+
+                addColHeader(current, "thead_td_" + current.id);
+
+
+                makeHeaderTr(current.all_children_cards, level + 1);
+            });
+        }
+
+
+        function addColHeader(columnData, place) {
+            $.ajax({
+                type: 'POST',
+                url: "{{ action('BoardController@columnHeader') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'column_data': columnData
+                },
+                success: function (data) {
+                    $("#" + place).append(data);
+
+                }
+            });
+        }
+
+
+        function makeBody() {
+
+            var numOfProjects = projects.length;
+
+            var maxNumOfTds = getNumAllLeaves();
+
+            for (var j = 0; j < numOfProjects; j++) {
+                $("#tbody").append("<tr id='tbody_tr_" + projects[j].id + "'></tr>");
+
+                for (var i = 0; i < maxNumOfTds; i++) {
+                    $("#tbody_tr_" + projects[j].id).append(
+                        "<td class='dragdrop' id='tbody_td_" + projects[j].id + "_" + allLeaves[i].id + "'></td>"
+                    );
+
+                    var container = $("#tbody_td_" + projects[j].id + "_" + allLeaves[i].id)[0];
+                    drake.containers.push(container);
+
+                    addColBody(allLeaves[i], projects[j].id, "tbody_td_" + projects[j].id + "_" + allLeaves[i].id);
+
+                }
+
+            }
+        }
+
+
+        function addColBody(columnData, project_id, place) {
+            $.ajax({
+                type: 'POST',
+                url: "{{ action('BoardController@columnBody') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'column_data': columnData,
+                    'project_id': project_id
+                },
+                success: function (data) {
+                    $("#" + place).append(data);
+
+                }
+            });
+        }
+
+
+        function getMaxDepth() {
+
+            var maxX = 0;
 
             if (rootColumns.length > 0) {
 
-                // sort by order (currently on each level starts from beginning)
-                rootColumns.sort(compare);
+                for (var col in rootColumns) {
+                    if (rootColumns.hasOwnProperty(col)) {
 
-                // array, location, parent-name, level
-                forColumns(rootColumns, 'board-canvas', '', 0);
+                        var depthX = getDepth(rootColumns[col]);
+                        if (maxX < depthX) {
+                            maxX = depthX;
+                        }
+
+                    }
+                }
+            }
+
+            maxX += 1;
+            // console.log("max globina " + maxX);
+            return maxX;
+        }
+
+        function getDepth(column) {
+            var max = 0;
+
+            if (column.all_children_cards == 0) {
+                return 0;
+            }
+            else {
+                for (var key in column.all_children_cards) {
+                    if (column.all_children_cards.hasOwnProperty(key)) {
+
+                        var depth = getDepth(column.all_children_cards[key]);
+
+                        if (depth > max) {
+                            max = depth;
+                        }
+                    }
+                }
+                return max + 1;
+            }
+        }
+
+
+        function getNumAllLeaves() {
+
+            var sumX = 0;
+
+            if (rootColumns.length > 0) {
+                for (var col in rootColumns) {
+                    if (rootColumns.hasOwnProperty(col)) {
+                        sumX += getNumOfLeaves(rootColumns[col]);
+                    }
+                }
+            }
+
+            // console.log("st listov " + sumX);
+            return sumX;
+        }
+
+
+        function getNumOfLeaves(column) {
+            var sum = 0;
+
+            if (column.all_children_cards == 0) {
+                return 1;
+            }
+            else {
+                for (var key in column.all_children_cards) {
+                    if (column.all_children_cards.hasOwnProperty(key)) {
+                        sum += getNumOfLeaves(column.all_children_cards[key]);
+                    }
+                }
+                return sum;
+            }
+        }
+
+
+        function getAllLeaves() {
+            var leavesX = [];
+
+
+            if (rootColumns.length > 0) {
+                for (var col in rootColumns) {
+                    if (rootColumns.hasOwnProperty(col)) {
+                        leavesX = leavesX.concat(getLeaves(rootColumns[col]));
+                    }
+                }
+            }
+
+            // console.log("leaves");
+            // console.log(leavesX);
+
+            return leavesX;
+
+        }
+
+        function getLeaves(column) {
+            var leaves = [];
+
+            if (column.all_children_cards == 0) {
+                return [column];
+            }
+            else {
+                for (var key in column.all_children_cards) {
+                    if (column.all_children_cards.hasOwnProperty(key)) {
+                        leaves = leaves.concat(getLeaves(column.all_children_cards[key]));
+                    }
+                }
+                return leaves;
             }
         }
 
@@ -168,63 +423,80 @@
         }
 
 
-        function forColumns(columns, place, parent_name, level) {
-            // just append to the canvas
+        // OLD
+        /*
+         * Create and Show already existing columns (if editing saved board)
+         *
+         * */
 
-            columns.sort(compare);
-
-            for (var key in columns) {
-                if (columns.hasOwnProperty(key)) {
-
-                    var lvl = Number(level);
-                    columns[key]['level'] = lvl;
-
-                    var pn = parent_name.slice(0);
-                    columns[key]['parent_name'] = pn;
-
-                    columns[key]['projects'] = {!! $board->projects !!};
-
-                    addExistingColumn(columns[key], place);
-
-                    addExistingCards(columns[key].cards, columns[key].id + "_subcanvas");
-
-
-                    lvl += 1;
-                    pn += '[' + columns[key].id + '][childs]';
-                    forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);
-                    // allChildrenCards
-                }
-            }
-        }
+//        function makeExisting() {
+//
+//            // structuredColumnsCards
+//
+//            if (rootColumns.length > 0) {
+//
+//                // sort by order (currently on each level starts from beginning)
+//                rootColumns.sort(compare);
+//
+//                // array, location, parent-name, level
+//                forColumns(rootColumns, 'board-canvas', '', 0);
+//            }
+//        }
 
 
-        function addExistingColumn(columnData, place) {
-            $.ajax({
-                type: 'POST',
-                url: "{{ action('BoardController@columnShow') }}",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'column_data': columnData
-                },
-                success: function (data) {
-                    $("#" + place).append(data);
-
-                    // allChildrenCards
-                    if (columnData.all_children_cards.length == 0) {
-                        var container = $("#" + columnData.id + "_subcanvas")[0];
-                        drake.containers.push(container);
-                    }
-
-                }
-            });
-        }
 
 
-        function addExistingCards(cards, place) {
-//            console.log("function for viewing the cards");
-//            console.log(cards);
-//            console.log(place);
-        }
+
+        {{--function forColumns(columns, place, parent_name, level) {--}}
+            {{--// just append to the canvas--}}
+
+            {{--columns.sort(compare);--}}
+
+            {{--for (var key in columns) {--}}
+                {{--if (columns.hasOwnProperty(key)) {--}}
+
+                    {{--var lvl = Number(level);--}}
+                    {{--columns[key]['level'] = lvl;--}}
+
+                    {{--var pn = parent_name.slice(0);--}}
+                    {{--columns[key]['parent_name'] = pn;--}}
+
+                    {{--columns[key]['projects'] = {!! $board->projects !!};--}}
+
+                    {{--addExistingColumn(columns[key], place);--}}
+
+                    {{--addExistingCards(columns[key].cards, columns[key].id + "_subcanvas");--}}
+
+
+                    {{--lvl += 1;--}}
+                    {{--pn += '[' + columns[key].id + '][childs]';--}}
+                    {{--forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);--}}
+                    {{--// allChildrenCards--}}
+                {{--}--}}
+            {{--}--}}
+        {{--}--}}
+
+
+        {{--function addExistingColumn(columnData, place) {--}}
+            {{--$.ajax({--}}
+                {{--type: 'POST',--}}
+                {{--url: "{{ action('BoardController@columnShow') }}",--}}
+                {{--data: {--}}
+                    {{--"_token": "{{ csrf_token() }}",--}}
+                    {{--'column_data': columnData--}}
+                {{--},--}}
+                {{--success: function (data) {--}}
+                    {{--$("#" + place).append(data);--}}
+
+                    {{--// allChildrenCards--}}
+                    {{--if (columnData.all_children_cards.length == 0) {--}}
+                        {{--var container = $("#" + columnData.id + "_subcanvas")[0];--}}
+                        {{--drake.containers.push(container);--}}
+                    {{--}--}}
+
+                {{--}--}}
+            {{--});--}}
+        {{--}--}}
 
 
     </script>
