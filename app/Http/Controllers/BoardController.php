@@ -188,9 +188,14 @@ class BoardController extends Controller
         if($request->column_data){
 
             $cards = [];
+            $projects = [];
 
             if (array_key_exists('cards', $request->column_data)) {
                 $cards = $request->column_data['cards'];
+            }
+
+            if(array_key_exists('projects', $request->column_data)){
+                $projects = $request->column_data['projects'];
             }
 
 
@@ -211,7 +216,7 @@ class BoardController extends Controller
                 'acceptance_testing' => $request->column_data['acceptance_testing'],
 
                 'cards' => $cards,
-                'projects' => $request->column_data['projects'],
+                'projects' => $projects,
             ]);
         }
 
