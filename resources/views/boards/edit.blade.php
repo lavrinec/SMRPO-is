@@ -45,7 +45,8 @@
                                                 @foreach($projects as $project)
                                                     <option value="{{ $project->id }}"
                                                             {{ $board->projects->contains('id', $project->id) ? 'selected' : '' }}
-                                                            {{ $project->deactivated ? 'disabled' : '' }}>{{ $project->board_name }}</option>
+                                                            {{ ($project->deactivated) ? 'disabled' : '' }}
+                                                            >{{ $project->board_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
