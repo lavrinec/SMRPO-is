@@ -55,7 +55,8 @@
                                 @foreach($boards as $board)
                                     <tr>
                                         <td>
-                                            <a href="{{ action('BoardController@show', [$board->id]) }}">{{ $board->board_name }}</a>
+                                            {{--<a href="{{ action('BoardController@show', [$board->id]) }}">{{ $board->board_name }}</a>--}}
+                                            <a href="{{ action('BoardController@focus', $board->id) }}">{{$board->board_name}}</a>
                                         </td>
                                         <td>{{ $board->description }}</td>
 
