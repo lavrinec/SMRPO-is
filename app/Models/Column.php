@@ -34,7 +34,9 @@ class Column extends Model
 
     public function allChildrenCards()
     {
-        return $this->children()->with('allChildrenCards', 'cards');
+        return $this->children()->with('allChildrenCards')->with(['cards' => function ($query) {
+            $query->with('project', 'user');
+        }]);;
     }
 
     public function leftChild()

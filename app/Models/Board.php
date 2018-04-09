@@ -40,7 +40,9 @@ class Board extends Model
 
     public function structuredColumnsCards()
     {
-        return $this->orderdParentColumns()->with('allChildrenCards', 'cards');
+        return $this->orderdParentColumns()->with('allChildrenCards')->with(['cards' => function ($query) {
+            $query->with('project', 'user');
+        }]);
     }
 
     public function cards()
