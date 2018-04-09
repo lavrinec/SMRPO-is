@@ -7,6 +7,7 @@ use App\Models\Column;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class BoardController extends Controller
 {
@@ -18,7 +19,28 @@ class BoardController extends Controller
     public function index()
     {
         $boards = Board::withTrashed()->get();
-     
+        $user = Auth::user();
+        
+        //poisci vse table, na katerih so projekti tega userja
+        if (!$user->isAdmin()&&!$user->isKM()){
+                $groups = $user->groups->all();
+                $projects=[];
+                foreach($groups as $group){
+                    $project = $group->project->all();
+                    $projects = array_merge($projects, $project);
+                }
+                $projects = array_unique($projects);
+                //return $projects;
+                $boards = [];
+                foreach($projects as $project){
+                    if($board=$project->board==null) continue;
+                    $board=$project->board;
+                    $boards= array_merge($boards, [$board]);
+                   
+                }
+                
+                $boards=array_unique($boards); 
+        }
 
         return view('boards.list')->with('boards', $boards);
     }
@@ -266,6 +288,8 @@ class BoardController extends Controller
 
         //add project data - ni potestirano, update board ni se narejen
         $project_ids = $request->input('projects');
+
+
         if(isset($project_ids) && count($project_ids) > 0) {
             Project::where(function ($query) use ($board) {
                 $query->where('board_id', '!=', $board->id)
