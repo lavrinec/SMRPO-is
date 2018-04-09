@@ -5,9 +5,15 @@
             {{ $card->card_name }}
         </h5>
         <br>
-        <small>pooblaščeni (id): {{ $card->user_id }}</small>
+        <small>pooblaščeni:
+            @if($card->user)
+                {{ $card->user["first_name"] }} {{ $card->user["last_name"] }}
+            @else
+                -
+            @endif
+        </small>
         <br>
-        <small>Projekt (id): {{ $card->project_id }}</small>
+        <small>Projekt: {{ $card->project["board_name"] }}</small>
 
     </div>
 
