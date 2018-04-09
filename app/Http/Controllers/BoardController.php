@@ -18,6 +18,8 @@ class BoardController extends Controller
     public function index()
     {
         $boards = Board::withTrashed()->get();
+     
+
         return view('boards.list')->with('boards', $boards);
     }
 

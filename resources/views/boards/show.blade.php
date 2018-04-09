@@ -11,7 +11,7 @@
                 Tabla
             </h1>
         </section>
-
+        @include('layout.error')
         <!-- Main content -->
         <section class="content">
 
@@ -59,7 +59,7 @@
 
                             </table>
 
-
+                            @if(Auth::user()->isKM())
                             <div class="row">
                                 <div class="col-sm-4">
                                     {{-- @if() check if there are cards in columns --}}
@@ -72,23 +72,26 @@
 
                                 <div class="col-sm-offset-6 col-sm-2">
                                     @if($board->deleted_at == null )
-                                        <a href="javascript:reallyDelete()"
+                                        <a href="javascript:reallyDelete({{$board->id}})"
                                            class="btn btn-danger btn-block">
                                             <b>Izbriši</b>
                                         </a>
 
                                         <script>
-                                            function reallyDelete() {
+                                            function reallyDelete(boardid) {
+                                                console.log(boardid);
                                                 var r = confirm("Ali ste prepričani, da želite izbrisati tablo?");
+                                                        
                                                 if (r == true) {
-                                                    window.location.href = "{{ action('BoardController@destroy', $board) }}";
+                                                        window.location.href = "/boards/" + boardid +"/delete";
+                                                    }
                                                 }
-                                            }
                                         </script>
                                     @endif
 
                                 </div>
                             </div>
+                            @endif
 
 
                         </div>

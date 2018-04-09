@@ -44,8 +44,10 @@
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Status</th>
+                                    @if(Auth::user()->isKM())
                                     <th>Uredi</th>
                                     <th>Izbriši</th>
+                                    @endif
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -64,6 +66,7 @@
                                                 Aktivna
                                             @endif
                                         </td>
+                                        @if(Auth::user()->isKM())
                                         <td>
                                             {{-- check if board has cards in columns --}}
                                             {{-- if no, board can still be edited --}}
@@ -90,6 +93,7 @@
                                                 </script>
                                             @endif
                                         </td>
+                                        @endif
                                     </tr>
                                 @endforeach
 
@@ -99,8 +103,10 @@
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Status</th>
+                                    @if(Auth::user()->isKM())
                                     <th>Uredi</th>
                                     <th>Izbriši</th>
+                                    @endif
                                 </tr>
                                 </tfoot>
                             </table>
