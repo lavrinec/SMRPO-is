@@ -22,7 +22,7 @@
 
                     <div class="box">
                         <div class="box-header">
-                            @if($isKM = Auth::user()->isKM() || Auth::user()->isPO())
+                            @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
                                 @if($isKM)
                                     <a href="{{ action('BoardController@edit', $board->id) }}"
                                        class="btn btn-primary pull-right">
