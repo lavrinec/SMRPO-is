@@ -43,8 +43,8 @@
         @endif
        
 
-        @if($column["acceptance_testing"] === 1)
-            Stolpec za sprejemno testiranje
+        @if($column["acceptance_testing"])
+            Stolpec za sprejemno testiranje {{ $column["acceptance_testing"] }}
         @endif
 
     </div>
