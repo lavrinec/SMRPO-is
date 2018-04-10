@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 function checkWipViolation(Card $card, $reason = "", $from = null){
     $column = $card->column()->with('cards')->first();
     $cardsNum = count($column->cards);
-    if($column->WIP < $cardsNum)
+    if($column->WIP > 0 && $column->WIP < $cardsNum)
         insertWipViolation($card, $reason, $from);
     else {
         $parent = $column->parent()->with('children.cards')->first();
@@ -14,7 +14,7 @@ function checkWipViolation(Card $card, $reason = "", $from = null){
         foreach ($parent->children as $child){
             $cardsNum += count($child->cards);
         }
-        if($parent->WIP < $cardsNum)
+        if($parent->WIP > 0 &&$parent->WIP < $cardsNum)
             insertWipViolation($card, $reason . " (na starševski tabeli)", $from);
     }
 
