@@ -74,13 +74,12 @@
                 <div class="form-group">
                     <label for="" class="col-sm-3 control-label">Vloge</label>
                     <div class="col-sm-9">
-
                         <label for="{{ $column['id'] }}_start_border" class="control-sidebar-subheading">
                             <input id="{{ $column['id'] }}_start_border"
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][start_border]"
                                    value="start_border" type="checkbox" class="pull-left"
                                    onclick="checkChecked({{ $column['id'] }},'start_border')"
-                                    {{ isset($start_border)&&$start_border==1 ? 'checked' : ''}}>
+                                    {{ isset($column['start_border']) && $column['start_border'] == 1 ? 'checked' : ''}}>
                             Začetni robni
                         </label>
 
@@ -89,7 +88,7 @@
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][end_border]"
                                    value="end_border" type="checkbox" class="pull-left"
                                    onclick="checkChecked({{ $column['id'] }},'end_border')"
-                                    {{ isset($end_border)&&$end_border==1 ? 'checked' : ''}}>
+                                    {{ isset($column['end_border']) && $column['end_border'] == 1 ? 'checked' : ''}}>
                             Končni robni
                         </label>
 
@@ -98,7 +97,7 @@
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][high_priority]"
                                    value="high_priority" type="checkbox" class="pull-left"
                                    onclick="checkChecked({{ $column['id'] }},'high_priority')"
-                                    {{ isset($high_priority)&&$high_priority==1 ? 'checked' : ''}}>
+                                    {{ isset($column['high_priority']) && $column['high_priority'] == 1 ? 'checked' : ''}}>
                             Za nujne kartice
                         </label>
 
@@ -107,7 +106,7 @@
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][acceptance_testing]"
                                    value="acceptance_testing" type="checkbox" class="pull-left"
                                    onclick="checkChecked({{ $column['id'] }},'acceptance_testing')"
-                                    {{ isset($acceptance_testing)&&$acceptance_testing==1 ? 'checked' : ''}}>
+                                    {{ isset($column['acceptance_testing']) && $column['acceptance_testing'] == 1 ? 'checked' : ''}}>
                             Sprejemno testiranje
                         </label>
 
