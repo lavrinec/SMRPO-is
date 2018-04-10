@@ -37,22 +37,22 @@
                 </div>
 
                 <div class="col-sm-8">
-                    @if($start_border)
-                        Začetni mejni {{ $start_border }}
+                    @if($start_border === 1)
+                        Začetni mejni
                     @endif
                     <br>
 
-                    @if($end_border)
+                    @if($end_border === 1)
                         Končni mejni
                     @endif
                     <br>
 
-                    @if($high_priority)
+                    @if($high_priority === 1)
                         Stolpec za nujne kartice
                     @endif
                     <br>
 
-                    @if($acceptance_testing)
+                    @if($acceptance_testing === 1)
                         Stolpec za sprejemno testiranje
                     @endif
 
