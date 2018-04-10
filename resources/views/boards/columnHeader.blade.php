@@ -1,4 +1,4 @@
-<pre style="width: 100%; text-align: center; line-height: 0.2em;">začasni id: {{ substr($column["id"], 0, 6) }}</pre>
+<pre style="width: 100%; text-align: center; line-height: 0.2em;">id: {{ substr($column["id"], 0, 6) }}</pre>
 
 {{--<input type="hidden" id="{{ $column->column_id }}_parent_id"--}}
        {{--name="column{{ $column->parent_name }}[{{ $column->column_id }}][parent_id]" value="{{ $column->parent_id }}">--}}

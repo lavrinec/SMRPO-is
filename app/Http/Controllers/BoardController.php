@@ -153,50 +153,38 @@ class BoardController extends Controller
 
     public function addColumn(Request $request)
     {
-        $cards = [];
+//        $cards = [];
 
         if ($request->column_data) {
 
-//            dd($request->column_data);
+            $column = $request->column_data;
 
-            if (array_key_exists('cards', $request->column_data)) {
-                $cards = $request->column_data['cards'];
-            }
 
-            return view('boards.column')->with([
-                'column_id' => $request->column_data['id'],
-                'parent_id' => $request->column_data['parent_id'],
-                'parent_name' => $request->column_data['parent_name'],
-                'left_id' => $request->column_data['left_id'],
-                'level' => $request->column_data['level'],
+            return view('boards.column')->with(['column'=>$column]);
 
-                'column_name' => $request->column_data['column_name'],
-                'description' => $request->column_data['description'],
-                'WIP' => $request->column_data['WIP'],
-
-                'start_border' => $request->column_data['start_border'],
-                'end_border' => $request->column_data['end_border'],
-                'high_priority' => $request->column_data['high_priority'],
-                'acceptance_testing' => $request->column_data['acceptance_testing'],
-
-                'cards' => $cards
-
-            ]);
         } else {
-            $column_id = "aa" . str_random(20);
-            $parent_id = $request->parent_id;
-            $parent_name = $request->parent_name;
-            $left_id = $request->left_id;
-            $level = $request->level;
 
-            return view('boards.column')->with([
-                'column_id' => $column_id,
-                'parent_id' => $parent_id,
-                'parent_name' => $parent_name,
-                'left_id' => $left_id,
-                'level' => $level,
-                'cards' => $cards
-            ]);
+            $column = [];
+
+
+            $column["id"] = "aa" . str_random(20);
+            $column["parent_id"] = $request->parent_id;
+            $column["parent_name"] = $request->parent_name;
+            $column["left_id"] = $request->left_id;
+            $column["allChildrenCards"] = [];
+            $column["cards"] = [];
+//            $column["level"] = $request->level;
+
+            return view('boards.column')->with(["column" => $column]);
+
+//            return view('boards.column')->with([
+//                'column_id' => $column_id,
+//                'parent_id' => $parent_id,
+//                'parent_name' => $parent_name,
+//                'left_id' => $left_id,
+//                'level' => $level,
+////                'cards' => $cards
+//            ]);
         }
 
     }

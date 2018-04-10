@@ -11,9 +11,9 @@
             {{--</h1>--}}
         </section>
 
-        @include('layout.error')
+    @include('layout.error')
 
-        <!-- Main content -->
+    <!-- Main content -->
         <section class="content">
 
             <div class="row">
@@ -46,7 +46,7 @@
                                                     <option value="{{ $project->id }}"
                                                             {{ $board->projects->contains('id', $project->id) ? 'selected' : '' }}
                                                             {{ ($project->deactivated) ? 'disabled' : '' }}
-                                                            >{{ $project->board_name }}</option>
+                                                    >{{ $project->board_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -92,8 +92,6 @@
                                     </div>
 
                                 </div>
-
-
 
 
                                 <style>
@@ -157,9 +155,17 @@
 
                                         {{--@include('boards.column')--}}
 
+
+                                        @foreach($board->structuredColumnsCards as $rootColumn)
+
+                                            @include('boards.column', ['column' => $rootColumn])
+
+
+                                        @endforeach
+
+
                                     </div>
                                 </div>
-
 
 
                             </form>
@@ -192,7 +198,13 @@
 
 
         window.onload = function () {
-            makeExisting();
+//            makeExisting();
+
+            redoLeftIds();
+            redoParentNames();
+
+            checkIfEmpty($("#board-canvas")[0]);
+
         };
 
 
@@ -201,22 +213,22 @@
          *
          * */
 
-        function makeExisting() {
-            var board = {!! $board !!};
+        {{--function makeExisting() {--}}
+        {{--var board = {!! $board !!};--}}
 
-            var rootColumns = board.structured_columns_cards;
+        {{--var rootColumns = board.structured_columns_cards;--}}
 
-            if (rootColumns.length > 0) {
-                $("#buttonFirstColumn")[0].setAttribute('disabled', 'disabled');
+        {{--if (rootColumns.length > 0) {--}}
+        {{--$("#buttonFirstColumn")[0].setAttribute('disabled', 'disabled');--}}
 
-                // sort by order (currently on each level starts from beginning)
-                rootColumns.sort(compare);
+        {{--// sort by order (currently on each level starts from beginning)--}}
+        {{--rootColumns.sort(compare);--}}
 
-                // array, location, parent-name, level
-                forColumns(rootColumns, 'board-canvas', '', 0);
+        {{--// array, location, parent-name, level--}}
+        {{--forColumns(rootColumns, 'board-canvas', '', 0);--}}
 
-            }
-        }
+        {{--}--}}
+        {{--}--}}
 
 
         function compare(a, b) {
@@ -228,44 +240,44 @@
         }
 
 
-        function forColumns(columns, place, parent_name, level) {
-            // just append to the canvas
+        //        function forColumns(columns, place, parent_name, level) {
+        //            // just append to the canvas
+        //
+        //            columns.sort(compare);
+        //
+        //            for (var key in columns) {
+        //                if (columns.hasOwnProperty(key)) {
+        //
+        //                    var lvl = Number(level);
+        //                    columns[key]['level'] = lvl;
+        //
+        //                    var pn = parent_name.slice(0);
+        //                    columns[key]['parent_name'] = pn;
+        //
+        //                    addExistingColumn(columns[key], place);
+        //
+        //                    lvl += 1;
+        //                    pn += '[' + columns[key].id + '][childs]';
+        //                    forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);
+        //                }
+        //            }
+        //        }
 
-            columns.sort(compare);
 
-            for (var key in columns) {
-                if (columns.hasOwnProperty(key)) {
-
-                    var lvl = Number(level);
-                    columns[key]['level'] = lvl;
-
-                    var pn = parent_name.slice(0);
-                    columns[key]['parent_name'] = pn;
-
-                    addExistingColumn(columns[key], place);
-
-                    lvl += 1;
-                    pn += '['+ columns[key].id + '][childs]';
-                    forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);
-                }
-            }
-        }
-
-
-        function addExistingColumn(columnData, place) {
-            $.ajax({
-                type: 'POST',
-                url: "{{ action('BoardController@addColumn') }}",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'column_data': columnData
-                },
-                success: function (data) {
-                    $("#" + place).append(data);
-                    console.log(columnData);
-                }
-            });
-        }
+        {{--function addExistingColumn(columnData, place) {--}}
+        {{--$.ajax({--}}
+        {{--type: 'POST',--}}
+        {{--url: "{{ action('BoardController@addColumn') }}",--}}
+        {{--data: {--}}
+        {{--"_token": "{{ csrf_token() }}",--}}
+        {{--'column_data': columnData--}}
+        {{--},--}}
+        {{--success: function (data) {--}}
+        {{--$("#" + place).append(data);--}}
+        {{--console.log(columnData);--}}
+        {{--}--}}
+        {{--});--}}
+        {{--}--}}
 
 
         /*
@@ -292,6 +304,8 @@
                     $('html,body').animate({scrollTop: $("#board-canvas").offset().top}, 'slow');
 
                     $("#board-canvas").append(data);
+                    redoLeftIds();
+                    redoParentNames();
                 }
             });
         }
@@ -307,11 +321,12 @@
                     "_token": "{{ csrf_token() }}",
                     'parent_id': $("#" + column.id + "_parent_id")[0].value,
                     'parent_name': $("#" + column.id + "_parent_name")[0].value.replace('[' + column.id + ']', ''),
-                    'level': parseInt($("#" + column.id + "_level")[0].value)
+//                    'level': parseInt($("#" + column.id + "_level")[0].value)
                 },
                 success: function (data) {
                     $(data).insertBefore($("#" + column.id));
                     redoLeftIds();
+                    redoParentNames();
 
                 }
             });
@@ -331,11 +346,12 @@
                     "_token": "{{ csrf_token() }}",
                     'parent_id': $("#" + column.id + "_parent_id")[0].value,
                     'parent_name': $("#" + column.id + "_parent_name")[0].value.replace('[' + column.id + ']', ''),
-                    'level': parseInt($("#" + column.id + "_level")[0].value)
+//                    'level': parseInt($("#" + column.id + "_level")[0].value)
                 },
                 success: function (data) {
                     $(data).insertAfter($("#" + column.id));
                     redoLeftIds();
+                    redoParentNames();
                 }
             });
         }
@@ -352,13 +368,14 @@
                     "_token": "{{ csrf_token() }}",
                     'parent_id': column.id,
                     'parent_name': $("#" + column.id + "_parent_name")[0].value + '[childs]',
-                    'level': parseInt($("#" + column.id + "_level")[0].value) + 1
+//                    'level': parseInt($("#" + column.id + "_level")[0].value) + 1
                 },
                 success: function (data) {
                     // disable [add first subcolumn] button
                     $("#" + column.id + "_addFirstSubcolumn")[0].setAttribute('disabled', 'disabled');
                     $("#" + column.id + "_subcanvas").append(data);
                     redoLeftIds();
+                    redoParentNames();
                 }
             });
         }
@@ -372,24 +389,43 @@
             column.parentNode.removeChild(column);
             checkIfEmpty(parent);
             redoLeftIds();
+            redoParentNames();
             return false;
         }
 
         function checkIfEmpty(parent) {
-            if ($("#" + parent.id)[0].childElementCount == 0) {
-                if (parent.id == 'board-canvas') {
+            console.log("#" + parent.id);
+
+            if (parent.id == 'board-canvas' ) {
+
+                if($("#" + parent.id)[0].childElementCount == 0){
                     $("#buttonFirstColumn")[0].removeAttribute("disabled");
                 }
-
-                var splitedID = parent.id.split("_");
-                // splitedID[0] = random string = column id
-                //splitedID[1] = subcanvas
-
-                if (splitedID[1] == "subcanvas") {
-                    console.log(parent.id + "je prazen");
-                    $("#" + splitedID[0] + "_addFirstSubcolumn")[0].removeAttribute('disabled');
+                else{
+                    $("#buttonFirstColumn")[0].setAttribute('disabled', 'disabled');
                 }
             }
+
+
+            else{
+
+                var splitedID = parent.id.split("_");
+                console.log("splited ");
+                console.log(splitedID);
+
+                if (splitedID[1] == "subcanvas") {
+                    if ($("#" + parent.id)[0].childElementCount == 0) {
+                        $("#" + splitedID[0] + "_addFirstSubcolumn")[0].removeAttribute('disabled');
+                    }
+                    else{
+                        $("#" + splitedID[0] + "_addFirstSubcolumn")[0].setAttribute('disabled', 'disabled');
+                    }
+
+                }
+
+
+            }
+
         }
 
         function redoLeftIds() {
@@ -404,27 +440,108 @@
             });
         }
 
+        function redoParentNames() {
+            $(".column").each(function (i, current) {
+
+                checkIfEmpty(current);
+
+                var parent = $("#" + current.id).parent()[0];
+
+                var inputs = $("#"+current.id+" :input");
+
+
+                if (parent.id == "board-canvas") {
+                    var nameX = "[" + current.id + "]";
+                    $("#" + current.id + "_parent_name")[0].value = "[" + current.id + "]";
+
+                    renameX(inputs, "[" + current.id + "]");
+                }
+                else {
+                    parent.id = parent.id.replace("_subcanvas", "");
+                    var parents_parent_name = $("#" + parent.id + "_parent_name")[0];
+//                    var nameX = parents_parent_name.value + "[childs][" + current.id + "]";
+
+                    $("#" + current.id + "_parent_name")[0].value = parents_parent_name.value + "[childs][" + current.id + "]";
+
+                    renameX(inputs, parents_parent_name.value + "[childs][" + current.id + "]");
+                }
+
+
+
+
+
+
+
+            });
+        }
+
+
+        function renameX(inputs, name){
+//            console.log("renameX " + name);
+            
+            $.each(inputs, function (i, currentInput) {
+
+                if (currentInput.id.includes("parent_id")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[parent_id]");
+                }
+                else if (currentInput.id.includes("parent_name")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[parent_name]");
+                }
+                else if (currentInput.id.includes("left_id")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[left_id]");
+                }
+                else if (currentInput.id.includes("id")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[id]");
+                }
+                else if (currentInput.id.includes("column_name")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[column_name]");
+                }
+                else if (currentInput.id.includes("description")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[description]");
+                }
+                else if (currentInput.id.includes("wip")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[wip]");
+                }
+                else if (currentInput.id.includes("start_border")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[types][start_border]");
+                }
+                else if (currentInput.id.includes("end_border")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[types][end_border]");
+                }
+                else if (currentInput.id.includes("high_priority")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[types][high_priority]");
+                }
+                else if (currentInput.id.includes("acceptance_testing")) {
+                    $("#"+currentInput.id).attr('name', "column"+name+"[types][acceptance_testing]");
+                }
+
+
+
+            });
+        }
+
+
         function checkChecked(clickedItem, group) {
             if (typeof clickedItem == 'number') {
-                clickedItem = $("#"+clickedItem+"_"+group)[0];
+                clickedItem = $("#" + clickedItem + "_" + group)[0];
             }
-            else{
-                clickedItem = $("#"+clickedItem.id+"_"+group)[0];
+            else {
+                clickedItem = $("#" + clickedItem.id + "_" + group)[0];
             }
 
-            var groupItems = $( "input[name*="+group+"]");
+            var groupItems = $("input[name*=" + group + "]");
 
-            if(clickedItem.checked){
+            if (clickedItem.checked) {
                 groupItems.each(function (i, current) {
-                    if(current != clickedItem){
+                    if (current != clickedItem) {
                         console.log(current.checked);
 
-                        if(current.checked){
+                        if (current.checked) {
                             if (confirm("Kot " + group + "je že označen drug stolpec." +
                                     "\n Ali želite spremeniti?")) {
-                                $("#"+current.id).prop('checked', false);
+                                $("#" + current.id).prop('checked', false);
                             } else {
-                                $("#"+clickedItem.id).prop('checked', false);
+                                $("#" + clickedItem.id).prop('checked', false);
                             }
                         }
 
