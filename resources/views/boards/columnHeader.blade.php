@@ -30,21 +30,21 @@
         <br>
         WIP: {{ $column["WIP"] }}
         <br>       
-        @if($column["start_border"] === 1)
+        @if($column["start_border"] === 1 || $column["start_border"]  === 'true')
             Začetni mejni
         @endif
        
-        @if($column["end_border"] === 1)
+        @if($column["end_border"] === 1 || $column["end_border"]  === 'true')
             Končni mejni
         @endif
        
-        @if($column["high_priority"] === 1)
+        @if($column["high_priority"] === 1 || $column["high_priority"]  === 'true')
             Stolpec za nujne kartice
         @endif
        
 
-        @if($column["acceptance_testing"])
-            Stolpec za sprejemno testiranje {{ $column["acceptance_testing"] }}
+        @if($column["acceptance_testing"] === 1 || $column["acceptance_testing"]  === 'true')
+            Stolpec za sprejemno testiranje
         @endif
 
     </div>
