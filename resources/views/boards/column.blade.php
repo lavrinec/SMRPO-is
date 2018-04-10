@@ -8,7 +8,7 @@
                name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][parent_id]"
                value="{{ $column['parent_id'] }}">
 
-        <input type="text" id="{{ $column['id'] }}_parent_name"
+        <input type="hidden" id="{{ $column['id'] }}_parent_name"
                name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][parent_name]"
                value="{{ $column['parent_name'] }}[{{ $column['id'] }}]">
 

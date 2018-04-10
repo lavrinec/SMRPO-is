@@ -21,7 +21,7 @@
 
 <div class="row">
 
-    <div class="col-sm-3">
+    <div class="col-sm-12">
         <h4 class="">
             {{ $column["column_name"] }}
         </h4>
@@ -29,25 +29,19 @@
         {{ $column["description"] }}
         <br>
         WIP: {{ $column["WIP"] }}
-        <br>
-        &nbsp;
-    </div>
-
-    <div class="col-sm-9">
+        <br>       
         @if($column["start_border"])
             Začetni mejni
         @endif
-        <br>
-
+       
         @if($column["end_border"])
             Končni mejni
         @endif
-        <br>
-
+       
         @if($column["high_priority"])
             Stolpec za nujne kartice
         @endif
-        <br>
+       
 
         @if($column["acceptance_testing"])
             Stolpec za sprejemno testiranje
