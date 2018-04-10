@@ -38,7 +38,7 @@
 
                 <div class="col-sm-8">
                     @if($start_border)
-                        Začetni mejni
+                        Začetni mejni {{ $start_border }}
                     @endif
                     <br>
 
