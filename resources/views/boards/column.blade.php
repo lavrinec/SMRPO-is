@@ -74,6 +74,17 @@
                 <div class="form-group">
                     <label for="" class="col-sm-3 control-label">Vloge</label>
                     <div class="col-sm-9">
+
+                        <label for="{{ $column['id'] }}_high_priority" class="control-sidebar-subheading">
+                            <input id="{{ $column['id'] }}_high_priority"
+                                   name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][high_priority]"
+                                   value="high_priority" type="checkbox" class="pull-left"
+                                   onclick="checkChecked({{ $column['id'] }},'high_priority')"
+                                    {{ isset($column['high_priority']) && $column['high_priority'] == 1 ? 'checked' : ''}}>
+                            Za nujne kartice
+                        </label>
+
+
                         <label for="{{ $column['id'] }}_start_border" class="control-sidebar-subheading">
                             <input id="{{ $column['id'] }}_start_border"
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][start_border]"
@@ -90,15 +101,6 @@
                                    onclick="checkChecked({{ $column['id'] }},'end_border')"
                                     {{ isset($column['end_border']) && $column['end_border'] == 1 ? 'checked' : ''}}>
                             Končni robni
-                        </label>
-
-                        <label for="{{ $column['id'] }}_high_priority" class="control-sidebar-subheading">
-                            <input id="{{ $column['id'] }}_high_priority"
-                                   name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][high_priority]"
-                                   value="high_priority" type="checkbox" class="pull-left"
-                                   onclick="checkChecked({{ $column['id'] }},'high_priority')"
-                                    {{ isset($column['high_priority']) && $column['high_priority'] == 1 ? 'checked' : ''}}>
-                            Za nujne kartice
                         </label>
 
                         <label for="{{ $column['id'] }}_acceptance_testing" class="control-sidebar-subheading">

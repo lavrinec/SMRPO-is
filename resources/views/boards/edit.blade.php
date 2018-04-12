@@ -77,7 +77,7 @@
                                     </div>
 
                                     <div class="col-sm-3">
-                                        <button type="submit" class="btn btn-primary">Shrani tablo</button>
+                                        <button type="submit" class="btn btn-primary" onclick="checkIfAllSpecialColumns()">Shrani tablo</button>
 
                                         <a href="{{ action('BoardController@show', $board->id) }}"
                                            class="btn btn-danger">Prekliči</a>
@@ -548,7 +548,26 @@
                     }
                 });
             }
+
+            checkIfAllSpecialColumns();
         }
+
+
+        function checkIfAllSpecialColumns() {
+
+            $("input:checkbox:checked").each(function(i, current){
+                console.log(current);
+            });
+
+
+
+//            var r = alert("Vsi posebni stolpci NISO zastopani!");
+//            console.log(r);
+//            if (r == true) {
+//                console.log("true");
+//            }
+        }
+
 
 
     </script>
