@@ -12,7 +12,11 @@
                 @foreach($usersGroup as $user)
                     {{--@dd($role['group_id'])--}}
                     <li class="">
-                        <h5 class="text-bold text-muted">{{ $user->first_name }} {{ $user->last_name }}</h5>
+                        @if(!Auth::user()->isAdmin())
+                            <h5 class="text-bold text-muted">{{ $user->first_name }} {{ $user->last_name }}</h5>
+                        @else
+                            <h5 class="text-bold text-muted"><a href="/users/{{$user->id}}/show">{{ $user->first_name }} {{ $user->last_name }}</a></h5>
+                        @endif
                         @if(isset($usersGroupRoles) && $usersGroupRoles->first() != null)
                             {{--<h4>--}}
                                 {{--<small>--}}
