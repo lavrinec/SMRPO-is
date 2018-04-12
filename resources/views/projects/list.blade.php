@@ -50,8 +50,8 @@
                                     <th>Datum začetka</th>
                                     <th>Datum zaključka</th>
                                     <th>Skupina</th>
-                                    <th>Tabla</th>
                                     <th>Status</th>
+                                    <th>Tabla</th>
             
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
