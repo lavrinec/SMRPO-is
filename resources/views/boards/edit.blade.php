@@ -554,7 +554,7 @@
 
 
         function checkBeforeSubmit() {
-            var allSpecial = false, empty = true;
+            var allSpecial = false, rightOrder = false, empty = true;
 
             empty = checkIfEmpty($("#board-canvas")[0]);
             if (empty) {
@@ -562,8 +562,12 @@
             }
 
             allSpecial = checkIfAllSpecialColumns();
+            if(allSpecial){
+                rightOrder = checkIfRightOrder();
+            }
 
-            return (allSpecial && !empty);
+
+            return (allSpecial && rightOrder && !empty);
         }
 
 
@@ -583,6 +587,8 @@
                 typeList.push(current.value);
             });
 
+            console.log(typeList);
+
             var missing = allTypes.filter(function (item) {
                 return typeList.indexOf(item) === -1;
             });
@@ -596,6 +602,27 @@
 
             if (typeList.length != 4) {
                 alert("Manjkajo stolpci: " + stolpci);
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        }
+        
+        function checkIfRightOrder() {
+            var ok = ["high_priority", "start_border", "end_border", "acceptance_testing"];
+            var reality = [];
+
+            $("input:checkbox:checked").each(function (i, current) {
+                reality.push(current.value);
+            });
+
+            console.log(reality);
+
+            if (! (ok[0] == reality[0] && ok[1] == reality[1]  && ok[2] == reality[2] && ok[3] == reality[3])) {
+                alert("Stolpci niso v priporočenem vrstnem redu " +
+                "(Stolpec za nujne kartice, Začetni mejni, Končni mejni, Stolpec za sprejemno testiranje)");
                 return false;
             }
             else {
