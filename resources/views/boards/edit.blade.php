@@ -28,7 +28,7 @@
                         <!-- /.box-header -->
                         <div class="box-body">
 
-                            <form class="form-horizontal" method="POST"
+                            <form class="form-horizontal" method="POST" onsubmit="return checkIfAllSpecialColumns();"
                                   action="{{ action('BoardController@update', $board->id) }}">
 
                                 @csrf
@@ -77,7 +77,7 @@
                                     </div>
 
                                     <div class="col-sm-3">
-                                        <button type="submit" class="btn btn-primary" onclick="checkIfAllSpecialColumns()">Shrani tablo</button>
+                                        <button type="submit" class="btn btn-primary">Shrani tablo</button>
 
                                         <a href="{{ action('BoardController@show', $board->id) }}"
                                            class="btn btn-danger">Prekliči</a>
@@ -548,24 +548,24 @@
                     }
                 });
             }
-
-            checkIfAllSpecialColumns();
         }
 
 
         function checkIfAllSpecialColumns() {
 
+            var typeList = [];
+
             $("input:checkbox:checked").each(function(i, current){
-                console.log(current);
+                typeList.push(current.value);
             });
 
+            if(typeList.length != 4){
+                alert("Vsi posebni stolpci NISO zastopani!");
+                return false;
+            }
 
+            return true;
 
-//            var r = alert("Vsi posebni stolpci NISO zastopani!");
-//            console.log(r);
-//            if (r == true) {
-//                console.log("true");
-//            }
         }
 
 
