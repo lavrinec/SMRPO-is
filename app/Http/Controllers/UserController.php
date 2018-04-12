@@ -191,15 +191,19 @@ class UserController extends Controller
             return redirect()->route('users.edit', $id)->withErrors($validator);
         }
         $user = User::where('id', $id)->first();
-        if (Hash::check($request->old_password, $user->password))
-        {
+        $editor = Auth::user(); //uporabnik ki ureja
+        if((!$editor->isAdmin()) &&(!Hash::check($request->old_password, $user->password)))
+        {   //return "prislo je do napake";
+            return redirect()->route('users.edit', $id)->withErrors(['old_password'=>'Vpisano trenutno geslo se ne ujema s tistim v bazi.']);
+           
+        }
+        else{
+            //return "posodabljam geslo";
             $user['password'] = bcrypt($request->password);
             $user->update();
             return redirect()->route('users.show', $id);
         }
-        else{
-            return redirect()->route('users.edit', $id)->withErrors(['old_password'=>'Vpisano trenutno geslo se ne ujema s tistim v bazi.']);
-        }
+        echo "kr neki";
         return redirect()->route('users.show', $id);
 
     }

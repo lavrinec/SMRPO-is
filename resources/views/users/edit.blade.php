@@ -108,7 +108,7 @@
                                   action="{{ action('UserController@passwordUpdate', $users->id) }}">
 
                                 @csrf
-
+                                @if(!Auth::user()->isAdmin())
                                 <div class="form-group">
                                     <label for="old_password" class="col-sm-2 control-label">Trenutno geslo</label>
 
@@ -121,7 +121,7 @@
                                         @endif
                                     </div>
                                 </div>
-
+                                @endif
                                 <div class="form-group">
                                     <label for="password" class="col-sm-2 control-label">Novo geslo</label>
 
