@@ -144,7 +144,9 @@
                                     /*.column:nth-child(3n+3) {*/
                                     /*background: #69c;*/
                                     /*}*/
-
+                                    .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+                                        color: black;
+                                    }
 
                                 </style>
 
@@ -204,6 +206,11 @@
             redoParentNames();
 
             checkIfEmpty($("#board-canvas")[0]);
+
+
+            $("#usersgroupsselect").select2({
+                placeholder: "Izberi projekte"
+            });
 
         };
 
@@ -395,20 +402,20 @@
         function checkIfEmpty(parent) {
 //            console.log("#" + parent.id);
 
-            if (parent.id == 'board-canvas' ) {
+            if (parent.id == 'board-canvas') {
 
-                if($("#" + parent.id)[0].childElementCount == 0){
+                if ($("#" + parent.id)[0].childElementCount == 0) {
                     $("#buttonFirstColumn")[0].removeAttribute("disabled");
                     return true;
                 }
-                else{
+                else {
                     $("#buttonFirstColumn")[0].setAttribute('disabled', 'disabled');
                     return false;
                 }
             }
 
 
-            else{
+            else {
 
                 var splitedID = parent.id.split("_");
 //                console.log("splited ");
@@ -418,7 +425,7 @@
                     if ($("#" + parent.id)[0].childElementCount == 0) {
                         $("#" + splitedID[0] + "_addFirstSubcolumn")[0].removeAttribute('disabled');
                     }
-                    else{
+                    else {
                         $("#" + splitedID[0] + "_addFirstSubcolumn")[0].setAttribute('disabled', 'disabled');
                     }
 
@@ -448,7 +455,7 @@
 
                 var parent = $("#" + current.id).parent()[0];
 
-                var inputs = $("#"+current.id+" :input");
+                var inputs = $("#" + current.id + " :input");
 
 
                 if (parent.id == "board-canvas") {
@@ -468,54 +475,48 @@
                 }
 
 
-
-
-
-
-
             });
         }
 
 
-        function renameX(inputs, name){
+        function renameX(inputs, name) {
 //            console.log("renameX " + name);
-            
+
             $.each(inputs, function (i, currentInput) {
 
                 if (currentInput.id.includes("parent_id")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[parent_id]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[parent_id]");
                 }
                 else if (currentInput.id.includes("parent_name")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[parent_name]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[parent_name]");
                 }
                 else if (currentInput.id.includes("left_id")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[left_id]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[left_id]");
                 }
                 else if (currentInput.id.includes("id")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[id]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[id]");
                 }
                 else if (currentInput.id.includes("column_name")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[column_name]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[column_name]");
                 }
                 else if (currentInput.id.includes("description")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[description]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[description]");
                 }
                 else if (currentInput.id.includes("wip")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[wip]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[wip]");
                 }
                 else if (currentInput.id.includes("start_border")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[types][start_border]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[types][start_border]");
                 }
                 else if (currentInput.id.includes("end_border")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[types][end_border]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[types][end_border]");
                 }
                 else if (currentInput.id.includes("high_priority")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[types][high_priority]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[types][high_priority]");
                 }
                 else if (currentInput.id.includes("acceptance_testing")) {
-                    $("#"+currentInput.id).attr('name', "column"+name+"[types][acceptance_testing]");
+                    $("#" + currentInput.id).attr('name', "column" + name + "[types][acceptance_testing]");
                 }
-
 
 
             });
@@ -552,11 +553,11 @@
         }
 
 
-        function checkBeforeSubmit(){
-            var allSpecial=false, empty=true;
+        function checkBeforeSubmit() {
+            var allSpecial = false, empty = true;
 
             empty = checkIfEmpty($("#board-canvas")[0]);
-            if(empty){
+            if (empty) {
                 alert("Prazna tabla!")
             }
 
@@ -568,40 +569,40 @@
 
         function checkIfAllSpecialColumns() {
 
-            var typeNames = { "high_priority": "Stolpec za nujne kartice",
-                                "start_border": "Začetni mejni",
-                                "end_border": "Končni mejni",
-                                "acceptance_testing": "Stolpec za sprejemno testiranje"
+            var typeNames = {
+                "high_priority": "Stolpec za nujne kartice",
+                "start_border": "Začetni mejni",
+                "end_border": "Končni mejni",
+                "acceptance_testing": "Stolpec za sprejemno testiranje"
             };
 
-            var allTypes = ["high_priority", "start_border", "end_border",  "acceptance_testing"];
+            var allTypes = ["high_priority", "start_border", "end_border", "acceptance_testing"];
             var typeList = [];
 
-            $("input:checkbox:checked").each(function(i, current){
+            $("input:checkbox:checked").each(function (i, current) {
                 typeList.push(current.value);
             });
 
-            var missing = allTypes.filter(function(item){
+            var missing = allTypes.filter(function (item) {
                 return typeList.indexOf(item) === -1;
             });
 
             var stolpci = "";
-            for(var x in missing){
+            for (var x in missing) {
                 stolpci += typeNames[missing[x]] + ", ";
             }
 
-            stolpci = stolpci.substr(0, stolpci.length-2);
+            stolpci = stolpci.substr(0, stolpci.length - 2);
 
-            if(typeList.length != 4){
+            if (typeList.length != 4) {
                 alert("Manjkajo stolpci: " + stolpci);
                 return false;
             }
-            else{
+            else {
                 return true;
             }
 
         }
-
 
 
     </script>
