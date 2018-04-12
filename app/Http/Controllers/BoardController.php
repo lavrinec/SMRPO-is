@@ -315,28 +315,36 @@ class BoardController extends Controller
         $boardData = request()->except('_token', 'projects', 'column');
         $board->update($boardData);
 
-        //add project data - ni potestirano, update board ni se narejen
+        //add project data
         $project_ids = $request->input('projects');
+        
+        //ce ni nobenih projektov nastavi na prazen seznam
+        if(!isset($project_ids)) $project_ids=[];
 
-        if (isset($project_ids) && count($project_ids) > 0) {
-            Project::where(function ($query) use ($board) {
-                $query->where('board_id', '!=', $board->id)
-                    ->orWhereNull('board_id');
-            })->whereIn('id', $project_ids)->update(['board_id' => $board->id]);
-
-
-        } else
-            $project_ids = [];
+        $deleted = Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->get();
+       // $old =  Project::where('board_id', $board->id)->get();
+       // $new = Project::whereIn('id', $project_ids)->get();
 
 
-        $deleted = Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->get();//->update(['board_id' => null]);
-
-        //prepreci brisanje projektov, ki ze imajo kartice        
+        //prepreci brisanje projektov, ki ze imajo kartice oz brisi ce jih nimajo        
         foreach ($deleted as $project) {
             if ($this->project_has_cards($project)) {
                 return redirect()->back()->withErrors(['msg' => 'Projekt ' . $project->board_name . ' že ima kartice. Odstranite ga lahko šele po tem ko jih izbrišete.']);
             } else $project->update(['board_id' => null]);
         }
+
+        //nastavi dodane projekte na tablo
+        if (count($project_ids) > 0) {
+            Project::where(function ($query) use ($board) {
+                $query->where('board_id', '!=', $board->id)
+                    ->orWhereNull('board_id');
+            })->whereIn('id', $project_ids)->update(['board_id' => $board->id]);
+        } 
+
+
+       
+        
+
 
 
         $order = 0;
