@@ -22,6 +22,7 @@
 
                     <div class="box">
                         <div class="box-header">
+
                             @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
                                 @if($isKM)
                                     <a href="{{ action('BoardController@edit', $board->id) }}"
@@ -55,9 +56,20 @@
                                 .testimonial-group {
                                     width: 100%;
                                     min-height: 100vh;
-                                    background: lightgrey;
+                                    /*background: lightgrey;*/
 
                                     /*overflow-y: auto;*/
+                                }
+
+                                #board-holder.fullscreen{
+                                    z-index: 9999;
+                                    width: 100%;
+                                    height: 100%;
+                                    position: fixed;
+                                    top: 0;
+                                    left: 0;
+                                    overflow-x: auto;
+                                    white-space: nowrap;
                                 }
 
                                 .canvas {
@@ -82,40 +94,60 @@
                                     vertical-align: top;
                                 }
 
-                                /* Decorations */
-
                                 .column > .box {
                                     /*display: inline-block;*/
                                     margin: 0px;
                                     /*min-height: 100vh;*/
                                 }
 
-                                tbody>tr {
+                                thead {
+                                    background-color: #F8F8FF;
+                                }
+
+                                tbody > tr {
                                     border-bottom: 4px solid black;
                                     border-top: 4px solid black;
                                 }
 
-                                td {
+                                th {
                                     min-width: 300px;
                                     vertical-align: top;
+
                                 }
 
+                                td {
+                                    min-width: 300px;
+                                    height: 140px;
+                                    vertical-align: top;
+                                    background: #fff;
+                                }
+
+                                .forprojects {
+                                    text-align: center;
+                                    vertical-align: middle;
+                                    min-width: 100px;
+                                    background-color: #F8F8FF;
+                                }
+
+                                #topleft {
+                                    padding-top: 5px;
+                                    vertical-align: top;
+                                }
 
                             </style>
 
 
                             {{--<div class="container testimonial-group">--}}
-                                {{--<div class="row canvas" id="board-canvas">--}}
-                                    {{-- Here go the columns! --}}
+                            {{--<div class="row canvas" id="board-canvas">--}}
+                            {{-- Here go the columns! --}}
 
-                                    {{--@include('boards.column')--}}
+                            {{--@include('boards.column')--}}
 
-                                {{--</div>--}}
+                            {{--</div>--}}
                             {{--</div>--}}
 
 
-
-                            <div class="container testimonial-group">
+                            <div id="board-holder" class="container testimonial-group">
                                 <div class="row canvas" id="board-canvas">
 
 
@@ -215,9 +247,9 @@
         };
 
         /*
-        * NEW design
-        *
-        * */
+         * NEW design
+         *
+         * */
 
         function makeHader() {
 
@@ -226,6 +258,9 @@
             for (var i = 0; i < numOfTrs; i++) {
                 $("#thead").append("<tr id='thead_tr_" + i + "'></tr>");
             }
+
+            $("#thead_tr_0").append("<th id='topleft' class='forprojects' rowspan='" + numOfTrs + "'>" +
+                "<button class='btn btn-primary' onclick='makeFull()'>Full Screen</button></th>");
 
             makeHeaderTr(rootColumns, 0);
         }
@@ -242,7 +277,7 @@
                 }
 
                 $("#thead_tr_" + level).append(
-                    "<td id='thead_td_" + current.id + "' colspan='" + getNumOfLeaves(current) + "' rowspan='" + rowspan + "'></td>"
+                    "<th id='thead_td_" + current.id + "' colspan='" + getNumOfLeaves(current) + "' rowspan='" + rowspan + "'></th>"
                 );
 
                 addColHeader(current, "thead_td_" + current.id);
@@ -276,7 +311,10 @@
             var maxNumOfTds = getNumAllLeaves();
 
             for (var j = 0; j < numOfProjects; j++) {
-                $("#tbody").append("<tr id='tbody_tr_" + projects[j].id + "'></tr>");
+                $("#tbody").append("<tr id='tbody_tr_" + projects[j].id + "'>" +
+                    "<td class='forprojects'>" +
+                    projects[j].board_name +
+                    "</td></tr>");
 
                 for (var i = 0; i < maxNumOfTds; i++) {
                     $("#tbody_tr_" + projects[j].id).append(
@@ -435,79 +473,85 @@
         }
 
 
+        function makeFull(){
+            console.log("makefull");
+            $('#board-holder').toggleClass('fullscreen');
+        }
+
+
         // OLD
         /*
          * Create and Show already existing columns (if editing saved board)
          *
          * */
 
-//        function makeExisting() {
-//
-//            // structuredColumnsCards
-//
-//            if (rootColumns.length > 0) {
-//
-//                // sort by order (currently on each level starts from beginning)
-//                rootColumns.sort(compare);
-//
-//                // array, location, parent-name, level
-//                forColumns(rootColumns, 'board-canvas', '', 0);
-//            }
-//        }
+        //        function makeExisting() {
+        //
+        //            // structuredColumnsCards
+        //
+        //            if (rootColumns.length > 0) {
+        //
+        //                // sort by order (currently on each level starts from beginning)
+        //                rootColumns.sort(compare);
+        //
+        //                // array, location, parent-name, level
+        //                forColumns(rootColumns, 'board-canvas', '', 0);
+        //            }
+        //        }
 
 
 
 
 
         {{--function forColumns(columns, place, parent_name, level) {--}}
-            {{--// just append to the canvas--}}
+        {{--// just append to the canvas--}}
 
-            {{--columns.sort(compare);--}}
+        {{--columns.sort(compare);--}}
 
-            {{--for (var key in columns) {--}}
-                {{--if (columns.hasOwnProperty(key)) {--}}
+        {{--for (var key in columns) {--}}
+        {{--if (columns.hasOwnProperty(key)) {--}}
 
-                    {{--var lvl = Number(level);--}}
-                    {{--columns[key]['level'] = lvl;--}}
+        {{--var lvl = Number(level);--}}
+        {{--columns[key]['level'] = lvl;--}}
 
-                    {{--var pn = parent_name.slice(0);--}}
-                    {{--columns[key]['parent_name'] = pn;--}}
+        {{--var pn = parent_name.slice(0);--}}
+        {{--columns[key]['parent_name'] = pn;--}}
 
-                    {{--columns[key]['projects'] = {!! $board->projects !!};--}}
+        {{--columns[key]['projects'] = {!! $board->projects !!};--}}
 
-                    {{--addExistingColumn(columns[key], place);--}}
+        {{--addExistingColumn(columns[key], place);--}}
 
-                    {{--addExistingCards(columns[key].cards, columns[key].id + "_subcanvas");--}}
+        {{--addExistingCards(columns[key].cards, columns[key].id + "_subcanvas");--}}
 
 
-                    {{--lvl += 1;--}}
-                    {{--pn += '[' + columns[key].id + '][childs]';--}}
-                    {{--forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);--}}
-                    {{--// allChildrenCards--}}
-                {{--}--}}
-            {{--}--}}
+        {{--lvl += 1;--}}
+        {{--pn += '[' + columns[key].id + '][childs]';--}}
+        {{--forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);--}}
+        {{--// allChildrenCards--}}
+        {{--}--}}
+        {{--}--}}
         {{--}--}}
 
 
         {{--function addExistingColumn(columnData, place) {--}}
-            {{--$.ajax({--}}
-                {{--type: 'POST',--}}
-                {{--url: "{{ action('BoardController@columnShow') }}",--}}
-                {{--data: {--}}
-                    {{--"_token": "{{ csrf_token() }}",--}}
-                    {{--'column_data': columnData--}}
-                {{--},--}}
-                {{--success: function (data) {--}}
-                    {{--$("#" + place).append(data);--}}
+        {{--$.ajax({--}}
+        {{--type: 'POST',--}}
+        {{--url: "{{ action('BoardController@columnShow') }}",--}}
+        {{--data: {--}}
+        {{--"_token": "{{ csrf_token() }}",--}}
+        {{--'column_data': columnData--}}
+        {{--},--}}
+        {{--success: function (data) {--}}
+        {{--$("#" + place).append(data);--}}
 
-                    {{--// allChildrenCards--}}
-                    {{--if (columnData.all_children_cards.length == 0) {--}}
-                        {{--var container = $("#" + columnData.id + "_subcanvas")[0];--}}
-                        {{--drake.containers.push(container);--}}
-                    {{--}--}}
+        {{--// allChildrenCards--}}
+        {{--if (columnData.all_children_cards.length == 0) {--}}
+        {{--var container = $("#" + columnData.id + "_subcanvas")[0];--}}
+        {{--drake.containers.push(container);--}}
+        {{--}--}}
 
-                {{--}--}}
-            {{--});--}}
+        {{--}--}}
+        {{--});--}}
         {{--}--}}
 
 

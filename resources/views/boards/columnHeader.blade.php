@@ -18,35 +18,34 @@
 {{--<input type="hidden" id="{{ $column->column_id }}_level" name="column{{ $column->parent_name }}[{{ $column->column_id }}][level]"--}}
        {{--value="{{ $column->level }}">--}}
 
-
-<div class="row">
-
-    <div class="col-sm-12">
-        <h4 class="">
+    <div class="box-body">
+        <h4>
             {{ $column["column_name"] }}
         </h4>
-        <br>
+        {{--<br>--}}
+
         {{ $column["description"] }}
         <br>
         WIP: {{ $column["WIP"] }}
-        <br>       
+        <br>
+
+        @if($column["high_priority"] === 1 || $column["high_priority"]  === 'true')
+            Stolpec za nujne kartice
+            <br>
+        @endif
+
         @if($column["start_border"] === 1 || $column["start_border"]  === 'true')
             Začetni mejni
+            <br>
         @endif
        
         @if($column["end_border"] === 1 || $column["end_border"]  === 'true')
             Končni mejni
+            <br>
         @endif
-       
-        @if($column["high_priority"] === 1 || $column["high_priority"]  === 'true')
-            Stolpec za nujne kartice
-        @endif
-       
 
         @if($column["acceptance_testing"] === 1 || $column["acceptance_testing"]  === 'true')
             Stolpec za sprejemno testiranje
         @endif
 
     </div>
-
-</div>
