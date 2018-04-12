@@ -71,13 +71,26 @@
 
                                 <tr>
                                     <td>Skupina</td>
-                                    <td>{{ isset($group->group_name) ? $group->group_name : '' }}</td>
+                                    <td>@if(isset($group->group_name))
+                                            <a href="/groups/{{$group->id}}/show">
+                                                {{ $group->group_name}}
+                                            </a>
+                                        @endif</td>
 
                                 </tr>
 
                                 <tr>
                                     <td>Tabla</td>
-                                    <td>{{ !($projects->board_id) ? "Projekt še ni dodeljen na tablo" : $projects->board->board_name }}</td>
+                                    <td>
+                                        @if($projects->board_id)
+                                            <a href="/boards/{{$projects->board->id}}/focus">
+                                                {{ $projects->board->board_name }}
+                                            </a>
+                                            @else
+                                            Projekt še ni dodeljen na tablo
+                                        @endif
+
+                                    </td>
 
                                 </tr>
                                 

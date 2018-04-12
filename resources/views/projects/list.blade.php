@@ -10,9 +10,9 @@
             </h1>
         </section>
 
-        @include('layout.error')
+    @include('layout.error')
 
-        <!-- Main content -->
+    <!-- Main content -->
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
@@ -39,7 +39,7 @@
                         <div class="box-header">
                             <h3 class="box-title">Seznam projektov</h3>
                         </div>
-                       
+
                         <div class="box-body">
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
@@ -52,7 +52,7 @@
                                     <th>Skupina</th>
                                     <th>Status</th>
                                     <th>Tabla</th>
-            
+
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
                                         <th>Izbriši</th>
@@ -69,14 +69,26 @@
                                         <td>{{ $project->buyer_name }}</td>
                                         <td>{{ date("d.m.Y", strtotime($project->start_date)) }}</td>
                                         <td>{{ date("d.m.Y", strtotime($project->end_date)) }}</td>
-                                        <td>{{ isset($project->group->group_name) ? $project->group->group_name : '' }}</td>
+                                        <td>
+                                            @if(isset($project->group->group_name))
+                                                <a href="/groups/{{$project->group->id}}/show">
+                                                    {{ $project->group->group_name}}
+                                                </a>
+                                            @endif
+                                        </td>
                                         <td>@if($project->deactivated || $project->deactivated!=null)
                                                 Neaktiven
                                             @else
                                                 Aktiven
-                                            @endif                                        
+                                            @endif
                                         </td>
-                                        <td>{{ !($project->board_id) ? "" : $project->board->board_name }}</td>
+                                        <td>
+                                            @if($project->board_id)
+                                                <a href="/boards/{{$project->board->id}}/focus">
+                                                    {{ $project->board->board_name }}
+                                                </a>
+                                            @endif
+                                        </td>
 
                                         @if(Auth::user()->isKM())
                                             <td>
@@ -88,12 +100,13 @@
                                             </td>
                                             <td>
                                                 @if($project->deleted_at == null && !$project->deactivated )
-                                                    <a href="javascript:reallyDelete({{$project->id}})"><i class="fa fa-remove"></i></a>
+                                                    <a href="javascript:reallyDelete({{$project->id}})"><i
+                                                                class="fa fa-remove"></i></a>
 
-                                                    
+
                                                 @endif
                                             </td>
-                                            @endif
+                                        @endif
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -127,10 +140,10 @@
     </div>
     <script>
         function reallyDelete(id) {
-        var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
-        if (r == true) {
-            window.location.href ="/projects/"+id+"/delete";
+            var r = confirm("Ali ste prepričani, da želite izbrisati projekt?");
+            if (r == true) {
+                window.location.href = "/projects/" + id + "/delete";
+            }
         }
-    }
-                                                    </script>
+    </script>
 @endsection
