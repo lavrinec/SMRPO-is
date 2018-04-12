@@ -1,4 +1,23 @@
 @if($users->first() != null)
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Some text in the modal.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <div class="form-group">
 
         <label class="col-sm-2 control-label">Uporabniki</label>
@@ -229,7 +248,7 @@
                         parseInt(usersToCheck[userid].roles[usersAndRoles[i].role_id]) === parseInt(usersAndRoles[i].role_id)) {
                         roleExists = true;
                     }
-                    checboxesToReturn += "<div class='col-sm-12'><label class='col-sm-8' for='user-" + userid + "-role-checkbox'>" + usersAndRoles[i].role_name + "</label> <div id='user-" + userid + "-role-checkbox' class='col-sm-4'> <input " + (roleExists === true ? "checked" : "") + " onchange='roleCheckboxChange(" + userid + "," + usersAndRoles[i].role_id + ")' type='checkbox' /></div></div>"
+                    checboxesToReturn += "<div class='col-sm-12'><label class='col-sm-8' for='user-" + userid + "-role-checkbox'>" + usersAndRoles[i].role_name + "</label> <div id='user-" + userid + "-role-"+usersAndRoles[i].role_id+"-checkbox' class='col-sm-4'> <input " + (roleExists === true ? "checked" : "") + " onchange='roleCheckboxChange(" + userid + "," + usersAndRoles[i].role_id + ")' type='checkbox' /></div></div>"
                 }else{
                     continue;
                 }
@@ -238,14 +257,73 @@
         }
 
         function roleCheckboxChange(userid, roleid) {
+
             if (dataToSend.users[userid].roles[roleid] !== undefined && dataToSend.users[userid].roles[roleid] !== null) {
                 delete dataToSend.users[userid].roles[roleid];
             } else {
                 dataToSend.users[userid].roles[roleid] = roleid;//"Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.\n" +
                 "\n";
             }
-            $('#usersgroups-input').val(JSON.stringify(dataToSend));
 
+            //check if user has both roles PO and KM
+            var KMrole = false;
+            var POrole = false;
+            for(var value of Object.values(dataToSend.users[userid].roles)){
+                if(value === 2){//PO
+                    POrole = true;
+                }
+                if(value === 3){//KM
+                    KMrole = true;
+                }
+            }
+            if(KMrole && POrole){
+                delete dataToSend.users[userid].roles[roleid];
+                uncheckRole(userid, roleid, false);
+                openModal("Napaka!","Uporabnik ne more imeti vloge 'Product owner' in 'Kanban master'.");
+            }else if(!checkIfDuplicateKMOrPORoles(userid,roleid)){
+                $('#usersgroups-input').val(JSON.stringify(dataToSend));
+            }
+
+        }
+
+        //check if user has two roles selected -> KM and PO
+        function openModal(headertext, bodytext){
+            $('#myModal').modal('show');
+            $('#myModal h4.modal-title').text(headertext);
+            $('#myModal .modal-body p').text(bodytext);
+        }
+
+        function uncheckRole(userid, roleid, checked){
+            $('#user-'+userid+'-role-'+roleid+'-checkbox input').prop('checked', checked);
+        }
+        function checkIfDuplicateKMOrPORoles(userid, roleid){
+            var KMrole = false;
+            var POrole = false;
+            for(var key of Object.keys(dataToSend.users)){
+                if(dataToSend.users.hasOwnProperty(key)){
+                    if(dataToSend.users[key].roles[2] != null && dataToSend.users[key].roles[2] != undefined ){
+                        if(POrole) {
+                            openModal("Napaka!", "Že obstaja uporabnik z vlogo 'Product owner'.");
+                            uncheckRole(userid, roleid, false);
+                            delete dataToSend.users[userid].roles[roleid];
+                            return true;
+                        }else{
+                            POrole = true;
+                        }
+                    }
+                    if(dataToSend.users[key].roles[3] != null && dataToSend.users[key].roles[3] != undefined ){
+                        if(KMrole) {
+                            openModal("Napaka!", "Že obstaja uporabnik z vlogo 'Kanban master'.");
+                            uncheckRole(userid, roleid, false);
+                            delete dataToSend.users[userid].roles[roleid];
+                            return true;
+                        }else{
+                            KMrole = true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     </script>
 @else
