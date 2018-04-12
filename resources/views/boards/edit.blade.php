@@ -28,7 +28,7 @@
                         <!-- /.box-header -->
                         <div class="box-body">
 
-                            <form class="form-horizontal" method="POST" onsubmit="return checkIfAllSpecialColumns();"
+                            <form class="form-horizontal" method="POST" onsubmit="return checkBeforeSubmit();"
                                   action="{{ action('BoardController@update', $board->id) }}">
 
                                 @csrf
@@ -333,7 +333,6 @@
         }
 
         function addColumnAfter(column) {
-            console.log(typeof column);
 
             if (typeof column == 'number') {
                 column = $("#" + column)[0];
@@ -394,15 +393,17 @@
         }
 
         function checkIfEmpty(parent) {
-            console.log("#" + parent.id);
+//            console.log("#" + parent.id);
 
             if (parent.id == 'board-canvas' ) {
 
                 if($("#" + parent.id)[0].childElementCount == 0){
                     $("#buttonFirstColumn")[0].removeAttribute("disabled");
+                    return true;
                 }
                 else{
                     $("#buttonFirstColumn")[0].setAttribute('disabled', 'disabled');
+                    return false;
                 }
             }
 
@@ -410,8 +411,8 @@
             else{
 
                 var splitedID = parent.id.split("_");
-                console.log("splited ");
-                console.log(splitedID);
+//                console.log("splited ");
+//                console.log(splitedID);
 
                 if (splitedID[1] == "subcanvas") {
                     if ($("#" + parent.id)[0].childElementCount == 0) {
@@ -534,7 +535,7 @@
             if (clickedItem.checked) {
                 groupItems.each(function (i, current) {
                     if (current != clickedItem) {
-                        console.log(current.checked);
+//                        console.log(current.checked);
 
                         if (current.checked) {
                             if (confirm("Kot " + group + "je že označen drug stolpec." +
@@ -551,20 +552,53 @@
         }
 
 
+        function checkBeforeSubmit(){
+            var allSpecial=false, empty=true;
+
+            empty = checkIfEmpty($("#board-canvas")[0]);
+            if(empty){
+                alert("Prazna tabla!")
+            }
+
+            allSpecial = checkIfAllSpecialColumns();
+
+            return (allSpecial && !empty);
+        }
+
+
         function checkIfAllSpecialColumns() {
 
+            var typeNames = { "high_priority": "Stolpec za nujne kartice",
+                                "start_border": "Začetni mejni",
+                                "end_border": "Končni mejni",
+                                "acceptance_testing": "Stolpec za sprejemno testiranje"
+            };
+
+            var allTypes = ["high_priority", "start_border", "end_border",  "acceptance_testing"];
             var typeList = [];
 
             $("input:checkbox:checked").each(function(i, current){
                 typeList.push(current.value);
             });
 
-            if(typeList.length != 4){
-                alert("Vsi posebni stolpci NISO zastopani!");
-                return false;
+            var missing = allTypes.filter(function(item){
+                return typeList.indexOf(item) === -1;
+            });
+
+            var stolpci = "";
+            for(var x in missing){
+                stolpci += typeNames[missing[x]] + ", ";
             }
 
-            return true;
+            stolpci = stolpci.substr(0, stolpci.length-2);
+
+            if(typeList.length != 4){
+                alert("Manjkajo stolpci: " + stolpci);
+                return false;
+            }
+            else{
+                return true;
+            }
 
         }
 
