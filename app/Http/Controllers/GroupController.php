@@ -122,6 +122,20 @@ class GroupController extends Controller
     {
 
         $groups = Group::where('id', $id)->first();
+        $projects = $groups->project->all();
+        $boards = [];
+        $no_board_projects = [];
+        foreach($projects as $project){
+            
+            if($project->board_id == null) $no_board_projects=array_merge($no_board_projects, [$project]);
+            else $boards=array_merge($boards, [$project->board]);
+        }
+        $boards = array_unique($boards);
+        //return $no_board_projects;
+        //return $boards;
+        //  return $groups->project;
+        
+
         if($groups == null){
             return redirect()->route('groups.list')->withErrors(['groupUndefined'=>'Skupina ne obstaja, ali je izbrisana.']);
         }
@@ -140,7 +154,9 @@ class GroupController extends Controller
         return view('groups.show')
             ->with('groups', $groups)
             ->with('usersGroup', $usersGroup)
-            ->with('usersGroupRoles', $usersGroupRoles);
+            ->with('usersGroupRoles', $usersGroupRoles)
+            ->with('boards', $boards)
+            ->with('no_board_projects', $no_board_projects);
 
     }
 

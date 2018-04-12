@@ -22,6 +22,8 @@
                     @include('groups.detail')
 
                     {{--here my be included some other part --}}
+                    @include('groups.data')
+                    
                 </div>
                 <!-- /.col -->
 
