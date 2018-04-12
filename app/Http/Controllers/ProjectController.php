@@ -69,7 +69,8 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::withTrashed()->where('id', $id)->first();  
-        $group = Group::where("id", $project->group_id)->first();      
+        $group = Group::where("id", $project->group_id)->first(); 
+        //return $project;     
         return view('projects.show')->with('projects', $project)->with("group", $group);
     }
 

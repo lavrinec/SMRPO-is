@@ -74,6 +74,12 @@
                                     <td>{{ isset($group->group_name) ? $group->group_name : '' }}</td>
 
                                 </tr>
+
+                                <tr>
+                                    <td>Tabla</td>
+                                    <td>{{ !($projects->board_id) ? "Projekt še ni dodeljen na tablo" : $projects->board->board_name }}</td>
+
+                                </tr>
                                 
 
                             </table>

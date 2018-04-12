@@ -50,6 +50,7 @@
                                     <th>Datum začetka</th>
                                     <th>Datum zaključka</th>
                                     <th>Skupina</th>
+                                    <th>Tabla</th>
                                     <th>Status</th>
             
                                     @if(Auth::user()->isKM())
@@ -75,6 +76,7 @@
                                                 Aktiven
                                             @endif                                        
                                         </td>
+                                        <td>{{ !($project->board_id) ? "" : $project->board->board_name }}</td>
 
                                         @if(Auth::user()->isKM())
                                             <td>
@@ -104,6 +106,7 @@
                                     <th>Datum zaključka</th>
                                     <th>Skupina</th>
                                     <th>Status</th>
+                                    <th>Tabla</th>
                                     @if(Auth::user()->isKM())
                                         <th>Uredi</th>
                                         <th>Izbriši</th>
