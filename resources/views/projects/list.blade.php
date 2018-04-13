@@ -44,6 +44,7 @@
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
                                 <tr>
+                                    <th>št.</th>
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Naročnik</th>
@@ -60,8 +61,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($projects as $project)
+                                @foreach($projects as $index => $project)
                                     <tr>
+                                        <td width="40px">{{ $index }}</td>
                                         <td>
                                             <a href="{{ action('ProjectController@show', [$project->id]) }}">{{ $project->board_name }}</a>
                                         </td>
@@ -112,6 +114,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
+                                    <th>št.</th>
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Naročnik</th>

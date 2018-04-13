@@ -41,6 +41,7 @@
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
                                 <tr>
+                                    <th>št.</th>
                                     <th>Email</th>
                                     <th>Ime</th>
                                     <th>Priimek</th>
@@ -55,8 +56,9 @@
                                 </thead>
                                 <tbody>
 
-                                @foreach($users as $user)
+                                @foreach($users as $index => $user)
                                     <tr>
+                                        <th width="40px">{{ $index }}</th>
                                         <td>
                                             <a href="{{ action('UserController@show', [$user->id]) }}">{{ $user->email }}</a>
                                         </td>
@@ -109,6 +111,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
+                                    <th>št.</th>
                                     <th>Email</th>
                                     <th>Ime</th>
                                     <th>Priimek</th>

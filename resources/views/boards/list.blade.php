@@ -44,6 +44,7 @@
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
                                 <tr>
+                                    <th>št.</th>
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Status</th>
@@ -55,8 +56,9 @@
                                 </thead>
                                 <tbody>
 
-                                @foreach($boards as $board)
+                                @foreach($boards as $index => $board)
                                     <tr>
+                                        <td width="40px">{{ $index }}</td>
                                         <td>
                                             {{--<a href="{{ action('BoardController@show', [$board->id]) }}">{{ $board->board_name }}</a>--}}
                                             <a href="{{ action('BoardController@focus', $board->id) }}">{{$board->board_name}}</a>
@@ -93,6 +95,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
+                                    <th>št.</th>
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     <th>Status</th>

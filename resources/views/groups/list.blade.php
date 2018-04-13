@@ -43,6 +43,7 @@
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
                                 <tr>
+                                    <th>št.</th>
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     {{--<th>Status</th>--}}
@@ -54,8 +55,9 @@
                                 </thead>
                                 <tbody>
 
-                                @foreach($groups as $group)
+                                @foreach($groups as $index => $group)
                                     <tr>
+                                        <td width="40px">{{ $index }}</td>
                                         <td>
                                             <a href="{{ action('GroupController@show', [$group->id]) }}">{{ $group->group_name }}</a>
                                         </td>
@@ -90,6 +92,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
+                                    <th>št.</th>
                                     <th>Ime</th>
                                     <th>Opis</th>
                                     {{--<th>Status</th>--}}
