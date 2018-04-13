@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Group;
+use App\Models\User;
 use App\Models\UsersGroup;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +21,13 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         //poisci vse table, na katerih so projekti tega userja
-//        if (!$user->isAdmin() && !$user->isKM()) {
+        if ($user->isAdmin()) {
+            $users = User::withTrashed()->get();
+            $notifications = [];
+
+            return view('content.maincontent')->with(['users' => $users, 'notifications' => $notifications]);
+
+        } else {
             $usersGroup = UsersGroup::join('groups', "groups.id", "=", 'users_groups.group_id')->where('users_groups.user_id', $user->id)->get();
             //return $usersGroup;
             $groups = $user->groups()->get(); //NAPAKA - vrne tudi izbrisane iz skupine!!!
@@ -46,11 +53,17 @@ class DashboardController extends Controller
             }
 
             $boards = array_unique($boards);
-//        }
 
-        return view('content.maincontent')->with([
-            'boards' => $boards,
-            'groups' => $usersGroup,
-            'projects' => $projects]);
+            $tasks = [];
+
+
+            return view('content.maincontent')->with([
+                'boards' => $boards,
+                'groups' => $usersGroup,
+                'projects' => $projects,
+                'tasks' => $tasks]);
+        }
+
+
     }
 }

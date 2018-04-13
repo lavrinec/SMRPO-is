@@ -73,6 +73,100 @@
 
             <div class="row">
 
+                {{--for ADMIN--}}
+
+                @if(isset($users))
+                    <div class="col-sm-6">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Uporabniki</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <table id="example1" class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>št.</th>
+                                        <th>Email</th>
+                                        <th>Ime</th>
+                                        <th>Priimek</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    @foreach($users as $index => $user)
+                                        <tr>
+                                            <th width="40px">{{ $index+1 }}</th>
+                                            <td>
+                                                <a href="{{ action('UserController@show', [$user->id]) }}">{{ $user->email }}</a>
+                                            </td>
+                                            <td>{{ $user->first_name }}</td>
+                                            <td>{{ $user->last_name }}</td>
+
+                                            <td>
+                                                @if($user->deleted_at != null )
+                                                    Izbrisan
+                                                @else
+                                                    Aktiven
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th>št.</th>
+                                        <th>Email</th>
+                                        <th>Ime</th>
+                                        <th>Priimek</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                    </div>
+                @endif
+
+
+                @if(isset($notifications))
+                    <div class="col-sm-6">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Obvestila</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <table id="example1" class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>št.</th>
+                                        <th>Naslov</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th>št.</th>
+                                        <th>Naslov</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                    </div>
+                @endif
+
+
+
+                 {{--for ordinary users--}}
+
                 @if(isset($boards))
                     <div class="col-sm-3">
                         <div class="box">
@@ -201,35 +295,37 @@
                     </div>
                 @endif
 
-                <div class="col-sm-3">
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">Moje skupine</h3>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <table id="" class="table table-bordered table-striped table-hover">
-                                <thead>
-                                <tr>
-                                    <th>št.</th>
-                                    <th>Ime</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+                @if(isset($tasks))
+                    <div class="col-sm-3">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Moje naloge</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <table id="" class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>št.</th>
+                                        <th>Ime</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
 
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>št.</th>
-                                    <th>Ime</th>
-                                </tr>
-                                </tfoot>
-                            </table>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th>št.</th>
+                                        <th>Ime</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
                         </div>
-                        <!-- /.box-body -->
                     </div>
-                </div>
+                @endif
 
 
             </div>
