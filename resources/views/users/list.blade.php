@@ -58,7 +58,7 @@
 
                                 @foreach($users as $index => $user)
                                     <tr>
-                                        <th width="40px">{{ $index }}</th>
+                                        <th width="40px">{{ $index+1 }}</th>
                                         <td>
                                             <a href="{{ action('UserController@show', [$user->id]) }}">{{ $user->email }}</a>
                                         </td>

@@ -57,7 +57,7 @@
 
                                 @foreach($groups as $index => $group)
                                     <tr>
-                                        <td width="40px">{{ $index }}</td>
+                                        <td width="40px">{{ $index+1 }}</td>
                                         <td>
                                             <a href="{{ action('GroupController@show', [$group->id]) }}">{{ $group->group_name }}</a>
                                         </td>

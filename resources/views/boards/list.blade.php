@@ -58,7 +58,7 @@
 
                                 @foreach($boards as $index => $board)
                                     <tr>
-                                        <td width="40px">{{ $index }}</td>
+                                        <td width="40px">{{ $index+1 }}</td>
                                         <td>
                                             {{--<a href="{{ action('BoardController@show', [$board->id]) }}">{{ $board->board_name }}</a>--}}
                                             <a href="{{ action('BoardController@focus', $board->id) }}">{{$board->board_name}}</a>

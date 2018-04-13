@@ -63,7 +63,7 @@
                                 <tbody>
                                 @foreach($projects as $index => $project)
                                     <tr>
-                                        <td width="40px">{{ $index }}</td>
+                                        <td width="40px">{{ $index+1 }}</td>
                                         <td>
                                             <a href="{{ action('ProjectController@show', [$project->id]) }}">{{ $project->board_name }}</a>
                                         </td>
