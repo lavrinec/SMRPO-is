@@ -40,17 +40,17 @@ class SendEmails extends Command
      */
     public function handle()
     {
+        $sended = 0;
         $boards = Board::get();
         $toSend = [];
         foreach ($boards as $board){
             $board->meta = json_decode($board->meta);
 
-            if(isset($board->meta->notification)){
-                $daysBefore = $board->meta->notification;
+            if(isset($board->meta->notification) && $daysBefore = $board->meta->notification > 0){
                 $dateAfter = date('Y-m-d', strtotime($daysBefore . ' days'));
 
                 $orm = $board->cards()
-                    ->where('deadline', '<', $dateAfter);
+                    ->where('deadline', '<=', $dateAfter);
 
                 $cards = $orm->with('user')->get();
 
@@ -59,7 +59,8 @@ class SendEmails extends Command
                 }*/
 
                 foreach ($cards as $card){
-                    $toSend[$card->project_id][] = $card;
+                    if(! empty($card->project_id))
+                        $toSend[$card->project_id][] = $card;
                 }
             }
         }
@@ -67,10 +68,22 @@ class SendEmails extends Command
         foreach ($toSend as $key => $items){
             $km = null; //person to send mail
             $project = Project::where('id', $key)
+                ->where('group_id', '>', 0)
                 ->with(['group.usersGroups' => function ($q){
                     $q->with('user', 'role');
                  }])
                 ->first();
+
+            if(!isset($project)){
+                echo "Prekakujem izbrisan projekt!\n";
+                continue;
+            }
+
+            if(!isset($project->group)){
+                echo "Prekakujem projekt: " . $project->board_name . " ker nima skupine\n";
+                continue;
+            }
+
             foreach ($project->group->usersGroups as $usersGroup){
                 foreach ($usersGroup->role as $role){
                     if($role->role_id == 3){
@@ -83,6 +96,7 @@ class SendEmails extends Command
             }
 
             if(isset($km->email)){
+                $sended++;
                 //dd($km->email);
                 $mail = $km->email;
                 Mail::send('emails.notification', ['project' => $project, 'items' => $items], function ($message) use ($mail)
@@ -94,10 +108,9 @@ class SendEmails extends Command
 
                 });
 
-                return response()->json(['message' => 'Request completed']);
             }
         }
 
-        dd("Konec");
+        echo "Poslanih: $sended";
     }
 }
