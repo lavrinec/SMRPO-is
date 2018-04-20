@@ -59,8 +59,10 @@ class SendEmails extends Command
                 }*/
 
                 foreach ($cards as $card){
-                    if(! empty($card->project_id))
+                    if(! empty($card->project_id)) {
+                        $card->board = $board;
                         $toSend[$card->project_id][] = $card;
+                    }
                 }
             }
         }

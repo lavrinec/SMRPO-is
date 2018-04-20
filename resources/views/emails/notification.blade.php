@@ -261,7 +261,11 @@
                                 <tr>
                                     <td>
                                         <p>Pozdravljeni,</p>
-                                        <p>Na vašem projektu <b>{{ $project->board_name }}</b> bo naslednjim nalogam kmalu potekel rok:</p>
+                                        <p>Na vašem projektu <b>{{ $project->board_name }}</b>, ki se nahaja na tabli
+                                            @if(isset($items[0]->board->board_name))
+                                                <b>{{ $items[0]->board->board_name }}</b>
+                                            @endif
+                                            bo naslednjim nalogam kmalu potekel rok:</p>
                                         <ul>
                                             @foreach($items as $item)
                                                 <li>
