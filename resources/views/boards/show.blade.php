@@ -48,6 +48,11 @@
                                 </tr>
 
                                 <tr>
+                                    <td>Dni pred obvestilom</td>
+                                    <td>{{ isset($board->meta->notification) ? $board->meta->notification : '-' }}</td>
+                                </tr>
+
+                                <tr>
                                     <td>Status</td>
                                     <td>@if($board->deleted_at != null )
                                             Izbrisana

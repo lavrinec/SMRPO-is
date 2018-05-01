@@ -76,6 +76,9 @@ class BoardController extends Controller
         if ($validator = $this->validateBoard($request)) return redirect()->route('boards.create')->withErrors($validator);
 
         $data = request()->except('_token');
+        if(isset($data['meta'])){
+            $data['meta'] = json_encode($data['meta']);
+        }
         $board = new Board($data);
         $board->save();
         request()->session()->flash(
@@ -93,7 +96,7 @@ class BoardController extends Controller
      */
     public function show($id)
     {
-        $board = Board::withTrashed()->with('cards')->where('id', $id)->first();
+        $board = $this->alsoJson(Board::withTrashed()->with('cards')->where('id', $id)->first());
 
         return view('boards.show')->with('board', $board);
     }
@@ -124,7 +127,7 @@ class BoardController extends Controller
     {
 //        $board = Board::where('id', $id)->with('projects', 'structuredColumns')->first();
 
-        $board = Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first();
+        $board = $this->alsoJson(Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first());
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         //na izbiro so samo projekti te table in projekti, ki se niso dodeljeni
@@ -313,6 +316,9 @@ class BoardController extends Controller
         }
 
         $boardData = request()->except('_token', 'projects', 'column');
+        if(isset($boardData['meta'])){
+            $boardData['meta'] = json_encode($boardData['meta']);
+        }
         $board->update($boardData);
 
         //add project data
@@ -463,5 +469,11 @@ class BoardController extends Controller
     private function project_has_cards(Project $project)
     {
         return $project->cards->count() > 0;
+    }
+
+    private function alsoJson($first)
+    {
+        $first->meta = json_decode($first->meta);
+        return $first;
     }
 }

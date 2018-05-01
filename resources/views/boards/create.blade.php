@@ -51,6 +51,15 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="description" class="col-sm-2 control-label">Število dni preden se pošlje mail</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="meta[notification]"
+                                               placeholder="Dni" required min="0">
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-4">

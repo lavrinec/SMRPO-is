@@ -36,7 +36,7 @@
 
                                 <div class="form-group">
 
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-6">
                                         <label for="test" class="col-sm-3 control-label">Projekti</label>
                                         <div class="col-sm-9">
                                             <select class="form-control" name="projects[]" id="usersgroupsselect"
@@ -65,6 +65,17 @@
                                     </div>
 
                                     <div class="col-sm-3">
+                                        <label for="board_name" class="col-sm-8 control-label">Dni pred obvestilom</label>
+
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" name="meta[notification]"
+                                                   value="{{ isset($board->meta->notification) ? $board->meta->notification : '0' }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-sm-7">
                                         <label for="description" class="col-sm-2 control-label">Opis</label>
 
                                         <div class="col-sm-10">
@@ -91,7 +102,7 @@
                                         </button>
                                     </div>
 
-                                </div>
+                                </div> <br>
 
 
                                 <style>
