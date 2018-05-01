@@ -61,7 +61,7 @@
                                     /*overflow-y: auto;*/
                                 }
 
-                                #board-holder.fullscreen{
+                                #board-holder.fullscreen {
                                     z-index: 9999;
                                     width: 100%;
                                     height: 100%;
@@ -70,6 +70,10 @@
                                     left: 0;
                                     overflow-x: auto;
                                     white-space: nowrap;
+                                }
+
+                                table, th, td {
+                                    border: 1px solid lightgrey;
                                 }
 
                                 .canvas {
@@ -94,30 +98,39 @@
                                     vertical-align: top;
                                 }
 
-                                .column > .box {
-                                    /*display: inline-block;*/
-                                    margin: 0px;
-                                    /*min-height: 100vh;*/
+                                .grabbable {
+                                    cursor: move; /* fallback if grab cursor is unsupported */
+                                    cursor: grab;
+                                    cursor: -moz-grab;
+                                    cursor: -webkit-grab;
+
+                                    border: none;
+                                    width: 290px;
+                                    margin: 5px;
+                                    margin-bottom: 10px;
                                 }
 
-                                thead {
+                                /* (Optional) Apply a "closed-hand" cursor during drag operation. */
+                                .grabbable :active {
+                                    cursor: grabbing;
+                                    cursor: -moz-grabbing;
+                                    cursor: -webkit-grabbing;
+                                }
+
+                                .cardRow {
+                                    /*border-bottom: 4px solid black;*/
+                                    /*border-top: 4px solid black;*/
+                                }
+
+                                .thead_th {
                                     background-color: #F8F8FF;
-                                }
-
-                                tbody > tr {
-                                    border-bottom: 4px solid black;
-                                    border-top: 4px solid black;
-                                }
-
-                                th {
                                     min-width: 300px;
                                     vertical-align: top;
-
                                 }
 
                                 td {
                                     min-width: 300px;
-                                    height: 140px;
+                                    /*min-height: 140px;*/
                                     vertical-align: top;
                                     background: #fff;
                                 }
@@ -133,6 +146,33 @@
                                     padding-top: 5px;
                                     vertical-align: top;
                                 }
+
+                                .narrow {
+                                    background-color: #f00;
+                                }
+
+                                .narrowCol {
+                                    display: none;
+                                }
+
+                                .fornarrow {
+                                    display: none;
+                                    min-width: 50px;
+                                    background-color: #F8F8FF;
+                                    vertical-align: top;
+                                }
+
+                                .verticaltext {
+                                    width: 1px;
+                                    word-wrap: break-word;
+                                    font-family: monospace; /* this is just for good looks */
+                                    white-space: pre-wrap; /* this is for displaying whitespaces including Firefox */
+
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    margin-top: 5px;
+                                }
+
 
                             </style>
 
@@ -151,8 +191,8 @@
                                 <div class="row canvas" id="board-canvas">
 
 
-                                    <table border="1px">
-                                        <thead id="thead">
+                                    <table id="boardTable">
+                                        {{--<thead id="thead">--}}
 
                                         {{--<tr>--}}
                                         {{--@foreach($board->structuredColumnsCards as $rootColumn)--}}
@@ -165,13 +205,15 @@
                                         {{--@endforeach--}}
                                         {{--</tr>--}}
 
-
-                                        </thead>
-
-                                        <tbody id="tbody">
+                                        {{--</thead>--}}
 
 
-                                        </tbody>
+
+                                        {{--<tbody id="tbody">--}}
+
+                                        {{--</tbody>--}}
+
+
                                     </table>
 
 
@@ -183,7 +225,6 @@
                         <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
-
 
                 </div>
                 <!-- /.col -->
@@ -225,10 +266,14 @@
 
         var allLeaves = [];
         var allCards = [];
+        allColumns = [];
 
         var maxDepth = 0;
 
         var numAllLeaves = 0;
+
+        var columnsWide = {};
+
 
 
         window.onload = function () {
@@ -238,7 +283,7 @@
             numAllLeaves = getNumAllLeaves();
 
             allLeaves = getAllLeaves();
-
+            allColumns = getAllColumns();
 
             makeHader();
             makeBody();
@@ -256,7 +301,7 @@
             numOfTrs = getMaxDepth();
 
             for (var i = 0; i < numOfTrs; i++) {
-                $("#thead").append("<tr id='thead_tr_" + i + "'></tr>");
+                $("#boardTable").append("<tr id='thead_tr_" + i + "'></tr>");
             }
 
             $("#thead_tr_0").append("<th id='topleft' class='forprojects' rowspan='" + numOfTrs + "'>" +
@@ -276,11 +321,21 @@
                     rowspan = maxDepth - level;
                 }
 
+                // additional cells for narrower view
                 $("#thead_tr_" + level).append(
-                    "<th id='thead_td_" + current.id + "' colspan='" + getNumOfLeaves(current) + "' rowspan='" + rowspan + "'></th>"
+                    "<th class='column fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
+                    "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'>" +
+                    "<div class='verticaltext'>" + current.id + " " + current.column_name + "</div>" +
+                    "</th>"
                 );
 
-                addColHeader(current, "thead_td_" + current.id);
+
+                $("#thead_tr_" + level).append(
+                    "<th class='thead_th' id='thead_th_" + current.id + "' colspan='" + getNumOfLeaves(current) +
+                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")'></th>"
+                );
+
+                addColHeader(current, "thead_th_" + current.id);
 
 
                 makeHeaderTr(current.all_children_cards, level + 1);
@@ -311,14 +366,20 @@
             var maxNumOfTds = getNumAllLeaves();
 
             for (var j = 0; j < numOfProjects; j++) {
-                $("#tbody").append("<tr id='tbody_tr_" + projects[j].id + "'>" +
+                $("#boardTable").append("<tr id='tbody_tr_" + projects[j].id + "' class='cardRow'>" +
                     "<td class='forprojects'>" +
                     projects[j].board_name +
                     "</td></tr>");
 
                 for (var i = 0; i < maxNumOfTds; i++) {
+
+                    // additional cells for narrower view
+//                    $("#tbody_tr_" + projects[0].id).append(
+//                        "<td class='column fornarrow' id='tbody_td_fornarrow_" + allLeaves[i].id + "' rowspan='" + numOfProjects + "' style='display: none;'></td>"
+//                    );
+
                     $("#tbody_tr_" + projects[j].id).append(
-                        "<td class='dragdrop' id='tbody_td_" + projects[j].id + "_" + allLeaves[i].id + "'></td>"
+                        "<td class='column dragdrop' id='tbody_td_" + projects[j].id + "_" + allLeaves[i].id + "'></td>"
                     );
 
                     var container = $("#tbody_td_" + projects[j].id + "_" + allLeaves[i].id)[0];
@@ -329,6 +390,7 @@
                 }
 
             }
+
         }
 
 
@@ -464,6 +526,47 @@
         }
 
 
+        function getAllColumns() {
+            var columnsX = [];
+
+
+            if (rootColumns.length > 0) {
+                for (var col in rootColumns) {
+                    if (rootColumns.hasOwnProperty(col)) {
+                        columnsX = columnsX.concat(getColumns(rootColumns[col]));
+                    }
+                }
+            }
+
+            return columnsX;
+
+        }
+
+
+
+        function getColumns(column) {
+            var columns = [];
+
+            columnsWide[column.id] = true;
+
+            if (column.all_children_cards == 0) {
+                return [column];
+            }
+            else {
+                columns = columns.concat([column]);
+
+                for (var key in column.all_children_cards) {
+                    if (column.all_children_cards.hasOwnProperty(key)) {
+                        columns = columns.concat(getColumns(column.all_children_cards[key]));
+                    }
+                }
+                return columns;
+            }
+        }
+
+
+
+
         function compare(a, b) {
             if (a.order < b.order)
                 return -1;
@@ -473,10 +576,156 @@
         }
 
 
-        function makeFull(){
+        function makeFull() {
             console.log("makefull");
             $('#board-holder').toggleClass('fullscreen');
         }
+
+
+        function narrowColumn(id) {
+            console.log("narrow id: " + id);
+
+            columnsWide[id] = false;
+
+
+            $("#thead_th_" + id).hide();
+
+            $('td[id^=tbody_td_][id$=' + id + ']').each(function (i, current) {
+                $("#" + current.id).hide();
+            });
+
+            narrowColumnChildren(id);
+
+
+            $("#thead_th_fornarrow_" + id).show();
+
+        }
+
+
+        function narrowColumnChildren(id) {
+
+            // narrow parent
+//            $("#thead_th_" + id).hide(); // hide if wide
+//            $("#thead_th_fornarrow_" + id).hide(); // hide if narrow
+//
+//            $('td[id^=tbody_td_][id$=' + id + ']').each(function (i, currentChild) {
+//                $("#" + currentChild.id).hide();
+//            });
+            
+            // get children
+            $.each(allColumns, function (i, currentLeaf) {
+                if(currentLeaf.parent_id == id){
+
+                    $("#thead_th_" + currentLeaf.id).hide(); // hide - parent is narrow
+
+                    $("#thead_th_fornarrow_" + currentLeaf.id).hide(); // hide - parent is narrow
+
+                    $('td[id^=tbody_td_][id$=' + currentLeaf.id + ']').each(function (i, currentChild) {
+                        $("#" + currentChild.id).hide(); // hide - parent is narrow
+                    });
+
+
+                    narrowColumnChildren(currentLeaf.id);
+                }
+
+            });
+            // currently only 1 step depth
+            // make recursive
+
+        }
+
+
+
+        function wideColumn(id) {
+            console.log("wide id: " + id);
+
+            columnsWide[id] = true;
+
+            $("#thead_th_" + id).show();
+
+            $('td[id^=tbody_td_][id$=' + id + ']').each(function (i, current) {
+                $("#" + current.id).show();
+            });
+
+            wideColumnChildren(id);
+
+
+//            $.each(columnsWide, function (iid, current) {
+//                if(current){
+//                    $("#thead_th_" + iid).show();
+//
+//                    $('td[id^=tbody_td_][id$=' + iid + ']').each(function (i, current) {
+//                        $("#" + current.id).show();
+//                    });
+//                }
+//                else{
+//                    $("#thead_th_" + iid).hide();
+//
+//                    $('td[id^=tbody_td_][id$=' + iid + ']').each(function (i, current) {
+//                        $("#" + current.id).hide();
+//                    });
+//                }
+//
+//
+//            });
+
+
+
+
+
+            $("#thead_th_fornarrow_" + id).hide();
+        }
+
+
+        function wideColumnChildren(id) {
+            // get children
+            $.each(allColumns, function (i, currentLeaf) {
+                if(currentLeaf.parent_id == id){
+
+                    console.log("column: " + currentLeaf.id + "|| parent: " + currentLeaf.parent_id);
+                    console.log("if parent is wide: " + columnsWide[currentLeaf.parent_id]);
+
+                    if(!columnsWide[currentLeaf.parent_id]){
+                        $("#thead_th_" + currentLeaf.id).hide(); // hide - parent is narrow
+
+                        $("#thead_th_fornarrow_" + currentLeaf.id).hide(); // hide - parent is narrow
+
+                        $('td[id^=tbody_td_][id$=' + currentLeaf.id + ']').each(function (i, currentChild) {
+                            $("#" + currentChild.id).hide(); // hide - parent is narrow
+                        });
+                    }
+                    else if(columnsWide[currentLeaf.id]) {
+                        $("#thead_th_" + currentLeaf.id).show(); // show if wide
+                        $("#thead_th_fornarrow_" + currentLeaf.id).hide(); // hide if wide
+
+                        $('td[id^=tbody_td_][id$=' + currentLeaf.id + ']').each(function (i, currentChild) {
+                            $("#" + currentChild.id).show(); // show if wide
+                        });
+                        wideColumnChildren(currentLeaf.id);
+                    }
+                    else {
+                        $("#thead_th_" + currentLeaf.id).hide(); // hide if narrow
+                        $("#thead_th_fornarrow_" + currentLeaf.id).show(); // show if narrow
+
+                        $('td[id^=tbody_td_][id$=' + currentLeaf.id + ']').each(function (i, currentChild) {
+                            $("#" + currentChild.id).hide(); // hide if narrow
+                        });
+                        wideColumnChildren(currentLeaf.id);
+                    }
+
+
+
+//                    wideColumnChildren(currentLeaf.id);
+                }
+
+
+            });
+            // currently only 1 step depth
+            // make recursive
+        }
+
+
+
 
 
         // OLD
