@@ -535,12 +535,15 @@
 
 
         function checkChecked(clickedItem, group) {
-            if (typeof clickedItem == 'number') {
-                clickedItem = $("#" + clickedItem + "_" + group)[0];
-            }
-            else {
-                clickedItem = $("#" + clickedItem.id + "_" + group)[0];
-            }
+            console.log("clicked item BEFORE");
+            console.log(clickedItem);
+            console.log(typeof clickedItem);
+
+            clickedItem = $("#" + clickedItem)[0];
+
+            console.log("clicked item AFTER");
+            console.log(clickedItem);
+            console.log(typeof clickedItem);
 
             var groupItems = $("input[name*=" + group + "]");
 
