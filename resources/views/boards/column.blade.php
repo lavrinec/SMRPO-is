@@ -126,12 +126,12 @@
 
 
                     <button type="button" class="btn btn-danger col-sm-3"
-                            onclick="deleteColumn({{ $column['id'] }})" {{ count($column['cards']) > 0 ? 'disabled' : '' }}>
+                            onclick="deleteColumn('{{ $column['id'] }}')" {{ count($column['cards']) > 0 ? 'disabled' : '' }}>
                         <i class="fa fa-trash"></i>
                     </button>
 
                     <button id="{{ $column['id'] }}_addFirstSubcolumn" type="button" class="btn btn-default col-sm-3"
-                            onclick="addFirstSubColumnTo({{ $column['id'] }})">
+                            onclick="addFirstSubColumnTo('{{ $column['id'] }}')">
                         <i class="fa fa-arrow-down"></i>
                     </button>
 

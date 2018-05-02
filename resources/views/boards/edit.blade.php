@@ -65,11 +65,13 @@
                                     </div>
 
                                     <div class="col-sm-3">
-                                        <label for="board_name" class="col-sm-8 control-label">Dni pred obvestilom</label>
+                                        <label for="board_name" class="col-sm-8 control-label">Dni pred
+                                            obvestilom</label>
 
                                         <div class="col-sm-4">
                                             <input type="text" class="form-control" name="meta[notification]"
-                                                   value="{{ isset($board->meta->notification) ? $board->meta->notification : '0' }}" required>
+                                                   value="{{ isset($board->meta->notification) ? $board->meta->notification : '0' }}"
+                                                   required>
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +104,8 @@
                                         </button>
                                     </div>
 
-                                </div> <br>
+                                </div>
+                                <br>
 
 
                                 <style>
@@ -329,7 +332,7 @@
         }
 
         function addColumnBefore(column) {
-            column = $("#"+column)[0];
+            column = $("#" + column)[0];
 
             $.ajax({
                 type: 'POST',
@@ -350,7 +353,7 @@
         }
 
         function addColumnAfter(column) {
-            column = $("#"+column)[0];
+            column = $("#" + column)[0];
 
             $.ajax({
                 type: 'POST',
@@ -371,9 +374,8 @@
 
 
         function addFirstSubColumnTo(column) {
-            if (typeof column == 'number') {
-                column = $("#" + column)[0];
-            }
+            column = $("#" + column)[0];
+
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
@@ -395,9 +397,8 @@
 
 
         function deleteColumn(column) {
-            if (typeof column == 'number') {
-                column = $("#" + column)[0];
-            }
+            column = $("#" + column)[0];
+
             var parent = column.parentNode;
             column.parentNode.removeChild(column);
             checkIfEmpty(parent);
@@ -472,8 +473,8 @@
                     renameX(inputs, "[" + current.id + "]");
                 }
                 else {
-                    parent.id = parent.id.replace("_subcanvas", "");
-                    var parents_parent_name = $("#" + parent.id + "_parent_name")[0];
+                    var parent_id  = parent.id.replace("_subcanvas", "");
+                    var parents_parent_name = $("#" + parent_id + "_parent_name")[0];
 //                    var nameX = parents_parent_name.value + "[childs][" + current.id + "]";
 
                     $("#" + current.id + "_parent_name")[0].value = parents_parent_name.value + "[childs][" + current.id + "]";
@@ -564,7 +565,7 @@
             }
 
             allSpecial = checkIfAllSpecialColumns();
-            if(allSpecial){
+            if (allSpecial) {
                 rightOrder = checkIfRightOrder();
             }
 
@@ -611,7 +612,7 @@
             }
 
         }
-        
+
         function checkIfRightOrder() {
             var ok = ["high_priority", "start_border", "end_border", "acceptance_testing"];
             var reality = [];
@@ -622,9 +623,9 @@
 
             console.log(reality);
 
-            if (! (ok[0] == reality[0] && ok[1] == reality[1]  && ok[2] == reality[2] && ok[3] == reality[3])) {
+            if (!(ok[0] == reality[0] && ok[1] == reality[1] && ok[2] == reality[2] && ok[3] == reality[3])) {
                 alert("Stolpci niso v priporočenem vrstnem redu " +
-                "(Stolpec za nujne kartice, Začetni mejni, Končni mejni, Stolpec za sprejemno testiranje)");
+                    "(Stolpec za nujne kartice, Začetni mejni, Končni mejni, Stolpec za sprejemno testiranje)");
                 return false;
             }
             else {
