@@ -118,7 +118,7 @@
 
                 <div class="row">
                     <button type="button" class="btn btn-default col-sm-3"
-                            onclick="addColumnBefore({{ $column['id'] }})">
+                            onclick="addColumnBefore('{{ $column['id'] }}')">
                         <i class="fa fa-plus"></i>
                         <br>
                         <i class="fa fa-arrow-left"></i>
@@ -136,7 +136,7 @@
                     </button>
 
                     <button type="button" class="btn btn-default col-sm-3"
-                            onclick="addColumnAfter({{ $column['id'] }})">
+                            onclick="addColumnAfter('{{ $column['id'] }}')">
                         <i class="fa fa-plus"></i>
                         <br>
                         <i class="fa fa-arrow-right"></i>

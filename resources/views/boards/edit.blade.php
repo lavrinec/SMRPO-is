@@ -329,9 +329,8 @@
         }
 
         function addColumnBefore(column) {
-            if (typeof column == 'number') {
-                column = $("#" + column)[0];
-            }
+            column = $("#"+column)[0];
+
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
@@ -351,10 +350,7 @@
         }
 
         function addColumnAfter(column) {
-
-            if (typeof column == 'number') {
-                column = $("#" + column)[0];
-            }
+            column = $("#"+column)[0];
 
             $.ajax({
                 type: 'POST',
@@ -535,15 +531,7 @@
 
 
         function checkChecked(clickedItem, group) {
-            console.log("clicked item BEFORE");
-            console.log(clickedItem);
-            console.log(typeof clickedItem);
-
             clickedItem = $("#" + clickedItem)[0];
-
-            console.log("clicked item AFTER");
-            console.log(clickedItem);
-            console.log(typeof clickedItem);
 
             var groupItems = $("input[name*=" + group + "]");
 
