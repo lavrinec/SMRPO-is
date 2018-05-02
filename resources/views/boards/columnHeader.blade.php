@@ -29,6 +29,21 @@
         WIP: {{ $column["WIP"] }}
         <br>
 
+        <hr>
+        testiranje izrazov: <br>
+        isset: {{ isset($column['high_priority']) }} <br>
+        ==1: {{ $column['high_priority'] == 1 }} <br>
+        ==true: {{ $column['high_priority'] == true }} <br>
+        ==1 OR ==true: {{ ($column['high_priority'] == 1 || $column['high_priority'] == true) }} <br>
+        isset AND (==1 OR ==true): {{ isset($column['high_priority']) && ($column['high_priority'] == 1 || $column['high_priority'] == true) }}
+        <br>
+
+        konec testiranja izrazov
+        <hr>
+        <br>
+
+
+
         @if(isset($column['high_priority']) && ($column['high_priority'] == 1 || $column['high_priority'] == true))
             Stolpec za nujne kartice
             <br>
