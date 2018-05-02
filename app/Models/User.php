@@ -58,7 +58,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function isPO()
+    public function isPO(): bool
     {
         return $this->usersRoles->where('role_id', 2)->count() > 0;
     }
@@ -69,9 +69,29 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function isKM()
+    public function isKM(): bool
     {
         return $this->usersRoles->where('role_id', 3)->count() > 0;
+    }
+
+    /**
+     * @param Card $card
+     * @return bool
+     */
+    public function canDeleteCard(Card $card): bool {
+        if(! $card->canEdit($this->id)){
+            return false;
+        }
+
+        if($this->isKM()){
+            return true;
+        }
+
+        if($this->isPO()){
+            return $card->isBeforeStart();
+        }
+
+        return false;
     }
 
 

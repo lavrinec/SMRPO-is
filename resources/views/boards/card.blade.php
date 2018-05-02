@@ -1,4 +1,4 @@
-<div class="box grabbable" style="background-color: {{ $card->color }}; " ondblclick="openCard({{ $card->id }})">
+<div class="box grabbable" style="background-color: {{ $card->color }}; " ondblclick="openCard({{ $card->id }})" data-card-id="{{ $card->id }}">
     <div class="box-header">
         <small>{{ $card->order }}</small>
         <h5 class="box-title">
@@ -20,7 +20,5 @@
     {{--<div class="box-body">--}}
         {{----}}
     {{--</div>--}}
-
-    @include('modals.modal')
 
 </div>

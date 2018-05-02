@@ -54,4 +54,20 @@ class Board extends Model
     {
         return $this->hasManyThrough('App\Models\Group', 'App\Models\Project', 'board_id', 'id', 'id', 'group_id');
     }
+
+    public function lowestLeftColumn(){
+        $columns = $this->columns();
+        $column = $columns->where('parent_id', null)->where('left_id', null)->with('leftChild')->orderBy('order')->first();
+        return $this->getLowestLeftColumn($column);
+    }
+
+    private function getLowestLeftColumn($column)
+    {
+        if(! $column || ! $column->leftChild) return $column;
+        $column = $column->leftChild()->with('leftChild')->first();
+        if(! $column || ! $column->leftChild)
+            return $column;
+        else
+            return $this->getLowestLeftColumn($column);
+    }
 }

@@ -13,6 +13,8 @@
                 <li class="active"><a data-toggle="tab" href="#editing">Urejanje</a></li>
                 <li><a data-toggle="tab" href="#moves">Premiki</a></li>
                 <li><a data-toggle="tab" href="#wip">Kršitve WIP</a></li>
+                <li {!! Auth::user()->canDeleteCard($card) ? '' : 'style="display:none;"' !!}
+                ><a data-toggle="tab" href="#delete">Izbris</a></li>
             </ul>
             <br>
         @endif
@@ -117,6 +119,14 @@
                         Ni WIP kršitev!
                     @endif
                 </div>
+                <div id="delete" class="tab-pane fade">
+                    <div class="form-group">
+                        <label for="description" class="col-form-label">Razlog izbrisa:</label>
+                        <textarea class="form-control" id="deletingReason" name="deletingReason"></textarea>
+                    </div>
+                    <div class="fa fa-spinner fa-spin" id="spinner"></div>
+                    <a href="#" class="btn btn-warning" id="deleteCard">Izbriši</a>
+                </div>
             @endif
         </div>
     </div>
@@ -127,5 +137,36 @@
 </form>
 <script>
     var $disabledResults = $(".select2");
-    $disabledResults.select2({ width: resolve });
+    $disabledResults.select2({ width: "100%" });
+    @if(isset($card))
+    $( document ).ready(function() {
+        $("#spinner").hide();
+        $("#deleteCard").click(function(e){
+            console.log("delete clicked");
+            e.preventDefault();
+            var text = $('textarea#deletingReason').val();
+            if(text.length < 2){
+                alert("Za izbris morate navesti razlog!");
+            } else {
+                $("#spinner").show();
+                $("#deleteCard").hide();
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ action('CardController@destroy', $card->id) }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "deletingReason": text
+                    },
+                    success: function () {
+                        console.log("uspesno izbrisana");
+                        $('#cardModal').modal('hide');
+                        $( document ).find("[data-card-id='{{ $card->id }}']").remove();
+
+                    }
+
+                });
+            }
+        });
+    });
+    @endif
 </script>

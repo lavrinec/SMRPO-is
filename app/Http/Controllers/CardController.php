@@ -78,14 +78,14 @@ class CardController extends Controller
             $data['WipViolations'] = $data['card']->wipViolations()->with('old_column', 'new_column')->get();
             //dd($data);
         } else if(! isset($column)) {
-            $data['column'] = $data['board']->columns();
+
             if(Auth::user()->isPO()){
-                $column = $data['column']->where('parent_id', null)->where('left_id', null)->with('leftChild')->orderBy('order')->first();
-                $data['column'] = $this->getLowestLeftColumn($column);
+                $data['column'] = $data['board']->lowestLeftColumn();
                 if(! isset($data['column'])){
                     return view('cards.error')->with(['error' => 'Tabela je brez stolpcev! Najprej dodajte stolpce!']);
                 }
             } else {
+                $data['column'] = $data['board']->columns();
                 $data['column'] = $data['column']->where('high_priority', true)->first();
                 if(! isset($data['column'])){
                     return view('cards.error')->with(['error' => 'Tabela je brez high priority stolpca! Zato dodajanje kartic ni mogoče za Kanban Masterja.']);
@@ -117,13 +117,14 @@ class CardController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Card  $card
+     * @param  \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
+     * @internal param Card $card
      */
     public function update(Request $request, int $id)
     {
-        $data = request()->except('_token');
+        $data = request()->except('_token', 'deletingReason');
         if(!isset($data['user_id']) || $data['user_id'] == 0) $data['user_id'] = null;
         if(!isset($data['deadline']) || $data['deadline'] == '') $data['deadline'] = null;
         if(!isset($data['estimation']) || $data['estimation'] == '') $data['estimation'] = 0;
@@ -148,19 +149,17 @@ class CardController extends Controller
      * @param  \App\Models\Card  $card
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Card $card)
+    public function destroy(Request $request, Card $card)
     {
-        $card->delete();
-        return redirect()->route('boards.list');
-    }
+        $meta = json_decode($card->meta, true);
+        $meta['deleteReason'] = $request->deletingReason;
+        $card->update(['meta' => json_encode($meta)]);
 
-    private function getLowestLeftColumn($column)
-    {
-        if(! $column || ! $column->leftChild) return $column;
-        $column = $column->leftChild()->with('leftChild')->first();
-        if(! $column || ! $column->leftChild)
-            return $column;
-        else
-            return $this->getLowestLeftColumn($column);
+        $card->delete();
+        return response()->json([
+            'status' => '200',
+            'state' => 'deleted'
+        ]);
+        //return redirect()->route('boards.list');
     }
 }
