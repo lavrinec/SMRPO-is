@@ -29,41 +29,23 @@
         WIP: {{ $column["WIP"] }}
         <br>
 
-        <hr>
-        testiranje izrazov: <br>
-        isset: {{ isset($column['high_priority']) }} <br>
-        ==1: {{ $column['high_priority'] == 1 }} <br>
-        ==true: {{ $column['high_priority'] == true }} <br>
-        ==1 OR ==true: {{ ($column['high_priority'] == 1 || $column['high_priority'] == true) }} <br>
-        isset AND (==1 OR ==true): {{ isset($column['high_priority']) && ($column['high_priority'] == 1 || $column['high_priority'] == true) }}
-        <br>
 
-        ===true: {{ $column['high_priority'] === true }} <br>
-        =="true": {{ $column['high_priority'] == "true" }} <br>
-
-
-        konec testiranja izrazov
-        <hr>
-        <br>
-
-
-
-        @if(isset($column['high_priority']) && ($column['high_priority'] == 1 || $column['high_priority'] == true))
+        @if(isset($column['high_priority']) && ($column['high_priority'] == 1 || $column['high_priority'] == "true"))
             Stolpec za nujne kartice
             <br>
         @endif
 
-        @if(isset($column['start_border']) && ($column['start_border'] == 1 || $column['start_border'] == true))
+        @if(isset($column['start_border']) && ($column['start_border'] == 1 || $column['start_border'] == "true"))
             Začetni mejni
             <br>
         @endif
        
-        @if(isset($column['end_border']) && ($column['end_border'] == 1 || $column['end_border'] == true))
+        @if(isset($column['end_border']) && ($column['end_border'] == 1 || $column['end_border'] == "true"))
             Končni mejni
             <br>
         @endif
 
-        @if(isset($column['acceptance_testing']) && ($column['acceptance_testing'] == 1 || $column['acceptance_testing'] == true))
+        @if(isset($column['acceptance_testing']) && ($column['acceptance_testing'] == 1 || $column['acceptance_testing'] == "true"))
             Stolpec za sprejemno testiranje
         @endif
 
