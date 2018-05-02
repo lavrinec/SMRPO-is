@@ -275,7 +275,6 @@
         var columnsWide = {};
 
 
-
         window.onload = function () {
 //            makeExisting();
 
@@ -543,7 +542,6 @@
         }
 
 
-
         function getColumns(column) {
             var columns = [];
 
@@ -563,8 +561,6 @@
                 return columns;
             }
         }
-
-
 
 
         function compare(a, b) {
@@ -587,7 +583,6 @@
 
             columnsWide[id] = false;
 
-
             $("#thead_th_" + id).hide();
 
             $('td[id^=tbody_td_][id$=' + id + ']').each(function (i, current) {
@@ -596,25 +591,15 @@
 
             narrowColumnChildren(id);
 
-
             $("#thead_th_fornarrow_" + id).show();
 
         }
 
 
         function narrowColumnChildren(id) {
-
-            // narrow parent
-//            $("#thead_th_" + id).hide(); // hide if wide
-//            $("#thead_th_fornarrow_" + id).hide(); // hide if narrow
-//
-//            $('td[id^=tbody_td_][id$=' + id + ']').each(function (i, currentChild) {
-//                $("#" + currentChild.id).hide();
-//            });
-            
             // get children
             $.each(allColumns, function (i, currentLeaf) {
-                if(currentLeaf.parent_id == id){
+                if (currentLeaf.parent_id == id) {
 
                     $("#thead_th_" + currentLeaf.id).hide(); // hide - parent is narrow
 
@@ -624,16 +609,10 @@
                         $("#" + currentChild.id).hide(); // hide - parent is narrow
                     });
 
-
                     narrowColumnChildren(currentLeaf.id);
                 }
-
             });
-            // currently only 1 step depth
-            // make recursive
-
         }
-
 
 
         function wideColumn(id) {
@@ -649,30 +628,6 @@
 
             wideColumnChildren(id);
 
-
-//            $.each(columnsWide, function (iid, current) {
-//                if(current){
-//                    $("#thead_th_" + iid).show();
-//
-//                    $('td[id^=tbody_td_][id$=' + iid + ']').each(function (i, current) {
-//                        $("#" + current.id).show();
-//                    });
-//                }
-//                else{
-//                    $("#thead_th_" + iid).hide();
-//
-//                    $('td[id^=tbody_td_][id$=' + iid + ']').each(function (i, current) {
-//                        $("#" + current.id).hide();
-//                    });
-//                }
-//
-//
-//            });
-
-
-
-
-
             $("#thead_th_fornarrow_" + id).hide();
         }
 
@@ -680,12 +635,12 @@
         function wideColumnChildren(id) {
             // get children
             $.each(allColumns, function (i, currentLeaf) {
-                if(currentLeaf.parent_id == id){
+                if (currentLeaf.parent_id == id) {
 
                     console.log("column: " + currentLeaf.id + "|| parent: " + currentLeaf.parent_id);
                     console.log("if parent is wide: " + columnsWide[currentLeaf.parent_id]);
 
-                    if(!columnsWide[currentLeaf.parent_id]){
+                    if (!columnsWide[currentLeaf.parent_id]) {
                         $("#thead_th_" + currentLeaf.id).hide(); // hide - parent is narrow
 
                         $("#thead_th_fornarrow_" + currentLeaf.id).hide(); // hide - parent is narrow
@@ -694,7 +649,7 @@
                             $("#" + currentChild.id).hide(); // hide - parent is narrow
                         });
                     }
-                    else if(columnsWide[currentLeaf.id]) {
+                    else if (columnsWide[currentLeaf.id]) {
                         $("#thead_th_" + currentLeaf.id).show(); // show if wide
                         $("#thead_th_fornarrow_" + currentLeaf.id).hide(); // hide if wide
 
@@ -713,96 +668,10 @@
                         wideColumnChildren(currentLeaf.id);
                     }
 
-
-
-//                    wideColumnChildren(currentLeaf.id);
+                    // wideColumnChildren(currentLeaf.id);
                 }
-
-
             });
-            // currently only 1 step depth
-            // make recursive
         }
-
-
-
-
-
-        // OLD
-        /*
-         * Create and Show already existing columns (if editing saved board)
-         *
-         * */
-
-        //        function makeExisting() {
-        //
-        //            // structuredColumnsCards
-        //
-        //            if (rootColumns.length > 0) {
-        //
-        //                // sort by order (currently on each level starts from beginning)
-        //                rootColumns.sort(compare);
-        //
-        //                // array, location, parent-name, level
-        //                forColumns(rootColumns, 'board-canvas', '', 0);
-        //            }
-        //        }
-
-
-
-
-
-        {{--function forColumns(columns, place, parent_name, level) {--}}
-        {{--// just append to the canvas--}}
-
-        {{--columns.sort(compare);--}}
-
-        {{--for (var key in columns) {--}}
-        {{--if (columns.hasOwnProperty(key)) {--}}
-
-        {{--var lvl = Number(level);--}}
-        {{--columns[key]['level'] = lvl;--}}
-
-        {{--var pn = parent_name.slice(0);--}}
-        {{--columns[key]['parent_name'] = pn;--}}
-
-        {{--columns[key]['projects'] = {!! $board->projects !!};--}}
-
-        {{--addExistingColumn(columns[key], place);--}}
-
-        {{--addExistingCards(columns[key].cards, columns[key].id + "_subcanvas");--}}
-
-
-        {{--lvl += 1;--}}
-        {{--pn += '[' + columns[key].id + '][childs]';--}}
-        {{--forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);--}}
-        {{--// allChildrenCards--}}
-        {{--}--}}
-        {{--}--}}
-        {{--}--}}
-
-
-        {{--function addExistingColumn(columnData, place) {--}}
-        {{--$.ajax({--}}
-        {{--type: 'POST',--}}
-        {{--url: "{{ action('BoardController@columnShow') }}",--}}
-        {{--data: {--}}
-        {{--"_token": "{{ csrf_token() }}",--}}
-        {{--'column_data': columnData--}}
-        {{--},--}}
-        {{--success: function (data) {--}}
-        {{--$("#" + place).append(data);--}}
-
-        {{--// allChildrenCards--}}
-        {{--if (columnData.all_children_cards.length == 0) {--}}
-        {{--var container = $("#" + columnData.id + "_subcanvas")[0];--}}
-        {{--drake.containers.push(container);--}}
-        {{--}--}}
-
-        {{--}--}}
-        {{--});--}}
-        {{--}--}}
-
 
     </script>
 
