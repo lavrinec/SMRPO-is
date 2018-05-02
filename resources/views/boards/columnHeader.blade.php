@@ -39,6 +39,7 @@
         <br>
 
         ===true: {{ $column['high_priority'] === true }} <br>
+        =="true": {{ $column['high_priority'] == "true" }} <br>
 
 
         konec testiranja izrazov
@@ -65,8 +66,5 @@
         @if(isset($column['acceptance_testing']) && ($column['acceptance_testing'] == 1 || $column['acceptance_testing'] == true))
             Stolpec za sprejemno testiranje
         @endif
-
-
-        {{ $column }}
 
     </div>
