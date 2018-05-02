@@ -38,6 +38,9 @@
         isset AND (==1 OR ==true): {{ isset($column['high_priority']) && ($column['high_priority'] == 1 || $column['high_priority'] == true) }}
         <br>
 
+        ===true: {{ $column['high_priority'] === true }} <br>
+
+
         konec testiranja izrazov
         <hr>
         <br>
@@ -62,5 +65,8 @@
         @if(isset($column['acceptance_testing']) && ($column['acceptance_testing'] == 1 || $column['acceptance_testing'] == true))
             Stolpec za sprejemno testiranje
         @endif
+
+
+        {{ $column }}
 
     </div>
