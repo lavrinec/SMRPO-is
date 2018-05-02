@@ -11,11 +11,13 @@ function checkWipViolation(Card $card, $reason = "", $from = null){
     else {
         $parent = $column->parent()->with('children.cards')->first();
         $cardsNum = 0;
-        foreach ($parent->children as $child){
-            $cardsNum += count($child->cards);
+        if(isset($parent)) {
+            foreach ($parent->children as $child) {
+                $cardsNum += count($child->cards);
+            }
+            if ($parent->WIP > 0 && $parent->WIP < $cardsNum)
+                insertWipViolation($card, $reason . " (na starševski tabeli)", $from);
         }
-        if($parent->WIP > 0 &&$parent->WIP < $cardsNum)
-            insertWipViolation($card, $reason . " (na starševski tabeli)", $from);
     }
 
 }
