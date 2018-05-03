@@ -70,6 +70,7 @@
                                     left: 0;
                                     overflow-x: auto;
                                     white-space: nowrap;
+                                    background: #fff;
                                 }
 
                                 table, th, td {
@@ -85,18 +86,19 @@
                                     min-height: 200px;
                                 }
 
-                                .canvas > .column {
-                                    display: inline-block;
-                                    /*float: none;*/
 
-                                    min-width: 320px;
-                                    /*min-height: 434px;*/
-                                    /*min-height: 100vh;*/
+                                /*.canvas > .column {*/
+                                    /*display: inline-block;*/
+                                    /*!*float: none;*!*/
 
-                                    /*padding: 5px;*/
-                                    border: 5px solid #69c;
-                                    vertical-align: top;
-                                }
+                                    /*min-width: 320px;*/
+                                    /*!*min-height: 434px;*!*/
+                                    /*!*min-height: 100vh;*!*/
+
+                                    /*!*padding: 5px;*!*/
+                                    /*border: 5px solid #69c;*/
+                                    /*vertical-align: top;*/
+                                /*}*/
 
                                 .grabbable {
                                     cursor: move; /* fallback if grab cursor is unsupported */
@@ -105,7 +107,7 @@
                                     cursor: -webkit-grab;
 
                                     border: none;
-                                    width: 290px;
+                                    width: 240px;
                                     margin: 5px;
                                     margin-bottom: 10px;
                                 }
@@ -124,12 +126,12 @@
 
                                 .thead_th {
                                     background-color: #F8F8FF;
-                                    min-width: 300px;
+                                    min-width: 250px;
                                     vertical-align: top;
                                 }
 
                                 td {
-                                    min-width: 300px;
+                                    min-width: 250px;
                                     /*min-height: 140px;*/
                                     vertical-align: top;
                                     background: #fff;
@@ -160,6 +162,7 @@
                                     min-width: 50px;
                                     background-color: #F8F8FF;
                                     vertical-align: top;
+                                    max-height: 100vh;
                                 }
 
                                 .verticaltext {
@@ -322,7 +325,7 @@
 
                 // additional cells for narrower view
                 $("#thead_tr_" + level).append(
-                    "<th class='column fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
+                    "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
                     "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'>" +
                     "<div class='verticaltext'>" + current.id + " " + current.column_name + "</div>" +
                     "</th>"
@@ -390,6 +393,7 @@
 
             }
 
+            updateRowHeight();
         }
 
 
@@ -575,6 +579,22 @@
         function makeFull() {
             console.log("makefull");
             $('#board-holder').toggleClass('fullscreen');
+
+            updateRowHeight();
+        }
+
+        function updateRowHeight() {
+            var headerHeight = $("#topleft").height();
+            var fullHeight = $(window).height();
+            var rowHeight = (fullHeight-headerHeight)/projects.length;
+
+
+            $(".cardRow").each(function (i, current) {
+                console.log($("#" + current.id).height());
+
+                $("#" + current.id).height(rowHeight);
+
+            });
         }
 
 
@@ -593,6 +613,7 @@
 
             $("#thead_th_fornarrow_" + id).show();
 
+            updateRowHeight();
         }
 
 
@@ -629,6 +650,8 @@
             wideColumnChildren(id);
 
             $("#thead_th_fornarrow_" + id).hide();
+
+            updateRowHeight();
         }
 
 
