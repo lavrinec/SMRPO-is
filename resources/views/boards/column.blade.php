@@ -66,7 +66,8 @@
                         <input type="number" class="form-control" id="{{ $column['id'] }}_wip"
                                name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][wip]"
                                required title="Vpišite omejitev WIP"
-                               value="{{ isset($column['WIP']) ? $column['WIP'] : '' }}" min="0">
+                               value="{{ isset($column['WIP']) ? $column['WIP'] : '' }}" min="0"
+                               onchange="checkWIPandCards('{{ $column['id'] }}')">
                     </div>
                 </div>
 
