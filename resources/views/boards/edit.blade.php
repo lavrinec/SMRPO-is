@@ -33,7 +33,6 @@
 
                                 @csrf
 
-
                                 <div class="form-group">
 
                                     <div class="col-sm-6">
@@ -216,7 +215,9 @@
 
         var rootColumns = board.structured_columns_cards;
 
-        allColumns = [];
+        var allColumns = [];
+
+        var wip_violations = {};
 
         window.onload = function () {
 //            makeExisting();
@@ -644,10 +645,10 @@
                 if (newWIP < column.cards.length && newWIP != 0) {
                     var r = confirm("V stolpcu je več kartic kot znaša nova omejitev WIP.\n" +
                         "Ali ste prepričani, da želite uveljaviti spremembo \n" +
-                        "(kršitev WIP se bo avtomatsko zabeležila)?");
+                        "(kršitev WIP se bo ob shranjevanju avtomatsko zabeležila)?");
                     if (r == true) {
-                        // shrani nekam, da se ob shranitvi zabeleži kršitev
-                        // id stolpca + vzrok = sprememba WIP
+                        // in BoardController, first save new WIP,
+                        // then run checkWipViolation for every card in that column
                     } else {
                         $("#" + columnid + "_wip")[0].value = column.WIP;
                     }
@@ -657,7 +658,6 @@
 
 
         }
-
 
     </script>
 

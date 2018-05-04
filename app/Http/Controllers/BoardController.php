@@ -76,7 +76,7 @@ class BoardController extends Controller
         if ($validator = $this->validateBoard($request)) return redirect()->route('boards.create')->withErrors($validator);
 
         $data = request()->except('_token');
-        if(isset($data['meta'])){
+        if (isset($data['meta'])) {
             $data['meta'] = json_encode($data['meta']);
         }
         $board = new Board($data);
@@ -163,7 +163,7 @@ class BoardController extends Controller
             $column = $request->column_data;
 
 
-            return view('boards.column')->with(['column'=>$column]);
+            return view('boards.column')->with(['column' => $column]);
 
         } else {
 
@@ -316,20 +316,21 @@ class BoardController extends Controller
         }
 
         $boardData = request()->except('_token', 'projects', 'column');
-        if(isset($boardData['meta'])){
+        if (isset($boardData['meta'])) {
             $boardData['meta'] = json_encode($boardData['meta']);
         }
         $board->update($boardData);
 
+
         //add project data
         $project_ids = $request->input('projects');
-        
+
         //ce ni nobenih projektov nastavi na prazen seznam
-        if(!isset($project_ids)) $project_ids=[];
+        if (!isset($project_ids)) $project_ids = [];
 
         $deleted = Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->get();
-       // $old =  Project::where('board_id', $board->id)->get();
-       // $new = Project::whereIn('id', $project_ids)->get();
+        // $old =  Project::where('board_id', $board->id)->get();
+        // $new = Project::whereIn('id', $project_ids)->get();
 
 
         //prepreci brisanje projektov, ki ze imajo kartice oz brisi ce jih nimajo        
@@ -345,12 +346,7 @@ class BoardController extends Controller
                 $query->where('board_id', '!=', $board->id)
                     ->orWhereNull('board_id');
             })->whereIn('id', $project_ids)->update(['board_id' => $board->id]);
-        } 
-
-
-       
-        
-
+        }
 
 
         $order = 0;
@@ -408,6 +404,13 @@ class BoardController extends Controller
         } else {
             $newId = $column['id'];
             Column::where('id', $newId)->update($column);
+
+            // check if new WIP is smaller than number of cards in column
+            // save WIP violation for each card in column
+            foreach (Column::where('id', $newId)->first()->cards as $card) {
+                checkWipViolation($card, "Nova omejitev WIP manjsa od stevila kartic v stolpcu!");
+            }
+
         }
 
         $this->allArray[] = $newId;
