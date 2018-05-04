@@ -385,15 +385,17 @@
                 // additional cells for narrower view
                 $("#thead_tr_" + level).append(
                     "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
-                    "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'>" +
-                    "<div class='verticaltext'>" + current.id + " " + current.column_name + "</div>" +
+                    "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
+                    "title='Klikni, da me razširiš.'>" +
+                    "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
+                    current.column_name + " " + current.cards.length + "/" + current.WIP + "</div>" +
                     "</th>"
                 );
 
 
                 $("#thead_tr_" + level).append(
                     "<th class='thead_th' id='thead_th_" + current.id + "' colspan='" + getNumOfLeaves(current) +
-                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")'></th>"
+                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")' title='Klikni, da me skrčiš.'></th>"
                 );
 
                 addColHeader(current, "thead_th_" + current.id);
