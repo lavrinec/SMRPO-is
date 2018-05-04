@@ -8,11 +8,15 @@
   @include('dependencies.basic_head_link_dependencies')
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
+  @include('dependencies.global_js_functions')
   <div class="wrapper">
 
-    @include('header.mainheader')
 
-    <!-- Left side column. contains the logo and sidebar -->
+  @include('header.mainheader')
+
+  @include('modals.documentation')
+
+  <!-- Left side column. contains the logo and sidebar -->
     @include('sidebar.mainsidebar')
 
     <!-- Content Wrapper. Contains page content -->

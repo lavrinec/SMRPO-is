@@ -2,14 +2,68 @@
 
 @section('content')
 
+    <script>
+        documentationContent = [
+            {
+                title:"Podatki uporabnika",
+                body: "<div class='col-sm-12'>" +
+                "<p>" +
+                "Podatki so precej standardni. Prikazujemo vam sledeče podatke uporabnika:" +
+                "<ul>" +
+                "<li>Ime,</li>" +
+                "<li>Priimek,</li>" +
+                "<li>Email naslov,</li>" +
+                "<li>Status (ali je uporabnik aktiven ali izbrisan).</li>" +
+                "</ul>" +
+                "</div>",
+                currentStep : 1,
+                allSteps: 3
+            },
+            {
+                title:"Stransko okno",
+                body: "<div class='col-sm-12 align-text-center'>" +
+                "<img class='' src='/img/documentation/users/editUserSideWindow.png' style='height:140px;width:180px;' /> " +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Stransko okno, ki ga vidite na zgornji sliki vsebuje sledeče podatke:" +
+                "<ul>" +
+                "<li><b>Ime in priimek</b>,</li>" +
+                "<li><b>Email naslov uporabnika</b>,</li>" +
+                "<li><b>Vloge uporabnika</b> katere lahko zastopa v posamezni skupini.</li>" +
+                "</ul>" +
+                "</p>" +
+                "</div>",
+                currentStep : 2,
+                allSteps: 3
+            },
+            {
+                title:"Urejanje podatkov uporabnika",
+                body: "<div class='col-sm-12 align-text-center'>" +
+                "<p>V kolikor imate pravice <b>administratorja</b> potem lahko podatke uporabnika tudi uredite. S klikom " +
+                "na gumb <b>Uredi</b> vas bo aplikacija preusmerila na urejanje podatkov uporabnika. V kolikor nimate ustreznih pravic " +
+                "potem omenjenega gumba ne boste videli in lahko to informacijo spregledate." +
+                "</p>" +
+                "</div>",
+                currentStep : 2,
+                allSteps: 3
+            }
 
+        ];
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                Uporabniški račun
-            </h1>
+            <div class="row">
+                <div class="col-sm-11">
+                    <h3>
+                        Uporabniški račun
+                    </h3>
+                </div>
+                <div class="col-sm-1">
+                    <h2><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h2>
+                </div>
+            </div>
         </section>
 
         <!-- Main content -->

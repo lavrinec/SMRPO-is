@@ -1,12 +1,146 @@
 @extends('default.layout')
 
 @section('content')
+    <script>
+
+        documentationContent = [
+            {
+                title:"Pomoč",
+                body: "<div class='col-sm-12'>" +
+                "<h4 style='text-align:center;'>Dobrodošli v aplikaciji SCRUMBAN!</h4>" +
+                "Med uporabo aplikacije vam bo vedno dostopna pomoč do katere lahko dostopate s klikom na " +
+                "<span class='glyphicon glyphicon-question-sign'></span>." +
+                "</p>"+
+                "<p>" +
+                "Pomoč bo vedno pristotna v obliki modalnega okna. To okno bo včasih vsebovalo več korakov skozi katere" +
+                " vam bomo predstavili uporabo funkcionalnosti določene vsebine. Število korakov je odvisno od števila" +
+                " funkcionalnosti, ki jih vsebina vsebuje." +
+                "</p>" +
+                "</div>",
+                currentStep : 1,
+                allSteps: 5
+            },
+            {
+                title:"Struktura aplikacije",
+                body: "<div class='col-sm-12'>" +
+                "<p>Naša aplikacija vsebuje določeno strukturo, ki bo ves čas enaka. Vsak del v strukturi ima svoj pomen, " +
+                "ki se lahko dinamično spreminja. Ti deli so:" +
+                "<ul>" +
+                "<li><b>Stranski meni</b>,</li>" +
+                "<li><b>Uporabniški profil</b>,</li>" +
+                "<li><b>Vsebina</b>.</li>" +
+                "</ul>" +
+                "</p>" +
+                "<p>" +
+                ""+
+                "</p>" +
+                "</div>",
+                currentStep : 2,
+                allSteps: 5
+            },
+            {
+                title:"Stranski meni",
+                body:"<div class='col-sm-12'>" +
+                "<p>Stranski meni vam omogoča dostop do vseh funkcionalnosti za izvajanje in pregled dela po SCRUMBAN metodologiji. " +
+                "Dostopate lahko do:</p>" +
+                "<div id='sidebar-step-left-column' class='col-sm-6'>" +
+                "<ul>" +
+                "<li><b>Domača stran</b>,</li>" +
+                "<li><b>Uporabnikov</b> - upravljanje uporabnikov (pregled, dodajanje, urejanje),</li>" +
+                "<li><b>Skupin</b> - upravljanje skupin (pregled, dodajanje, urejanje),</li>" +
+                "<li><b>Projektov</b> - upravljanje projektov (pregled, dodajanje, urejanje),</li>" +
+                "<li><b>Tabel</b> - upravljanje tabel (pregled, dodajanje, urejanje).</li>" +
+                "</ul>" +
+                "</div>" +
+                "<div class='col-sm-6'><div style='height:25vh;width:65%;'><img style='height:100%;width:100%;' src='img/documentation/home/sidebar.png' />" +
+                "</div></div>" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Vsaka funkcionalnost/stran ima tudi dostopno pomoč, ki je prilagojena za specifično funkcionalnost na kateri se nahajate.</p></div>",
+                currentStep:3,
+                allSteps:5
+            },
+            {
+                title:"Uporabniški profil",
+                body: "<div class='col-sm-12' style='text-align:center;'>" +
+                "<img src='img/documentation/home/userProfile.png' style='width: 250px;height:200px'" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Tukaj vam omogočamo odjavo iz sistema in dostop do vaših podatkov, ki jih lahko spremenite in dopolnite." +
+                "" +
+                "</p>" +
+                "<div>",
+                currentStep : 4,
+                allSteps: 5
+            },
+            {
+                title:"Vsebina",
+                body: "<div class='col-sm-12'>"+
+                "<p>Kontekst razdelka <b>Vsebina</b> je odvisna od tega katero funkcionalnost smo izbrali. Ob vstopu v aplikacijo " +
+                "bomo imeli prikazano <b>Nadzorno ploščo</b>, ki prikazuje nam omogoča prikaz raznih statistič analiz za " +
+                "boljši pregled na delom skupin, ali posameznikov. Pri izbiri <b>Uporabnikov</b> bomo imeli prikazan seznam uporabnikov in možnost urejanja, " +
+                "dodajanja uporabnikov (to velja le za Administratorja). Enako možnost prikaza bomo imeli ob kliku na <b>Projekte</b>, " +
+                "<b>Skupine</b>, <b>Table</b> le da vsaka izbira prikaže podatke povezane z izbrano funkcionalnostjo." +
+                "" +
+                "</p>" +
+                "<div>",
+                currentStep : 5,
+                allSteps:5
+            },
+            {
+                title:"Nadzorna plošča",
+                body: "<div class='col-sm-12'>"+
+                "<p> <b>Nadzorna plošča</b> prikazuje seznam nekaterih analitičnih orodij s katerimi lažje opazujemo " +
+                "napredek in opravljeno delo skupin in posameznikov. Ta orodja so:" +
+                "<ul>" +
+                "<li>Povprečen čas,</li>" +
+                "<li>Kršitve WIP,</li>" +
+                "<li>Itd - dopolni se ob dopolnitvi funkcionalnosti.</li>" +
+                "</ul>" +
+                "</p>" +
+                "<div>" +
+                "<div class='col-sm-12'>" +
+                "<img src='/img/documentation/home/homeBoard.png' style='width:100%;height:250px;margin-bottom:15px;' />" +
+                "</div>",
+                currentStep : 6,
+                allSteps:6
+            }
+
+        ];
+    </script>
+    <script type="text/javascript">
+        (function(){
+
+
+
+            // $('#documentationModel h4.modal-title').text("ecnhatement");
+            // console.log($('#documentationModel h4.modal-title').text());
+
+            $(document).ready(function(){
+                console.log(documentationContent);
+                //openModal();
+                // resetDocumentationModel();
+                // setHtmlInModal();
+                // showDocumentationModel();
+            });
+
+
+        })();
+    </script>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                Nadzorna plošča
-            </h1>
+            <div class="row">
+                <div class="col-sm-11">
+                    <h2>
+                        Nadzorna plošča
+                    </h2>
+                </div>
+                <div class="col-sm-1">
+                    {{--color:rgb(67,120,45)--}}
+                    <h1><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h1>
+                </div>
+            </div>
         </section>
 
         <!-- Main content -->
@@ -334,5 +468,6 @@
         </section>
         <!-- /.content -->
     </div>
+
     <!-- /.content-wrapper -->
 @endsection

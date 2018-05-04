@@ -2,6 +2,57 @@
 
 @section('content')
 
+    <script>
+        documentationContent = [
+            {
+                title:"Prikaz table",
+                body: "<div class='col-sm-12'>" +
+                "<p>" +
+                "Na trenutni maski lahko vidite grafično stanje izbrane table. V kolikor je tabla že precej obsežna vam priporočamo klik na gumb " +
+                "<b>Full screen</b> s katerim boste vidno polje table razširili čez celoten ekran (celozaslonski način). Ko pa hočete izstopiti iz celozaslonskega načina " +
+                "ponovno kliknite na gumb <b>Full screen</b>." +
+                "</p>" +
+                "V kolikor bi hoteli dodajati nove kartice na tablo lahko kliknete na gumb <b>Dodaj kartico</b>." +
+                "</div>",
+                currentStep : 1,
+                allSteps: 3
+            },
+            {
+                title:"Dodajanje nove kartice - prvi del",
+                body: "<div class='col-sm-12'>" +
+                "<p>Pri dodajanju nove kartice morate vnesti <b>ime naloge</b>, <b>opis naloge</b>, izbrati morate projekt kateremu spada na novo " +
+                "ustvarjena kartica. V kolikor hočete ustvariti kartico morate obvezno izbrati <b>projekt</b>. Vnesete lahko tudi lastnika kartice. Lastnika kartice boste lahko " +
+                "izbrali le v primeru, ko boste imeli izbran nek projekt, kajti izbirni seznam uporabnikov je odvisen od izbranega projekta." +
+                "</p>" +
+                "<p>Omenjene podatke prikazuje spodnja slika.</p>" +
+                "</div>"+
+                "<div class='col-sm-12 align-text-center' style='margin-bottom:20px;'>" +
+                "<img class='' src='/img/documentation/boards/createNewCardPart1.png' style='height:240px;width:75%;' />" +
+                "</div>",
+                currentStep : 2,
+                allSteps: 3
+            },
+            {
+                title:"Dodajanje nove kartice - drugi del",
+                body: "<div class='col-sm-12'>" +
+                "<p>Naslednji pomemben podatek za ga vnesti je <b>datum</b> do kdaj naj bo naloga opravljena. Pri barvi, si lahko " +
+                "nastavljate poljubno barvo, v kolikor želite lažje prepoznati med različnimi karticami (še posebej uporabno za razločevanje med različnimi karticami različnih uporabnikov)."+
+                "</p>" +
+                "<p>Pri vnosnem polju <b>Ocena časa</b> morate vnesti neko število, ki predstavlja število ur kolikor ste predvidevali, da boste potrebovali za omenjeno kartico." +
+                "Na koncu lahko še obkljukate, ali je kartica <b>kritična</b>, ali <b>zavrnjena</b>. Kritična kartica bo prioritetno obravnavana pred ostalimi karticami v sprint backlogu. " +
+                "Ko vnesete vse podatke lahko kliknete gumb <b>Shrani</b> in kartica bo shranjena in prikazana na tabli." +
+                "</p>" +
+                "<p>Omenjene podatke prikazuje spodnja slika.</p>" +
+                "</div>"+
+                "<div class='col-sm-12 align-text-center' style='margin-bottom:20px;'>" +
+                "<img class='' src='/img/documentation/boards/createNewCardPart2.png' style='height:240px;width:75%;' />" +
+                "</div>",
+                currentStep : 2,
+                allSteps: 3
+            }
+
+        ];
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -15,7 +66,15 @@
 
     <!-- Main content -->
         <section class="content">
+            <div class="row">
+                <div class="col-sm-11">
 
+                </div>
+                <div class="col-sm-1">
+                    {{--color:rgb(67,120,45)--}}
+                    <h3 style="padding:0;margin:0;"><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h3>
+                </div>
+            </div>
             <div class="row">
 
                 <div class="col-md-12">

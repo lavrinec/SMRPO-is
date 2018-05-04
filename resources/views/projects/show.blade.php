@@ -2,14 +2,39 @@
 
 @section('content')
 
+    <script>
+        documentationContent = [
+            {
+                title:"Podatki projekta",
+                body: "<div class='col-sm-12'>" +
+                "<p>" +
+                "Na maski lahko vidite <b>ime projekta</b>, <b>opis projekta</b>, <b>datum začetka</b>, <b>datum zaključka</b>, <b> ime naročnika</b>, <b>ime skupine</b> in <b>ime table</b> " +
+                "kateri pripada projekt. Ime table se nastavlja avtomatsko, ko boste na maski za ustvarjanje table določili kateri projekt spada na ustvarjeno tablo."+
+                "</p>" +
+                "<p>S klikom na gumb <b>Uredi</b> vas bo aplikacija preusmerila na masko za urejanje podatkov projekta.</p>" +
+                "<p>S klikom na gumb <b>Izbriši</b> bo aplikacija trenutni projekt postavila v status <b>neaktiven</b>.</p>" +
+                "</div>",
+                currentStep : 1,
+                allSteps: 1
+            }
 
+        ];
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                Projekt
-            </h1>
+            <div class="row">
+                <div class="col-sm-11">
+                    <h3>
+                        Projekt
+                    </h3>
+                </div>
+                <div class="col-sm-1">
+                    {{--color:rgb(67,120,45)--}}
+                    <h2><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h2>
+                </div>
+            </div>
         </section>
 
         @include('layout.error')
