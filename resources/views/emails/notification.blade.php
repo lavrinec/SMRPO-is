@@ -261,9 +261,9 @@
                                 <tr>
                                     <td>
                                         <p>Pozdravljeni,</p>
-                                        <p>Na vašem projektu <b>{{ $project->board_name }}</b>, ki se nahaja na tabli
+                                        <p>Na vašem projektu <a href="https://smrpo-is.herokuapp.com/projects/{{ $project->id }}/show" target="_blank"><b>{{ $project->board_name }}</b></a>, ki se nahaja na tabli
                                             @if(isset($items[0]->board->board_name))
-                                                <b>{{ $items[0]->board->board_name }}</b>
+                                                <b><a href="https://smrpo-is.herokuapp.com/boards/{{ $items[0]->board->id }}/focus" target="_blank">{{ $items[0]->board->board_name }}</a></b>
                                             @endif
                                             bo naslednjim nalogam kmalu potekel rok:</p>
                                         <ul>
