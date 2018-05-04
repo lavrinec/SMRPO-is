@@ -2,14 +2,38 @@
 
 @section('content')
 
+    <script>
+        documentationContent = [
+        {
+        title:"Podatki table",
+        body: "<div class='col-sm-12'>" +
+            "<p>" +
+                "Vnos podatkov je precej standarden. Podati morate <b>ime</b> table, <b>opis</b> table, " +
+                "število dni preden preden bo tabla postala neaktivna. Toliko dni kot boste vnesli v omenjeno polje, toliko dni prej"+
+                "boste dobili obvestilo, da bo tabla kmalu prešla v rok neaktivnosti." +
+                "</p>" +
+            "<p>Ko vnesete vse podatke boste tablo ustvarili tako, da kliknete na gumb <b>Ustvari</b>.</p>"+
+            "</div>",
+        currentStep : 1,
+        allSteps: 1
+        }
 
+        ];
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                Tabla
-            </h1>
+            <div class="row">
+                <div class="col-sm-11">
+                    <h3>
+                        Tabla
+                    </h3>
+                </div>
+                <div class="col-sm-1">
+                    <h2><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h2>
+                </div>
+            </div>
         </section>
 
         <!-- Main content -->

@@ -1,7 +1,76 @@
 @extends('default.layout')
 
 @section('content')
+    <script>
+        documentationContent = [
+            {
+                title:"Urejanje table",
+                body: "<div class='col-sm-12'>" +
+                "<p>Vnašamo lahko vse podatke kot na maski za novo tablo:" +
+                "<ul>" +
+                "<li>Izbira projekta,</li>" +
+                "<li>Ime table,</li>" +
+                "<li>Opis table,</li>" +
+                "<li>Število dni pred zaključkom (za obveščanje),</li>" +
+                "</ul>" +
+                "Izberete lahko le tiste projekte, ki imajo povezan podatek o tabli na trenutno tablo. Ko zaključite z urejanjem table kliknite na gumb <b>Shrani</b> " +
+                "da se spremembe shranijo." +
+                "</p>" +
+                "</div>",
+                currentStep : 1,
+                allSteps: 1
+            },
+            {
+                title:"Dodajanje stolpcev",
+                body: "<div class='col-sm-12 align-text-center'>" +
+                "<img class='' src='/img/documentation/boards/newColumn.png' style='height:240px;width:45%;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Na zgornji sliki lahko vidite primer grafičnega vmesnika za kreiranje novih stolpcev. Vnesete lahko <b>ime stolpca</b>, <b>opis stolpca</b>," +
+                "<b>WIP omejitev</b> (koliko kartico je lahko naenkrat v stolpcu in <b>vlogo</b> stolpca." +
+                "Izberete lahko le tiste projekte, ki imajo povezan podatek o tabli na trenutno tablo. Ko zaključite z urejanjem table kliknite na gumb <b>Shrani</b> " +
+                "da se spremembe shranijo." +
+                "</p>" +
+                "</div>",
+                currentStep : 1,
+                allSteps: 1
+            },
+            {
+                title:"Funkcije",
+                body: "<div class='col-sm-12 '>" +
+                "<img class='' src='/img/documentation/boards/deleteColumn.png' style='height:50px;width:110px;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Zgornja slika prikazuje gumb za odstranitev stolpca." +
+                "</p>" +
+                "</div>"+
+                "<div class='col-sm-12 '>" +
+                "<img class='' src='/img/documentation/boards/createLeftColumn.png' style='height:50px;width:110px;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Zgornja slika prikazuje gumb dodajanje stolpca na levo stran." +
+                "</p>" +
+                "</div>"+
+                "<div class='col-sm-12 '>" +
+                "<img class='' src='/img/documentation/boards/createRightColumn.png' style='height:50px;width:110px;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Zgornja slika prikazuje gumb dodajanje stolpca na desno stran." +
+                "</p>" +
+                "</div>"+
+                "<div class='col-sm-12 '>" +
+                "<img class='' src='/img/documentation/boards/createSubColumn.png' style='height:50px;width:110px;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Zgornja slika prikazuje gumb s katerim ustvarite nov podstolpec.." +
+                "</p>" +
+                "</div>",
+                currentStep : 1,
+                allSteps: 1
+            }
 
+        ];
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -15,6 +84,16 @@
 
     <!-- Main content -->
         <section class="content">
+
+            <div class="row">
+                <div class="col-sm-11">
+
+                </div>
+                <div class="col-sm-1">
+                    {{--color:rgb(67,120,45)--}}
+                    <h3 style="padding:0;margin:0;"><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h3>
+                </div>
+            </div>
 
             <div class="row">
 
