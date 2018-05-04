@@ -135,6 +135,17 @@ class BoardController extends Controller
         return view('boards.edit')->with('board', $board)->with('projects', $projects);
     }
 
+public function report($id){
+    $projects = Project::where('board_id', $id)->get();
+    //return $projects;
+    return view('boards.report')->with('projects', $projects);
+}
+
+public function makeReport(Request $request){
+    //return view('boards.list');
+    return $request;
+}
+
     /**
      * copy board
      *

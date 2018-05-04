@@ -29,6 +29,12 @@
                                        class="btn btn-primary pull-right">
                                         <b>Uredi</b>
                                     </a>
+
+                                    <a href="{{ route('boards.report', $board->id) }}"
+                                       class="btn btn-primary pull-right" style="margin-right:5px">
+                                        <b>Poročilo</b>
+                                    </a>
+                                    
                                     <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
                                 @endif
                                 <button type="button" class="btn btn-primary openCard pull-right" data-card-id="0"

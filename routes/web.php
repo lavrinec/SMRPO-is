@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('column', 'BoardController@addColumn')->name('boards.column');
         Route::post('columnShow', 'BoardController@columnShow')->name('boards.columnShow');
         Route::post('columnHeader', 'BoardController@columnHeader')->name('boards.columnHeader');
+        Route::post('makeReport', 'BoardController@makeReport')->name('boards.makeReport');
         Route::post('columnBody', 'BoardController@columnBody')->name('boards.columnBody');
         Route::get('', 'BoardController@index')->name('boards.list');
         Route::get('{id}/show', 'BoardController@show')->name('boards.show');
@@ -50,6 +51,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('{board}/copy', 'BoardController@copy')->name('boards.copy');
         Route::get('{id}/delete', 'BoardController@destroy')->name('boards.delete');
         Route::post('{board}', 'BoardController@update')->name('boards.update');
+        Route::get('{id}/reports', 'BoardController@report')->name('boards.report');
+        //Route::post('test','BoardController@makeReport')->name('boards.makeReport');
+        
+        Route::get('test', function(){return "formica je gettana";});
+        //Route::post('makeReport', function(){return "formica je POSTana";})->name('boards.makeReport');
 
     });
 
