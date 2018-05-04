@@ -613,7 +613,8 @@
             }
         }
 
-
+        // naredi se rekurzivno =>
+        // upostevaj se parent WIPe
         function checkWIPandCards(columnid) {
             console.log("checkWIPandCards " + columnid);
 
