@@ -217,8 +217,6 @@
 
         var allColumns = [];
 
-        var wip_violations = {};
-
         window.onload = function () {
 //            makeExisting();
 
