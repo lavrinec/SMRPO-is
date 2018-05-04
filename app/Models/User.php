@@ -42,44 +42,41 @@ class User extends Authenticatable
     }
 
 
+    //The following three methods belongs to service not to model!
     /**
-     * Check if the user is an admin user.
-     *
+     * @param Card $card
      * @return bool
+     * return true if I can delete this card
      */
-    public function isAdmin()
-    {
-        return $this->usersRoles->where('role_id', 1)->count() > 0;
+    public function canEditCard(Card $card): bool {
+        if($this->isCardOnMyProject($card)){ //card can be edited only on my projects
+            if($this->isPO()){ //PO can edit it only if it is before start
+                return $card->isBeforeStart();
+            } else if ($this->isKM()  || ($this->isDev() && ! $card->isBeforeStart() )){
+                //KM can edit, others can edit only if is not at start
+                return $card->isBeforeEnd();
+            }
+        }
+        return false;
     }
 
 
     /**
-     * Check if the user is product owner.
-     *
+     * @param Card $card
      * @return bool
+     * returns true if card is on my project
      */
-    public function isPO(): bool
-    {
-        return $this->usersRoles->where('role_id', 2)->count() > 0;
-    }
-
-
-    /**
-     * Check if the user is a kanban master.
-     *
-     * @return bool
-     */
-    public function isKM(): bool
-    {
-        return $this->usersRoles->where('role_id', 3)->count() > 0;
+    public function isCardOnMyProject(Card $card): bool {
+        return $card->canEdit($this->id);
     }
 
     /**
      * @param Card $card
      * @return bool
+     * return true if this user can delete $card
      */
     public function canDeleteCard(Card $card): bool {
-        if(! $card->canEdit($this->id)){
+        if(! $this->isCardOnMyProject($card)){
             return false;
         }
 
@@ -105,4 +102,35 @@ class User extends Authenticatable
         return $this->usersRoles->where('role_id', 4)->count() > 0;
     }
 
+
+    /**
+     * Check if the user is an admin user.
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->usersRoles->where('role_id', 1)->count() > 0;
+    }
+
+
+    /**
+     * Check if the user is product owner.
+     *
+     * @return bool
+     */
+    public function isPO(): bool
+    {
+        return $this->usersRoles->where('role_id', 2)->count() > 0;
+    }
+
+    /**
+     * Check if the user is a kanban master.
+     *
+     * @return bool
+     */
+    public function isKM(): bool
+    {
+        return $this->usersRoles->where('role_id', 3)->count() > 0;
+    }
 }

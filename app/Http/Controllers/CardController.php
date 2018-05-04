@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 
 class CardController extends Controller
 {
@@ -138,8 +139,11 @@ class CardController extends Controller
             $card = Card::create($data);
             checkWipViolation($card, "Dodajanje nove kartice");
         } else {
-            $card = Card::where('id', $id)->update($data);
+            $card = Card::where('id', $id)->first();
+            $card->update($data);
         }
+
+        $card->view = View::make('boards.card')->with('card',$card)->render();
         return $card;
     }
 

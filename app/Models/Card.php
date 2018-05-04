@@ -46,6 +46,16 @@ class Card extends Model
     /**
      * @return bool
      */
+    public function isBeforeEnd(): bool
+    {
+        $lowestRight = $this->board()->first()->lowestRightColumn();
+        return !isset($lowestRight) || $this->column_id != $lowestRight->id;
+    }
+
+
+    /**
+     * @return bool
+     */
     public function isBeforeStart(): bool
     {
         $lowestLeft = $this->board()->first()->lowestLeftColumn();

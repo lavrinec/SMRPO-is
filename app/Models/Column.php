@@ -22,14 +22,19 @@ class Column extends Model
         return $this->belongsTo('App\Models\Column', 'parent_id');
     }
 
-    public function children()
+    public function children($sort = 'asc')
     {
-        return $this->hasMany('App\Models\Column', 'parent_id')->orderBy('order');
+        return $this->hasMany('App\Models\Column', 'parent_id')->orderBy('order', $sort);
     }
 
     public function allChildren()
     {
         return $this->children()->with('allChildren');
+    }
+
+    public function allLastChildren()
+    {
+        return $this->children('desc')->limit(1)->with('allLastChildren');
     }
 
     public function allChildrenCards()

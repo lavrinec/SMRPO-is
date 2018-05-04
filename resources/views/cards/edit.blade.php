@@ -1,4 +1,10 @@
-<form id="updateCard" method="POST" action="{{ action('CardController@update', isset($card) ? $card->id : 0) }}">
+@php
+    $authUser = Auth::user();
+    $canEdit = true;
+    if(isset($card))
+        $canEdit = $authUser->canEditCard($card);
+@endphp
+<form @if($canEdit) id="updateCard" method="POST" action="{{ action('CardController@update', isset($card) ? $card->id : 0) }}" @endif>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Kartica
@@ -13,7 +19,7 @@
                 <li class="active"><a data-toggle="tab" href="#editing">Urejanje</a></li>
                 <li><a data-toggle="tab" href="#moves">Premiki</a></li>
                 <li><a data-toggle="tab" href="#wip">Kršitve WIP</a></li>
-                <li {!! Auth::user()->canDeleteCard($card) ? '' : 'style="display:none;"' !!}
+                <li {!! $authUser->canDeleteCard($card) ? '' : 'style="display:none;"' !!}
                 ><a data-toggle="tab" href="#delete">Izbris</a></li>
             </ul>
             <br>
@@ -132,7 +138,9 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Zapri</button>
-        <button type="submit" class="btn btn-success" id="saveCard">Shrani</button>
+        @if($canEdit)
+            <button type="submit" class="btn btn-success" id="saveCard">Shrani</button>
+        @endif
     </div>
 </form>
 <script>
