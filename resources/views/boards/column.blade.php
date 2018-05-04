@@ -66,7 +66,8 @@
                         <input type="number" class="form-control" id="{{ $column['id'] }}_wip"
                                name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][wip]"
                                required title="Vpišite omejitev WIP"
-                               value="{{ isset($column['WIP']) ? $column['WIP'] : '' }}" min="0">
+                               value="{{ isset($column['WIP']) ? $column['WIP'] : '' }}" min="0"
+                               onchange="checkWIPandCards('{{ $column['id'] }}')">
                     </div>
                 </div>
 
@@ -79,7 +80,7 @@
                             <input id="{{ $column['id'] }}_high_priority"
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][high_priority]"
                                    value="high_priority" type="checkbox" class="pull-left"
-                                   onclick="checkChecked({{ $column['id'] }},'high_priority')"
+                                   onclick="checkChecked('{{ $column['id'] }}_high_priority','high_priority')"
                                     {{ isset($column['high_priority']) && $column['high_priority'] == 1 ? 'checked' : ''}}>
                             Za nujne kartice
                         </label>
@@ -89,7 +90,7 @@
                             <input id="{{ $column['id'] }}_start_border"
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][start_border]"
                                    value="start_border" type="checkbox" class="pull-left"
-                                   onclick="checkChecked({{ $column['id'] }},'start_border')"
+                                   onclick="checkChecked('{{ $column['id'] }}_start_border','start_border')"
                                     {{ isset($column['start_border']) && $column['start_border'] == 1 ? 'checked' : ''}}>
                             Začetni robni
                         </label>
@@ -98,7 +99,7 @@
                             <input id="{{ $column['id'] }}_end_border"
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][end_border]"
                                    value="end_border" type="checkbox" class="pull-left"
-                                   onclick="checkChecked({{ $column['id'] }},'end_border')"
+                                   onclick="checkChecked('{{ $column['id'] }}_end_border','end_border')"
                                     {{ isset($column['end_border']) && $column['end_border'] == 1 ? 'checked' : ''}}>
                             Končni robni
                         </label>
@@ -107,7 +108,7 @@
                             <input id="{{ $column['id'] }}_acceptance_testing"
                                    name="column{{ $column['parent_name'] }}[{{ $column['id'] }}][types][acceptance_testing]"
                                    value="acceptance_testing" type="checkbox" class="pull-left"
-                                   onclick="checkChecked({{ $column['id'] }},'acceptance_testing')"
+                                   onclick="checkChecked('{{ $column['id'] }}_acceptance_testing','acceptance_testing')"
                                     {{ isset($column['acceptance_testing']) && $column['acceptance_testing'] == 1 ? 'checked' : ''}}>
                             Sprejemno testiranje
                         </label>
@@ -118,7 +119,7 @@
 
                 <div class="row">
                     <button type="button" class="btn btn-default col-sm-3"
-                            onclick="addColumnBefore({{ $column['id'] }})">
+                            onclick="addColumnBefore('{{ $column['id'] }}')">
                         <i class="fa fa-plus"></i>
                         <br>
                         <i class="fa fa-arrow-left"></i>
@@ -126,17 +127,17 @@
 
 
                     <button type="button" class="btn btn-danger col-sm-3"
-                            onclick="deleteColumn({{ $column['id'] }})" {{ count($column['cards']) > 0 ? 'disabled' : '' }}>
+                            onclick="deleteColumn('{{ $column['id'] }}')" {{ count($column['cards']) > 0 ? 'disabled' : '' }}>
                         <i class="fa fa-trash"></i>
                     </button>
 
                     <button id="{{ $column['id'] }}_addFirstSubcolumn" type="button" class="btn btn-default col-sm-3"
-                            onclick="addFirstSubColumnTo({{ $column['id'] }})">
+                            onclick="addFirstSubColumnTo('{{ $column['id'] }}')">
                         <i class="fa fa-arrow-down"></i>
                     </button>
 
                     <button type="button" class="btn btn-default col-sm-3"
-                            onclick="addColumnAfter({{ $column['id'] }})">
+                            onclick="addColumnAfter('{{ $column['id'] }}')">
                         <i class="fa fa-plus"></i>
                         <br>
                         <i class="fa fa-arrow-right"></i>
