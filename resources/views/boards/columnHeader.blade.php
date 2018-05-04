@@ -1,4 +1,6 @@
-<pre style="width: 100%; text-align: center; line-height: 0.2em;">id: {{ substr($column["id"], 0, 6) }}</pre>
+<pre style="width: 100%; text-align: center; margin: 0px; padding: 0px;">
+    id: {{ substr($column["id"], 0, 6) }}
+</pre>
 
 {{--<input type="hidden" id="{{ $column->column_id }}_parent_id"--}}
        {{--name="column{{ $column->parent_name }}[{{ $column->column_id }}][parent_id]" value="{{ $column->parent_id }}">--}}
@@ -19,7 +21,7 @@
        {{--value="{{ $column->level }}">--}}
 
     <div class="box-body">
-        <h4>
+        <h4 style="margin-top: 0px;">
             {{ $column["column_name"] }}
         </h4>
         {{--<br>--}}
@@ -29,22 +31,23 @@
         WIP: {{ $column["WIP"] }}
         <br>
 
-        @if(isset($column['high_priority']) && $column['high_priority'] == 1)
+
+        @if(isset($column['high_priority']) && ($column['high_priority'] == 1 || $column['high_priority'] == "true"))
             Stolpec za nujne kartice
             <br>
         @endif
 
-        @if(isset($column['start_border']) && $column['start_border'] == 1)
+        @if(isset($column['start_border']) && ($column['start_border'] == 1 || $column['start_border'] == "true"))
             Začetni mejni
             <br>
         @endif
        
-        @if(isset($column['end_border']) && $column['end_border'] == 1)
+        @if(isset($column['end_border']) && ($column['end_border'] == 1 || $column['end_border'] == "true"))
             Končni mejni
             <br>
         @endif
 
-        @if(isset($column['acceptance_testing']) && $column['acceptance_testing'] == 1)
+        @if(isset($column['acceptance_testing']) && ($column['acceptance_testing'] == 1 || $column['acceptance_testing'] == "true"))
             Stolpec za sprejemno testiranje
         @endif
 

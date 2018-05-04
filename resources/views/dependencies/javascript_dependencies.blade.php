@@ -40,6 +40,15 @@
                     success: function (result) {
                         $('#cardModal').modal('hide');
                         $('#saveCard').show();
+                        if(cardId == 0){
+                            //saving
+                            var id = '#tbody_td_' + result.project_id + '_' + result.column_id;
+                            var elem = $( id );
+                            console.log(result, elem, id);
+                            elem.append(result.view);
+                        } else {
+                            $( document ).find("[data-card-id='" + result.id + "']").replaceWith(result.view);
+                        }
                     }
                 });
             });

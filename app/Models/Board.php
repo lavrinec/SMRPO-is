@@ -54,4 +54,51 @@ class Board extends Model
     {
         return $this->hasManyThrough('App\Models\Group', 'App\Models\Project', 'board_id', 'id', 'id', 'group_id');
     }
+
+    //TODO move to service, to havy models!
+
+    /**
+     * @return Column
+     */
+    public function lowestRightColumn(){
+        $columns = $this->columns();
+        $column = $columns->where('parent_id', null)->with('allLastChildren')->orderBy('order', 'desc')->first();
+        return $this->getLowestRightColumn($column);
+    }
+
+    /**
+     * @return Column
+     */
+    public function lowestLeftColumn(){
+        $columns = $this->columns();
+        $column = $columns->where('parent_id', null)->where('left_id', null)->with('leftChild')->orderBy('order')->first();
+        return $this->getLowestLeftColumn($column);
+    }
+
+    /**
+     * @param Column $column
+     * @return Column
+     */
+    private function getLowestLeftColumn(Column $column)
+    {
+        if(! $column || ! $column->leftChild) return $column;
+        $column = $column->leftChild()->with('leftChild')->first();
+        if(! $column || ! $column->leftChild)
+            return $column;
+        else
+            return $this->getLowestLeftColumn($column);
+    }
+
+    /**
+     * @param Column $column
+     * @return Column
+     */
+    private function getLowestRightColumn(Column $column)
+    {
+        if(! $column || count($column->allLastChildren) < 1)
+            return $column;
+        else {
+            return $this->getLowestRightColumn($column->allLastChildren->first());
+        }
+    }
 }

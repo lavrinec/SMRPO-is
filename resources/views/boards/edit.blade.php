@@ -112,7 +112,6 @@
 
                                 @csrf
 
-
                                 <div class="form-group">
 
                                     <div class="col-sm-6">
@@ -144,11 +143,13 @@
                                     </div>
 
                                     <div class="col-sm-3">
-                                        <label for="board_name" class="col-sm-8 control-label">Dni pred obvestilom</label>
+                                        <label for="board_name" class="col-sm-8 control-label">Dni pred
+                                            obvestilom</label>
 
                                         <div class="col-sm-4">
                                             <input type="text" class="form-control" name="meta[notification]"
-                                                   value="{{ isset($board->meta->notification) ? $board->meta->notification : '0' }}" required>
+                                                   value="{{ isset($board->meta->notification) ? $board->meta->notification : '0' }}"
+                                                   required>
                                         </div>
                                     </div>
                                 </div>
@@ -181,7 +182,8 @@
                                         </button>
                                     </div>
 
-                                </div> <br>
+                                </div>
+                                <br>
 
 
                                 <style>
@@ -288,6 +290,11 @@
 
     <script>
 
+        var board = {!! $board !!};
+
+        var rootColumns = board.structured_columns_cards;
+
+        var allColumns = [];
 
         window.onload = function () {
 //            makeExisting();
@@ -302,30 +309,9 @@
                 placeholder: "Izberi projekte"
             });
 
+            allColumns = getAllColumns();
+
         };
-
-
-        /*
-         * Create and Show already existing columns (if editing saved board)
-         *
-         * */
-
-        {{--function makeExisting() {--}}
-        {{--var board = {!! $board !!};--}}
-
-        {{--var rootColumns = board.structured_columns_cards;--}}
-
-        {{--if (rootColumns.length > 0) {--}}
-        {{--$("#buttonFirstColumn")[0].setAttribute('disabled', 'disabled');--}}
-
-        {{--// sort by order (currently on each level starts from beginning)--}}
-        {{--rootColumns.sort(compare);--}}
-
-        {{--// array, location, parent-name, level--}}
-        {{--forColumns(rootColumns, 'board-canvas', '', 0);--}}
-
-        {{--}--}}
-        {{--}--}}
 
 
         function compare(a, b) {
@@ -335,46 +321,6 @@
                 return 1;
             return 0;
         }
-
-
-        //        function forColumns(columns, place, parent_name, level) {
-        //            // just append to the canvas
-        //
-        //            columns.sort(compare);
-        //
-        //            for (var key in columns) {
-        //                if (columns.hasOwnProperty(key)) {
-        //
-        //                    var lvl = Number(level);
-        //                    columns[key]['level'] = lvl;
-        //
-        //                    var pn = parent_name.slice(0);
-        //                    columns[key]['parent_name'] = pn;
-        //
-        //                    addExistingColumn(columns[key], place);
-        //
-        //                    lvl += 1;
-        //                    pn += '[' + columns[key].id + '][childs]';
-        //                    forColumns(columns[key].all_children_cards, columns[key].id + "_subcanvas", pn, lvl);
-        //                }
-        //            }
-        //        }
-
-
-        {{--function addExistingColumn(columnData, place) {--}}
-        {{--$.ajax({--}}
-        {{--type: 'POST',--}}
-        {{--url: "{{ action('BoardController@addColumn') }}",--}}
-        {{--data: {--}}
-        {{--"_token": "{{ csrf_token() }}",--}}
-        {{--'column_data': columnData--}}
-        {{--},--}}
-        {{--success: function (data) {--}}
-        {{--$("#" + place).append(data);--}}
-        {{--console.log(columnData);--}}
-        {{--}--}}
-        {{--});--}}
-        {{--}--}}
 
 
         /*
@@ -408,9 +354,8 @@
         }
 
         function addColumnBefore(column) {
-            if (typeof column == 'number') {
-                column = $("#" + column)[0];
-            }
+            column = $("#" + column)[0];
+
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
@@ -430,10 +375,7 @@
         }
 
         function addColumnAfter(column) {
-
-            if (typeof column == 'number') {
-                column = $("#" + column)[0];
-            }
+            column = $("#" + column)[0];
 
             $.ajax({
                 type: 'POST',
@@ -454,9 +396,8 @@
 
 
         function addFirstSubColumnTo(column) {
-            if (typeof column == 'number') {
-                column = $("#" + column)[0];
-            }
+            column = $("#" + column)[0];
+
             $.ajax({
                 type: 'POST',
                 url: "{{ action('BoardController@addColumn') }}",
@@ -478,9 +419,8 @@
 
 
         function deleteColumn(column) {
-            if (typeof column == 'number') {
-                column = $("#" + column)[0];
-            }
+            column = $("#" + column)[0];
+
             var parent = column.parentNode;
             column.parentNode.removeChild(column);
             checkIfEmpty(parent);
@@ -555,8 +495,8 @@
                     renameX(inputs, "[" + current.id + "]");
                 }
                 else {
-                    parent.id = parent.id.replace("_subcanvas", "");
-                    var parents_parent_name = $("#" + parent.id + "_parent_name")[0];
+                    var parent_id = parent.id.replace("_subcanvas", "");
+                    var parents_parent_name = $("#" + parent_id + "_parent_name")[0];
 //                    var nameX = parents_parent_name.value + "[childs][" + current.id + "]";
 
                     $("#" + current.id + "_parent_name")[0].value = parents_parent_name.value + "[childs][" + current.id + "]";
@@ -614,12 +554,7 @@
 
 
         function checkChecked(clickedItem, group) {
-            if (typeof clickedItem == 'number') {
-                clickedItem = $("#" + clickedItem + "_" + group)[0];
-            }
-            else {
-                clickedItem = $("#" + clickedItem.id + "_" + group)[0];
-            }
+            clickedItem = $("#" + clickedItem)[0];
 
             var groupItems = $("input[name*=" + group + "]");
 
@@ -652,7 +587,7 @@
             }
 
             allSpecial = checkIfAllSpecialColumns();
-            if(allSpecial){
+            if (allSpecial) {
                 rightOrder = checkIfRightOrder();
             }
 
@@ -699,7 +634,7 @@
             }
 
         }
-        
+
         function checkIfRightOrder() {
             var ok = ["high_priority", "start_border", "end_border", "acceptance_testing"];
             var reality = [];
@@ -710,9 +645,9 @@
 
             console.log(reality);
 
-            if (! (ok[0] == reality[0] && ok[1] == reality[1]  && ok[2] == reality[2] && ok[3] == reality[3])) {
+            if (!(ok[0] == reality[0] && ok[1] == reality[1] && ok[2] == reality[2] && ok[3] == reality[3])) {
                 alert("Stolpci niso v priporočenem vrstnem redu " +
-                "(Stolpec za nujne kartice, Začetni mejni, Končni mejni, Stolpec za sprejemno testiranje)");
+                    "(Stolpec za nujne kartice, Začetni mejni, Končni mejni, Stolpec za sprejemno testiranje)");
                 return false;
             }
             else {
@@ -722,8 +657,85 @@
         }
 
 
+        function getAllColumns() {
+            var columnsX = [];
+
+
+            if (rootColumns.length > 0) {
+                for (var col in rootColumns) {
+                    if (rootColumns.hasOwnProperty(col)) {
+                        columnsX = columnsX.concat(getColumns(rootColumns[col]));
+                    }
+                }
+            }
+
+            return columnsX;
+
+        }
+
+
+        function getColumns(column) {
+            var columns = [];
+
+            if (column.all_children_cards == 0) {
+                return [column];
+            }
+            else {
+                columns = columns.concat([column]);
+
+                for (var key in column.all_children_cards) {
+                    if (column.all_children_cards.hasOwnProperty(key)) {
+                        columns = columns.concat(getColumns(column.all_children_cards[key]));
+                    }
+                }
+                return columns;
+            }
+        }
+
+
+        function checkWIPandCards(columnid) {
+            console.log("checkWIPandCards " + columnid);
+
+            var column = allColumns.find(function (element) {
+                return element.id == columnid;
+            });
+            console.log("column from existing columns");
+            console.log(column);
+
+
+            if (column != undefined) {
+
+                console.log("input field");
+                console.log($("#" + columnid + "_wip"));
+
+                var newWIP = $("#" + columnid + "_wip")[0].value;
+
+
+                console.log("old wip: " + column.WIP);
+                console.log("num of cards: " + column.cards.length);
+                console.log("new wip: " + newWIP);
+
+
+                // consider putting this in separate function so that it can be called when changing
+                // type of column
+                // (because changing to high_priority causes high priority cards to move to that column)
+                if (newWIP < column.cards.length && newWIP != 0) {
+                    var r = confirm("V stolpcu je več kartic kot znaša nova omejitev WIP.\n" +
+                        "Ali ste prepričani, da želite uveljaviti spremembo \n" +
+                        "(kršitev WIP se bo ob shranjevanju avtomatsko zabeležila)?");
+                    if (r == true) {
+                        // in BoardController, first save new WIP,
+                        // then run checkWipViolation for every card in that column
+                    } else {
+                        $("#" + columnid + "_wip")[0].value = column.WIP;
+                    }
+                }
+
+            }
+
+
+        }
+
     </script>
-
-
 
 @endsection

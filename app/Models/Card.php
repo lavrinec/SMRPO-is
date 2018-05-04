@@ -42,4 +42,33 @@ class Card extends Model
     {
         return $this->hasMany('App\Models\WipViolation', 'card_id');
     }
+
+    /**
+     * @return bool
+     */
+    public function isBeforeEnd(): bool
+    {
+        $lowestRight = $this->board()->first()->lowestRightColumn();
+        return !isset($lowestRight) || $this->column_id != $lowestRight->id;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isBeforeStart(): bool
+    {
+        $lowestLeft = $this->board()->first()->lowestLeftColumn();
+        return !isset($lowestLeft) || $this->column_id == $lowestLeft->id;
+    }
+
+    public function canEdit($id):bool
+    {
+        $project = $this->project()->with('group')->first();
+        if(isset($project->group)) {
+            return $project->group->usersGroups()->where('user_id', $id)->count() > 0;
+        } else {
+            return false;
+        }
+    }
 }
