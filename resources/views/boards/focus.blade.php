@@ -121,7 +121,7 @@
                                 }
 
                                 #board-holder.fullscreen {
-                                    z-index: 9999;
+                                    z-index: 1040;
                                     width: 100%;
                                     height: 100%;
                                     position: fixed;
