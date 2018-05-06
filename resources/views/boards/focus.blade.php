@@ -703,12 +703,61 @@
             });
 
             narrowColumnChildren(id);
+            
 
-            $("#thead_th_fornarrow_" + id).show();
+
+            var columnFromAllColumns = allColumns.find(function (element) {
+                return element.id == id;
+            });
+
+            var columnFromRootColumns = rootColumns.find(function (element) {
+                return element.id == id;
+            });
+
+            var parents = getAllParents(columnFromAllColumns.parent_id);
+            var allParentWide = checkParentsWide(parents);
+
+            if(columnFromRootColumns != undefined){ // if ROOT column, show narrowed column
+                $("#thead_th_fornarrow_" + id).show();
+            }
+            else if (allParentWide) { // if parent is widen, show show narrowed column
+                $("#thead_th_fornarrow_" + id).show();
+            }
+            else{ // else hide
+                $("#thead_th_fornarrow_" + id).hide();
+            }
 
             updateRowHeight();
         }
 
+
+        function getAllParents(id) {
+            var currentParent = allColumns.find(function (element) {
+                return element.id == id;
+            });
+
+            if(currentParent != undefined){
+                var parents = getAllParents(currentParent.parent_id);
+
+                parents.push(currentParent);
+                return parents;
+            }
+            else{
+                return [];
+            }
+        }
+
+        function checkParentsWide(arrayOfParents){
+            var allWide = true;
+
+            $.each(arrayOfParents, function (i, curr) {
+                if(!columnsWide[curr.id]){
+                    allWide = false;
+                }
+            });
+
+            return allWide;
+        }
 
         function narrowColumnChildren(id) {
             // get children
