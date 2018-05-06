@@ -336,6 +336,8 @@
         var board = {!! $board !!};
         var projects = {!! $board->projects !!};
 
+        var user = {!! Auth::user() !!};
+
 
         var rootColumns = board.structured_columns_cards;
 
@@ -845,10 +847,10 @@
 //            console.log("checkbox saved: " + chckbox.checked);
 
             if (chckbox.checked) {
-                localStorage.setItem("board_" + board.id, JSON.stringify(columnsWide));
+                localStorage.setItem("user_" + user.id + "_board_" + board.id, JSON.stringify(columnsWide));
             }
             else {
-                localStorage.removeItem("board_" + board.id);
+                localStorage.removeItem("user_" + user.id + "_board_" + board.id);
             }
         }
 
@@ -856,9 +858,9 @@
         function checkIfSavedNarrowColumns() {
             var savedCols = {};
 
-            if (localStorage.getItem("board_" + board.id) != null) {
+            if (localStorage.getItem("user_" + user.id + "_board_" + board.id) != null) {
 //                console.log("columns saved");
-                savedCols = localStorage.getItem("board_" + board.id);
+                savedCols = localStorage.getItem("user_" + user.id + "_board_" + board.id);
                 $("#saveNarrowColumnsCheckbox").prop('checked', true);
 
                 savedCols = JSON.parse(savedCols);
