@@ -104,7 +104,7 @@
                                            name="saveNarrowColumnsCheckbox"
                                            value="saveNarrowColumns" type="checkbox" class="pull-left"
                                            onclick="saveNarrowColumns()">
-                                    Ohrani trenutni pogled
+                                    Ohrani trenutni pogled v prihodnje
                                 </label>
                             </div>
 
