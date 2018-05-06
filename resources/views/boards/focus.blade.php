@@ -5,7 +5,7 @@
     <script>
         documentationContent = [
             {
-                title:"Prikaz table",
+                title: "Prikaz table",
                 body: "<div class='col-sm-12'>" +
                 "<p>" +
                 "Na trenutni maski lahko vidite grafično stanje izbrane table. V kolikor je tabla že precej obsežna vam priporočamo klik na gumb " +
@@ -14,40 +14,40 @@
                 "</p>" +
                 "V kolikor bi hoteli dodajati nove kartice na tablo lahko kliknete na gumb <b>Dodaj kartico</b>." +
                 "</div>",
-                currentStep : 1,
+                currentStep: 1,
                 allSteps: 3
             },
             {
-                title:"Dodajanje nove kartice - prvi del",
+                title: "Dodajanje nove kartice - prvi del",
                 body: "<div class='col-sm-12'>" +
                 "<p>Pri dodajanju nove kartice morate vnesti <b>ime naloge</b>, <b>opis naloge</b>, izbrati morate projekt kateremu spada na novo " +
                 "ustvarjena kartica. V kolikor hočete ustvariti kartico morate obvezno izbrati <b>projekt</b>. Vnesete lahko tudi lastnika kartice. Lastnika kartice boste lahko " +
                 "izbrali le v primeru, ko boste imeli izbran nek projekt, kajti izbirni seznam uporabnikov je odvisen od izbranega projekta." +
                 "</p>" +
                 "<p>Omenjene podatke prikazuje spodnja slika.</p>" +
-                "</div>"+
+                "</div>" +
                 "<div class='col-sm-12 align-text-center' style='margin-bottom:20px;'>" +
                 "<img class='' src='/img/documentation/boards/createNewCardPart1.png' style='height:240px;width:75%;' />" +
                 "</div>",
-                currentStep : 2,
+                currentStep: 2,
                 allSteps: 3
             },
             {
-                title:"Dodajanje nove kartice - drugi del",
+                title: "Dodajanje nove kartice - drugi del",
                 body: "<div class='col-sm-12'>" +
                 "<p>Naslednji pomemben podatek za ga vnesti je <b>datum</b> do kdaj naj bo naloga opravljena. Pri barvi, si lahko " +
-                "nastavljate poljubno barvo, v kolikor želite lažje prepoznati med različnimi karticami (še posebej uporabno za razločevanje med različnimi karticami različnih uporabnikov)."+
+                "nastavljate poljubno barvo, v kolikor želite lažje prepoznati med različnimi karticami (še posebej uporabno za razločevanje med različnimi karticami različnih uporabnikov)." +
                 "</p>" +
                 "<p>Pri vnosnem polju <b>Ocena časa</b> morate vnesti neko število, ki predstavlja število ur kolikor ste predvidevali, da boste potrebovali za omenjeno kartico." +
                 "Na koncu lahko še obkljukate, ali je kartica <b>kritična</b>, ali <b>zavrnjena</b>. Kritična kartica bo prioritetno obravnavana pred ostalimi karticami v sprint backlogu. " +
                 "Ko vnesete vse podatke lahko kliknete gumb <b>Shrani</b> in kartica bo shranjena in prikazana na tabli." +
                 "</p>" +
                 "<p>Omenjene podatke prikazuje spodnja slika.</p>" +
-                "</div>"+
+                "</div>" +
                 "<div class='col-sm-12 align-text-center' style='margin-bottom:20px;'>" +
                 "<img class='' src='/img/documentation/boards/createNewCardPart2.png' style='height:240px;width:75%;' />" +
                 "</div>",
-                currentStep : 2,
+                currentStep: 2,
                 allSteps: 3
             }
 
@@ -72,7 +72,9 @@
                 </div>
                 <div class="col-sm-1">
                     {{--color:rgb(67,120,45)--}}
-                    <h3 style="padding:0;margin:0;"><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h3>
+                    <h3 style="padding:0;margin:0;"><span onclick="openDocumentationModal()"
+                                                          style="color:#3c8dbc;cursor: pointer;"
+                                                          class="glyphicon glyphicon-question-sign"></span></h3>
                 </div>
             </div>
             <div class="row">
@@ -81,6 +83,7 @@
 
                     <div class="box">
                         <div class="box-header">
+
 
                             @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
                                 @if($isKM)
@@ -94,6 +97,17 @@
                                         data-board-id="{{ $board->id }}">Dodaj kartico
                                 </button>
                             @endif
+
+                            <div class="pull-right" style="margin: 8px;">
+                                <label for="saveNarrowColumnsCheckbox" class="">
+                                    <input id="saveNarrowColumnsCheckbox"
+                                           name="saveNarrowColumnsCheckbox"
+                                           value="saveNarrowColumns" type="checkbox" class="pull-left"
+                                           onclick="saveNarrowColumns()">
+                                    Ohrani trenutni pogled
+                                </label>
+                            </div>
+
                             <h3 class="box-title">{{ $board->board_name }}</h3>
                             <div>
                                 {{ $board->description }}
@@ -145,18 +159,17 @@
                                     min-height: 200px;
                                 }
 
-
                                 /*.canvas > .column {*/
-                                    /*display: inline-block;*/
-                                    /*!*float: none;*!*/
+                                /*display: inline-block;*/
+                                /*!*float: none;*!*/
 
-                                    /*min-width: 320px;*/
-                                    /*!*min-height: 434px;*!*/
-                                    /*!*min-height: 100vh;*!*/
+                                /*min-width: 320px;*/
+                                /*!*min-height: 434px;*!*/
+                                /*!*min-height: 100vh;*!*/
 
-                                    /*!*padding: 5px;*!*/
-                                    /*border: 5px solid #69c;*/
-                                    /*vertical-align: top;*/
+                                /*!*padding: 5px;*!*/
+                                /*border: 5px solid #69c;*/
+                                /*vertical-align: top;*/
                                 /*}*/
 
                                 .grabbable {
@@ -340,14 +353,27 @@
         window.onload = function () {
 //            makeExisting();
 
+            columnsWide = checkIfSavedNarrowColumns();
+
             maxDepth = getMaxDepth();
             numAllLeaves = getNumAllLeaves();
 
             allLeaves = getAllLeaves();
             allColumns = getAllColumns();
 
+
             makeHader();
             makeBody();
+
+            $.each(allColumns, function (i, current) {
+                if(!columnsWide[current.id]){
+//                    console.log("make it narrow " + current.id);
+//                    console.log("current state: " + columnsWide[current.id]);
+                    narrowColumn(current.id);
+//                    console.log("after state: " + columnsWide[current.id]);
+                }
+
+            });
 
 
         };
@@ -392,7 +418,7 @@
                     "</th>"
                 );
 
-
+                // headers of columns
                 $("#thead_tr_" + level).append(
                     "<th class='thead_th' id='thead_th_" + current.id + "' colspan='" + getNumOfLeaves(current) +
                     "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")' title='Klikni, da me skrčiš.'></th>"
@@ -610,7 +636,12 @@
         function getColumns(column) {
             var columns = [];
 
-            columnsWide[column.id] = true;
+            console.log("columns wide column " + column.id + ": " + columnsWide[column.id]);
+
+            if(columnsWide[column.id] == undefined) {
+                console.log("change to true");
+                columnsWide[column.id] = true;
+            }
 
             if (column.all_children_cards == 0) {
                 return [column];
@@ -647,11 +678,11 @@
         function updateRowHeight() {
             var headerHeight = $("#topleft").height();
             var fullHeight = $(window).height();
-            var rowHeight = (fullHeight-headerHeight)/projects.length;
+            var rowHeight = (fullHeight - headerHeight) / projects.length;
 
 
             $(".cardRow").each(function (i, current) {
-                console.log($("#" + current.id).height());
+                //console.log($("#" + current.id).height());
 
                 $("#" + current.id).height(rowHeight);
 
@@ -663,6 +694,7 @@
             console.log("narrow id: " + id);
 
             columnsWide[id] = false;
+            saveNarrowColumns();
 
             $("#thead_th_" + id).hide();
 
@@ -701,6 +733,7 @@
             console.log("wide id: " + id);
 
             columnsWide[id] = true;
+            saveNarrowColumns();
 
             $("#thead_th_" + id).show();
 
@@ -721,7 +754,7 @@
             $.each(allColumns, function (i, currentLeaf) {
                 if (currentLeaf.parent_id == id) {
 
-                    console.log("column: " + currentLeaf.id + "|| parent: " + currentLeaf.parent_id);
+                    console.log("column: " + currentLeaf.id + " | parent: " + currentLeaf.parent_id);
                     console.log("if parent is wide: " + columnsWide[currentLeaf.parent_id]);
 
                     if (!columnsWide[currentLeaf.parent_id]) {
@@ -756,6 +789,35 @@
                 }
             });
         }
+
+
+        function saveNarrowColumns() {
+            var chckbox = $("#saveNarrowColumnsCheckbox")[0];
+//            console.log("checkbox saved: " + chckbox.checked);
+
+            if (chckbox.checked) {
+                localStorage.setItem("board_" + board.id, JSON.stringify(columnsWide));
+            }
+            else {
+                localStorage.removeItem("board_" + board.id);
+            }
+        }
+
+
+        function checkIfSavedNarrowColumns() {
+            var savedCols = {};
+
+            if (localStorage.getItem("board_" + board.id) != null) {
+//                console.log("columns saved");
+                savedCols = localStorage.getItem("board_" + board.id);
+                $("#saveNarrowColumnsCheckbox").prop('checked', true);
+
+                savedCols = JSON.parse(savedCols);
+            }
+
+            return savedCols;
+        }
+
 
     </script>
 
