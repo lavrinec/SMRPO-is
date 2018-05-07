@@ -25,7 +25,7 @@
 
         <small>({{ substr($column["id"], 0, 6) }})</small>
         {{ $column["column_name"] }}
-        [ {{ isset($column["cards"]) ? count($column["cards"]) : 0 }} / {{ $column["WIP"] }} ]
+        [ <span id="numOfAllCards_{{$column["id"]}}"></span> / {{ $column["WIP"] }} ]
         <span style="float: right;"><i class="fa fa-compress"></i></span>
     </h4>
 
@@ -52,3 +52,35 @@
     @endif
 
 </div>
+
+
+<script>
+
+    $( document ).ready(function() {
+        var numOfCards = sumAllChildrenCardsHeader('{!!$column["id"]!!}');
+
+        $("#numOfAllCards_{!!$column["id"]!!}")[0].innerText = numOfCards;
+        console.log($("#numOfAllCards_{!!$column["id"]!!}")[0]);
+
+    });
+
+
+
+
+    function sumAllChildrenCardsHeader(columnid) {
+        var column = allColumns.find(function (element) {
+            return element.id == columnid;
+        });
+
+        var currNumOfCards = column.cards.length;
+
+        if(column.all_children_cards.length > 0){
+            $.each(column.all_children_cards, function (i, currentChild) {
+                var childNumOfCards = sumAllChildrenCards(currentChild.id);
+                currNumOfCards += childNumOfCards;
+            });
+        }
+
+        return currNumOfCards;
+    }
+</script>

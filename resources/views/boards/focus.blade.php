@@ -92,6 +92,12 @@
                                        class="btn btn-primary pull-right">
                                         <b>Uredi</b>
                                     </a>
+
+                                    <a href="{{ route('boards.report', $board->id) }}"
+                                       class="btn btn-primary pull-right" style="margin-right:5px">
+                                        <b>Poročilo</b>
+                                    </a>
+                                    
                                     <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
                                 @endif
                                 <button type="button" class="btn btn-primary openCard pull-right" data-card-id="0"
@@ -390,6 +396,9 @@
             });
 
 
+
+
+
         };
 
 
@@ -519,7 +528,7 @@
                     "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
                     "title='Klikni, da me razširiš.'>" +
                     "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
-                    current.column_name + " " + current.cards.length + "/" + current.WIP + "</div>" +
+                    current.column_name + " " + sumAllChildrenCards(current.id) + "/" + current.WIP + "</div>" +
                     "</th>"
                 );
 
@@ -835,7 +844,7 @@
             updateRowHeight();
         }
 
-
+        // also returns self
         function getAllParents(id) {
             var currentParent = allColumns.find(function (element) {
                 return element.id == id;
@@ -1001,6 +1010,29 @@
             }else{
                 console.log('no luck');
             }
+        }
+
+
+
+
+
+
+
+        function sumAllChildrenCards(columnid) {
+            var column = allColumns.find(function (element) {
+                return element.id == columnid;
+            });
+
+            var currNumOfCards = column.cards.length;
+
+            if(column.all_children_cards.length > 0){
+                $.each(column.all_children_cards, function (i, currentChild) {
+                    var childNumOfCards = sumAllChildrenCards(currentChild.id);
+                    currNumOfCards += childNumOfCards;
+                });
+            }
+
+            return currNumOfCards;
         }
 
 
