@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Column;
+use App\Models\Card;
 use App\Models\Project;
 use App\Models\UsersGroup;
 use App\Models\Group;
@@ -358,8 +359,12 @@ class BoardController extends Controller
 
         Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->doesnthave('cards')->delete();
 
-        $cards = Board::where('id', $board->id)->first()->cards->where('is_silver_bullet', 1);
-        dd($cards);
+        $silverBulletCards = Board::where('id', $board->id)->first()->cards->where('is_silver_bullet', 1);
+        $highPriorityColumn = Column::where('board_id', $board->id)->where('high_priority', 1)->first();
+        foreach($silverBulletCards as $sbcard){
+            Card::where('id', $sbcard->id)->update(array('column_id' => $highPriorityColumn->id));
+            checkWipViolation($sbcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila nujnih kartic!");
+        }
 
         return redirect()->route('boards.show', $board);
     }
