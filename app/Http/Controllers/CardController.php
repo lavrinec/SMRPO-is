@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Board;
 use App\Models\Card;
 use App\Models\Column;
+use App\Models\Move;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -138,6 +139,15 @@ class CardController extends Controller
             //dd($data);
             $card = Card::create($data);
             checkWipViolation($card, "Dodajanje nove kartice");
+            $move = [
+                'card_id' => $card->id,
+                'old_order' => 0,
+                'user_id' => Auth::user()->id,
+                'old_column_id' => $card->old_column_id,
+                'new_column_id' => $card->column_id
+            ];
+            //dd($move);
+            Move::create($move);
         } else {
             $card = Card::where('id', $id)->first();
             $card->update($data);
