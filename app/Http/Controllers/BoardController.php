@@ -10,6 +10,7 @@ use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BoardController extends Controller
 {
@@ -205,8 +206,18 @@ class BoardController extends Controller
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();
+
+        //$this->getUsersGroupsOfBoard($id);
+
         return view('boards.focus')->with('board', $board)->with('projects', $projects);
     }
+
+//    public function getUsersGroupsOfBoard($boardid){
+//        $groups = DB::table("groups")->whereExists(function($query){
+//           $query->DB::table("projects")->where('groups.id', '=' ,'projects.group_id');
+//        })->get();
+//
+//    }
 
     public function columnHeader(Request $request)
     {

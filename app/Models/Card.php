@@ -10,7 +10,7 @@ class Card extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'card_name', 'description', 'order', 'color', 'deadline', 'estimation', 'column_id', 'user_id', 'project_id', 'meta'
+        'card_name', 'move_reason_id', 'description', 'order', 'color', 'deadline', 'estimation', 'column_id', 'user_id', 'project_id', 'meta'
     ];
 
     public function column()

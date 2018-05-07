@@ -1,8 +1,13 @@
 @php
     $authUser = Auth::user();
     $canEdit = true;
-    if(isset($card))
+    //dd($card);
+    if(isset($card)){
+        dd($card);
+        $card->move_reason_id = null;
         $canEdit = $authUser->canEditCard($card);
+    }
+
 @endphp
 <form @if($canEdit) id="updateCard" method="POST" action="{{ action('CardController@update', isset($card) ? $card->id : 0) }}" @endif>
     <div class="modal-header">

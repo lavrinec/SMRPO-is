@@ -6,6 +6,7 @@ use App\Models\Board;
 use App\Models\Card;
 use App\Models\Column;
 use App\Models\User;
+use App\Models\Move;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -62,6 +63,18 @@ class CardController extends Controller
         //
     }
 
+
+
+    public function what(Request $request){
+        $data = $request->except('_token');
+        if(isset($request->card_id)){
+            $move = Move::create($data);
+            return $this->update($request, $request->card_id);
+        }else {
+            return 'hua';
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -114,6 +127,7 @@ class CardController extends Controller
 
         return view('cards.edit')->with($data);
     }
+
 
     /**
      * Update the specified resource in storage.

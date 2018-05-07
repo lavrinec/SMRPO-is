@@ -54,6 +54,7 @@
         ];
     </script>
     <!-- Content Wrapper. Contains page content -->
+    <input type="hidden" name="cardToUpdate" value="" id="board-focus-card-to-update" />
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -330,16 +331,27 @@
         var containers = [];
 
         var drake = dragula({
-            containers: containers
+            containers: containers,
+            revertOnSpill:true
         });
 
+
+
         var board = {!! $board !!};
+        console.log("show board");
+        console.log({!! $board !!});
         var projects = {!! $board->projects !!};
-
+        var groups = {!! $board->groups !!};
         var user = {!! Auth::user() !!};
-
+        console.log(user);
 
         var rootColumns = board.structured_columns_cards;
+
+        console.log("check this out!");
+        console.log(rootColumns);
+
+        console.log("check user");
+        console.log(groups);
 
         var allLeaves = [];
         var allCards = [];
@@ -379,6 +391,97 @@
 
 
         };
+
+
+
+
+        drake.on("drop", function(el, target, source, sibling){
+
+            console.log(allColumns);
+            console.log(allLeaves);
+
+            console.log("kartica");
+            var cardId = el.dataset.cardId;
+
+            var previousElement = source.id;
+            var previousSplit = previousElement.split("_");
+            var projectId = previousSplit[2];
+            var nextElement = target.id;
+            var nextSplit = nextElement.split("_");
+            var foundIndex =-1;
+            var foundPrevious = allLeaves.find(function (element,i){
+                if(element.id == parseInt(previousSplit[3])){
+                    foundIndex=i;
+                    return element;
+                }
+            });
+
+            var foundNext = allLeaves.find(function (element,i){
+                console.log("show money" + element.id);
+                if(element.id == parseInt(nextSplit[3])){
+                    return element;
+                }
+            });
+
+            var nextIndex = foundIndex+1;
+            var previousIndex = foundIndex-1;
+            var shouldAllow = false;
+            if(nextIndex < allLeaves.length){
+                if(allLeaves[nextIndex].id == foundNext.id){
+                    shouldAllow = true;
+                }
+            }
+            if(previousIndex >= 0){
+                if(allLeaves[previousIndex].id == foundNext.id){
+                    shouldAllow = true;
+                }
+            }
+            if(foundPrevious.acceptance_testing){
+                shouldAllow = true;
+            }
+
+            if(shouldAllow){
+                //
+                console.log('jap');
+                console.log('before');
+                console.log(allLeaves);
+                var foundCard = findCard(foundPrevious.id, cardId, allLeaves, foundNext.id)
+                console.log(foundCard);
+                console.log('after');
+                console.log(allLeaves);
+                $('#board-focus-card-to-update').val(cardId);
+                //var url = ;
+                //url = url.replace(":id", cardId);
+                var blabla= {
+                    "request":{}
+                };
+                console.log("tototksldfjalsfjfajfa:  " + cardId);
+                $.ajax({
+                    url: "{{action('CardController@what')}}",
+                    type: 'post',
+                    data: {
+                        '_token': "{{ csrf_token() }}",
+                        'new_column_id': parseInt(foundNext.id),
+                        'old_column_id': parseInt(foundPrevious.id),
+                        'card_id':parseInt(cardId),
+                        'user_id': parseInt(user.id)
+                    },
+                    success: function (result) {
+                        console.log('johhny go|!');
+                    }
+                });
+
+            }else{
+                resetDocumentationModel();
+                $('#documentationModel h4.modal-title').html("Slipping away");
+                $('#documentationModel .modal-body').html("Each other!");
+                showDocumentationModel();
+                drake.cancel();
+            }
+
+
+            //var targetElement =
+        });
 
         /*
          * NEW design
@@ -867,6 +970,37 @@
             }
 
             return savedCols;
+        }
+
+        /*custom functions*/
+        function findCard(columnId, cardId, arrayOfColumns, nextColumn){
+            var foundColumn = arrayOfColumns.find(function(element,i){
+                if(element.id == columnId){
+                    return element;
+                }
+            });
+            if(foundColumn != undefined && foundColumn != null){
+                console.log(foundColumn);
+                var foundCard=foundColumn.cards.find(function(element,i){
+                    if(element.id == cardId){
+                        return element;
+                    }
+                });
+                if(foundCard != null && foundCard != undefined){
+                    console.log('here you go');
+                    console.log(foundCard);
+                    //foundCard.updated_at = new Date();
+                    arrayOfColumns.find(function(element,i){
+                        if(element.id == nextColumn){
+                            element.cards.push(foundCard);
+                        }
+                    });
+                }else{
+                    console.log('here you dont go');
+                }
+            }else{
+                console.log('no luck');
+            }
         }
 
 
