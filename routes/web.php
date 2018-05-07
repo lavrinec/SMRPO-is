@@ -52,10 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('{id}/delete', 'BoardController@destroy')->name('boards.delete');
         Route::post('{board}', 'BoardController@update')->name('boards.update');
         Route::get('{id}/reports', 'BoardController@report')->name('boards.report');
-        //Route::post('test','BoardController@makeReport')->name('boards.makeReport');
         
-        Route::get('test', function(){return "formica je gettana";});
-        //Route::post('makeReport', function(){return "formica je POSTana";})->name('boards.makeReport');
 
     });
 

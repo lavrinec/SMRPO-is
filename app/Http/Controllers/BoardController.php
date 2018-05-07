@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Board;
 use App\Models\Column;
 use App\Models\Project;
+use App\Models\Card;
+use App\Models\Move;
 use App\Models\UsersGroup;
 use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Collection;
+use Carbon\Carbon;
 
 class BoardController extends Controller
 {
@@ -137,13 +141,218 @@ class BoardController extends Controller
 
 public function report($id){
     $projects = Project::where('board_id', $id)->get();
+    $board = Board::where("id", $id)->first();
     //return $projects;
-    return view('boards.report')->with('projects', $projects);
+    return view('boards.report')->with('projects', $projects)->with("board", $board);
 }
 
 public function makeReport(Request $request){
-    //return view('boards.list');
-    return $request;
+
+    $project = $request->projects;
+    $types = $request->types;
+
+    $board = $request->board;
+    $full_board = Board::where("id", $board)->first();
+
+    $projects = Project::where('board_id', $board)->get();
+    $all_projects=Project::where("board_id", $board)->pluck("id");
+    
+    //get all cards for this board
+    $Cards = Card::whereIn("project_id", $all_projects)->get();
+    
+    //get cards for chosen projects
+    if ($project) {
+        $Cards = $Cards->whereIn('project_id', $project);        
+    }
+
+    //get cards for chosen types
+    if ($types) {
+        $total=new Collection([]);
+        foreach($types as $type){
+            switch ($type) {
+                case "is_silver_bullet":
+                    $total =$total->merge($Cards->where("is_silver_bullet", 1));
+                    break;
+                case "is_rejected":
+                    $total =$total->merge($Cards->where("is_rejected", 1));            
+                    break;
+                case "normal":
+                    $total =$total->merge($Cards->where("is_rejected", '<>', 1)->where("is_silver_bullet", '<>', 1));
+                    break;
+                }
+            }    
+        $Cards = $total;
+    }
+
+    //get cards by estimated time required
+    if ($request->time_start!=null && $request->time_end!=null) {        
+        $Cards = $Cards->where('estimation', '>=', $request->time_start)->where('estimation', '<', $request->time_end);       
+        }
+    
+    //get cards by time of their creation
+    if ($request->creation_start && $request->creation_end) {
+        $Cards = $Cards->where('created_at', '>=', $request->creation_start)->where('created_at', '<', $request->creation_end);
+    }
+
+    //premaknjen iz acceptance testinga - potegni notri se board ID
+    $acceptance_column = Column::where("board_id", $board)->where("acceptance_testing", 1)->first();
+    $after_acceptance_column=Column::where("left_id", $acceptance_column->id)->first();
+    $id = $after_acceptance_column->id;
+    //while ($child = Column::where("parent_id", $id)) $after_acceptance_column = $child;
+
+    //get cards by end of development
+    if ($request->finish_start && $request->finish_end) {
+        $moves = Move::where("old_column_id", $acceptance_column->id)->where("new_column_id", $after_acceptance_column->id)
+                ->where('created_at', '>=', $request->finish_start)->where('created_at', '<', $request->finish_end)->get();
+        $cards = new Collection([]);
+        
+        foreach($moves as $move){
+            $cards->push($move->card);
+        }
+        $ids = $cards->unique("id")->pluck("id");
+        $Cards = $Cards->whereIn("id", $ids);
+    }
+
+    $dev_start_column = Column::where("board_id", $board)->where("start_border", 1)->first();
+
+    //get cards by start of development
+    if ($request->dev_start && $request->dev_end) {
+        $moves = Move::where("new_column_id", $dev_start_column->id)
+                ->where('created_at', '>=', $request->dev_start)->where('created_at', '<', $request->dev_end)->get();
+                $cards = new Collection([]);        
+        foreach($moves as $move){
+            $cards->push($move->card);
+        }         
+        $ids = $cards->unique("id")->pluck("id"); 
+        $Cards = $Cards->whereIn("id", $ids);
+    }
+    //return $request;
+    //$start = Move::where("new_column_id", 15)->where("card_id", 6)->first();
+    //$end = Move::where("new_column_id", $end_column_id)->where("card_id", $card_id)->first();
+    $start_column = $request->start_column;
+    $end_column = $request->end_column;
+
+    $no_cards_with_time=0;
+    $total_time=0;
+    $leaves = array_map('intval', explode(",", $request->leaves));
+
+    foreach ($Cards as $card){
+        
+        $lead = $this->calculateLeadTime($card->id, $start_column,$end_column, $leaves);
+
+        if(gettype($lead)!="string"){
+            $card->lead = $this->formatTime($lead, $request->show_time);
+            $no_cards_with_time++;
+            $total_time+=$lead;
+        }else{
+            $card->lead = $lead;
+        }
+    }  
+    $average_time=0; 
+    if($no_cards_with_time!=0){
+        $average_time=$total_time/$no_cards_with_time;
+    }
+    
+    #return $lead_times;
+    
+    #return "to je lead time ".$lead;
+    #return $Cards;
+
+    $formatted=$this->formatTime($average_time, $request->show_time);
+    //return [$average_time, $formatted];
+    return view("boards.report")->with("cards",$Cards)->with("board", $full_board)->with('projects', $projects)
+    ->with("average_time", $formatted);
+}
+
+private function formatTime($time, $format){
+    switch($format){  case "d":
+        return number_format($time/(60*24), 1, ",",".")." d";
+        break;
+        case "h":
+        return number_format($time/60, 1, ",",".")." h";
+        break;
+        case "m":
+        return number_format((float)$time, 1, ",",".")." m";
+        break;}
+      
+
+    // $min = $minutes%60;
+    // $hours=($minutes/60)%24;
+    // $days = (int)($minutes/(60*24));
+    // $formatted = $days." d, ".$hours.":".$min;
+    // return $formatted;
+}
+
+private function cardInColumnTime($card_id, $column_id){
+    $start = Move::where("new_column_id", $column_id)->where("card_id", $card_id)->first();
+    $end = Move::where("old_column_id", $column_id)->where("card_id", $card_id)->first();
+    
+    //kartica se ni prisla do tega stolpca
+    if($start==null) return "kartica še ni v tem stolpcu";
+
+    $start_Date = $start->created_at;
+    if($end == null) $end_Date = Carbon::now();    
+    else $end_Date = $end->created_at;
+    $leadTime = $end_Date->diffInMinutes($start_Date);
+    return $leadTime;
+}
+
+
+
+private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $leaves){
+    $leadTime =0;
+    //poisci premik kartice v prvi stolpec
+    $start = Move::where("new_column_id", $start_column_id)->where("card_id", $card_id)->first();
+
+    $skip_final = false;
+
+    $start_index = array_search($start_column_id, $leaves);
+    $end_index = array_search($end_column_id, $leaves);
+
+    //return [$start_index,$end_index];
+    //dokler ne prides do zadnjega stolpca v chainu premikov
+    while ($start_column_id!=$end_column_id){
+        //ce kartica ni bila v prvem stolpcu pojdi do naslednje kartice, kjer je bila
+        if ($start==null){
+            $start_index++;
+            while($start_index<=$end_index){
+                $start_column_id = $leaves[$start_index];
+                $start = Move::where("new_column_id", $start_column_id)->where("card_id", $card_id)->first();
+                if($start!=null) break;
+                $start_index++;
+            }
+            //if($card_id == 21)return $start;
+            if($start==null){
+                return "kartica ni bila v izbranih stolpcih";
+            }
+            
+        }
+
+        $test = Move::where("new_column_id", $start_column_id)->where("card_id", $card_id)->first();
+
+        //if ($test == null) return "start ne dela";
+
+        $leadTime += $this->cardInColumnTime($card_id, $start_column_id);
+        $next=Move::where("old_column_id",$start_column_id)->where("card_id", $card_id)->first();
+        //ce si prisel do konca verige preden si prisel do koncnega stolpca preskoci racunanje koncnega stolpca
+        if($next==null) {
+            $skip_final = true;
+            break;
+        }        
+        $start_column_id = $next->new_column_id;
+    }
+
+    if(!$skip_final){
+        //izracunaj koncni stolpec
+        $lead = $this->cardInColumnTime($card_id, $start_column_id);
+        
+    if (gettype($lead)=="string"){
+        return $lead;
+    }
+    $leadTime+=$lead;
+    }
+
+    return $leadTime;
 }
 
     /**
