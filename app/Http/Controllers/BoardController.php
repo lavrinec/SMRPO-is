@@ -7,6 +7,7 @@ use App\Models\Column;
 use App\Models\Card;
 use App\Models\Project;
 use App\Models\Move;
+use App\Models\MoveReason;
 use App\Models\UsersGroup;
 use App\Models\Group;
 use Illuminate\Http\Request;
@@ -578,19 +579,43 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
 
         Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->doesnthave('cards')->delete();
 
+        // move silver bullets and rejected cards if column type (high_priority) was changed
         $silverBulletCards = Board::where('id', $board->id)->first()->cards->where('is_silver_bullet', 1);
         $rejectedCards = Board::where('id', $board->id)->first()->cards->where('is_rejected', 1);
 
         $highPriorityColumn = Column::where('board_id', $board->id)->where('high_priority', 1)->first();
 
         foreach($silverBulletCards as $sbcard){
+            $old_column_id = $sbcard->column_id;
+
             Card::where('id', $sbcard->id)->update(array('column_id' => $highPriorityColumn->id));
             checkWipViolation($sbcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");
+
+            $move = [
+                'card_id' => $sbcard->id,
+                'old_order' => $sbcard->order,
+                'user_id' => Auth::user()->id,
+                'old_column_id' => $old_column_id,
+                'new_column_id' => $highPriorityColumn->id
+            ];
+            Move::create($move);
+
         }
 
         foreach($rejectedCards as $rcard){
+            $old_column_id = $sbcard->column_id;
+
             Card::where('id', $rcard->id)->update(array('column_id' => $highPriorityColumn->id));
             checkWipViolation($rcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");
+
+            $move = [
+                'card_id' => $rcard->id,
+                'old_order' => $rcard->order,
+                'user_id' => Auth::user()->id,
+                'old_column_id' => $old_column_id,
+                'new_column_id' => $highPriorityColumn->id
+            ];
+            Move::create($move);
         }
 
         return redirect()->route('boards.show', $board);
