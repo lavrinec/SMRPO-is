@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Column;
+use App\Models\Card;
 use App\Models\Project;
 use App\Models\Card;
 use App\Models\Move;
@@ -80,7 +81,7 @@ class BoardController extends Controller
         if ($validator = $this->validateBoard($request)) return redirect()->route('boards.create')->withErrors($validator);
 
         $data = request()->except('_token');
-        if(isset($data['meta'])){
+        if (isset($data['meta'])) {
             $data['meta'] = json_encode($data['meta']);
         }
         $board = new Board($data);
@@ -383,7 +384,7 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
             $column = $request->column_data;
 
 
-            return view('boards.column')->with(['column'=>$column]);
+            return view('boards.column')->with(['column' => $column]);
 
         } else {
 
@@ -536,20 +537,21 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         }
 
         $boardData = request()->except('_token', 'projects', 'column');
-        if(isset($boardData['meta'])){
+        if (isset($boardData['meta'])) {
             $boardData['meta'] = json_encode($boardData['meta']);
         }
         $board->update($boardData);
 
+
         //add project data
         $project_ids = $request->input('projects');
-        
+
         //ce ni nobenih projektov nastavi na prazen seznam
-        if(!isset($project_ids)) $project_ids=[];
+        if (!isset($project_ids)) $project_ids = [];
 
         $deleted = Project::where('board_id', $board->id)->whereNotIn('id', $project_ids)->get();
-       // $old =  Project::where('board_id', $board->id)->get();
-       // $new = Project::whereIn('id', $project_ids)->get();
+        // $old =  Project::where('board_id', $board->id)->get();
+        // $new = Project::whereIn('id', $project_ids)->get();
 
 
         //prepreci brisanje projektov, ki ze imajo kartice oz brisi ce jih nimajo        
@@ -565,12 +567,7 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
                 $query->where('board_id', '!=', $board->id)
                     ->orWhereNull('board_id');
             })->whereIn('id', $project_ids)->update(['board_id' => $board->id]);
-        } 
-
-
-       
-        
-
+        }
 
 
         $order = 0;
@@ -581,6 +578,21 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         }
 
         Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->doesnthave('cards')->delete();
+
+        $silverBulletCards = Board::where('id', $board->id)->first()->cards->where('is_silver_bullet', 1);
+        $rejectedCards = Board::where('id', $board->id)->first()->cards->where('is_rejected', 1);
+
+        $highPriorityColumn = Column::where('board_id', $board->id)->where('high_priority', 1)->first();
+
+        foreach($silverBulletCards as $sbcard){
+            Card::where('id', $sbcard->id)->update(array('column_id' => $highPriorityColumn->id));
+            checkWipViolation($sbcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");
+        }
+
+        foreach($rejectedCards as $rcard){
+            Card::where('id', $rcard->id)->update(array('column_id' => $highPriorityColumn->id));
+            checkWipViolation($rcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");
+        }
 
         return redirect()->route('boards.show', $board);
     }
@@ -628,6 +640,13 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         } else {
             $newId = $column['id'];
             Column::where('id', $newId)->update($column);
+
+            // check if new WIP is smaller than number of cards in column
+            // save WIP violation for each card in column
+            foreach (Column::where('id', $newId)->first()->cards as $card) {
+                checkWipViolation($card, "Nova omejitev WIP manjsa od stevila kartic v stolpcu!");
+            }
+
         }
 
         $this->allArray[] = $newId;

@@ -2,6 +2,57 @@
 
 @section('content')
 
+    <script>
+        documentationContent = [
+            {
+                title: "Prikaz table",
+                body: "<div class='col-sm-12'>" +
+                "<p>" +
+                "Na trenutni maski lahko vidite grafično stanje izbrane table. V kolikor je tabla že precej obsežna vam priporočamo klik na gumb " +
+                "<b>Full screen</b> s katerim boste vidno polje table razširili čez celoten ekran (celozaslonski način). Ko pa hočete izstopiti iz celozaslonskega načina " +
+                "ponovno kliknite na gumb <b>Full screen</b>." +
+                "</p>" +
+                "V kolikor bi hoteli dodajati nove kartice na tablo lahko kliknete na gumb <b>Dodaj kartico</b>." +
+                "</div>",
+                currentStep: 1,
+                allSteps: 3
+            },
+            {
+                title: "Dodajanje nove kartice - prvi del",
+                body: "<div class='col-sm-12'>" +
+                "<p>Pri dodajanju nove kartice morate vnesti <b>ime naloge</b>, <b>opis naloge</b>, izbrati morate projekt kateremu spada na novo " +
+                "ustvarjena kartica. V kolikor hočete ustvariti kartico morate obvezno izbrati <b>projekt</b>. Vnesete lahko tudi lastnika kartice. Lastnika kartice boste lahko " +
+                "izbrali le v primeru, ko boste imeli izbran nek projekt, kajti izbirni seznam uporabnikov je odvisen od izbranega projekta." +
+                "</p>" +
+                "<p>Omenjene podatke prikazuje spodnja slika.</p>" +
+                "</div>" +
+                "<div class='col-sm-12 align-text-center' style='margin-bottom:20px;'>" +
+                "<img class='' src='/img/documentation/boards/createNewCardPart1.png' style='height:240px;width:75%;' />" +
+                "</div>",
+                currentStep: 2,
+                allSteps: 3
+            },
+            {
+                title: "Dodajanje nove kartice - drugi del",
+                body: "<div class='col-sm-12'>" +
+                "<p>Naslednji pomemben podatek za ga vnesti je <b>datum</b> do kdaj naj bo naloga opravljena. Pri barvi, si lahko " +
+                "nastavljate poljubno barvo, v kolikor želite lažje prepoznati med različnimi karticami (še posebej uporabno za razločevanje med različnimi karticami različnih uporabnikov)." +
+                "</p>" +
+                "<p>Pri vnosnem polju <b>Ocena časa</b> morate vnesti neko število, ki predstavlja število ur kolikor ste predvidevali, da boste potrebovali za omenjeno kartico." +
+                "Na koncu lahko še obkljukate, ali je kartica <b>kritična</b>, ali <b>zavrnjena</b>. Kritična kartica bo prioritetno obravnavana pred ostalimi karticami v sprint backlogu. " +
+                "Ko vnesete vse podatke lahko kliknete gumb <b>Shrani</b> in kartica bo shranjena in prikazana na tabli." +
+                "</p>" +
+                "<p>Omenjene podatke prikazuje spodnja slika.</p>" +
+                "</div>" +
+                "<div class='col-sm-12 align-text-center' style='margin-bottom:20px;'>" +
+                "<img class='' src='/img/documentation/boards/createNewCardPart2.png' style='height:240px;width:75%;' />" +
+                "</div>",
+                currentStep: 2,
+                allSteps: 3
+            }
+
+        ];
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -15,13 +66,24 @@
 
     <!-- Main content -->
         <section class="content">
+            <div class="row">
+                <div class="col-sm-11">
 
+                </div>
+                <div class="col-sm-1">
+                    {{--color:rgb(67,120,45)--}}
+                    <h3 style="padding:0;margin:0;"><span onclick="openDocumentationModal()"
+                                                          style="color:#3c8dbc;cursor: pointer;"
+                                                          class="glyphicon glyphicon-question-sign"></span></h3>
+                </div>
+            </div>
             <div class="row">
 
                 <div class="col-md-12">
 
                     <div class="box">
                         <div class="box-header">
+
 
                             @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
                                 @if($isKM)
@@ -41,6 +103,17 @@
                                         data-board-id="{{ $board->id }}">Dodaj kartico
                                 </button>
                             @endif
+
+                            <div class="pull-right" style="margin: 8px;">
+                                <label for="saveNarrowColumnsCheckbox" class="">
+                                    <input id="saveNarrowColumnsCheckbox"
+                                           name="saveNarrowColumnsCheckbox"
+                                           value="saveNarrowColumns" type="checkbox" class="pull-left"
+                                           onclick="saveNarrowColumns()">
+                                    Ohrani trenutni pogled v prihodnje
+                                </label>
+                            </div>
+
                             <h3 class="box-title">{{ $board->board_name }}</h3>
                             <div>
                                 {{ $board->description }}
@@ -68,7 +141,7 @@
                                 }
 
                                 #board-holder.fullscreen {
-                                    z-index: 9999;
+                                    z-index: 1040;
                                     width: 100%;
                                     height: 100%;
                                     position: fixed;
@@ -92,18 +165,17 @@
                                     min-height: 200px;
                                 }
 
-
                                 /*.canvas > .column {*/
-                                    /*display: inline-block;*/
-                                    /*!*float: none;*!*/
+                                /*display: inline-block;*/
+                                /*!*float: none;*!*/
 
-                                    /*min-width: 320px;*/
-                                    /*!*min-height: 434px;*!*/
-                                    /*!*min-height: 100vh;*!*/
+                                /*min-width: 320px;*/
+                                /*!*min-height: 434px;*!*/
+                                /*!*min-height: 100vh;*!*/
 
-                                    /*!*padding: 5px;*!*/
-                                    /*border: 5px solid #69c;*/
-                                    /*vertical-align: top;*/
+                                /*!*padding: 5px;*!*/
+                                /*border: 5px solid #69c;*/
+                                /*vertical-align: top;*/
                                 /*}*/
 
                                 .grabbable {
@@ -270,6 +342,8 @@
         var board = {!! $board !!};
         var projects = {!! $board->projects !!};
 
+        var user = {!! Auth::user() !!};
+
 
         var rootColumns = board.structured_columns_cards;
 
@@ -287,14 +361,30 @@
         window.onload = function () {
 //            makeExisting();
 
+            columnsWide = checkIfSavedNarrowColumns();
+
             maxDepth = getMaxDepth();
             numAllLeaves = getNumAllLeaves();
 
             allLeaves = getAllLeaves();
             allColumns = getAllColumns();
 
+
             makeHader();
             makeBody();
+
+            $.each(allColumns, function (i, current) {
+                if(!columnsWide[current.id]){
+//                    console.log("make it narrow " + current.id);
+//                    console.log("current state: " + columnsWide[current.id]);
+                    narrowColumn(current.id);
+//                    console.log("after state: " + columnsWide[current.id]);
+                }
+
+            });
+
+
+
 
 
         };
@@ -332,15 +422,17 @@
                 // additional cells for narrower view
                 $("#thead_tr_" + level).append(
                     "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
-                    "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'>" +
-                    "<div class='verticaltext'>" + current.id + " " + current.column_name + "</div>" +
+                    "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
+                    "title='Klikni, da me razširiš.'>" +
+                    "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
+                    current.column_name + " " + sumAllChildrenCards(current.id) + "/" + current.WIP + "</div>" +
                     "</th>"
                 );
 
-
+                // headers of columns
                 $("#thead_tr_" + level).append(
                     "<th class='thead_th' id='thead_th_" + current.id + "' colspan='" + getNumOfLeaves(current) +
-                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")'></th>"
+                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")' title='Klikni, da me skrčiš.'></th>"
                 );
 
                 addColHeader(current, "thead_th_" + current.id);
@@ -555,7 +647,12 @@
         function getColumns(column) {
             var columns = [];
 
-            columnsWide[column.id] = true;
+            console.log("columns wide column " + column.id + ": " + columnsWide[column.id]);
+
+            if(columnsWide[column.id] == undefined) {
+                console.log("change to true");
+                columnsWide[column.id] = true;
+            }
 
             if (column.all_children_cards == 0) {
                 return [column];
@@ -592,11 +689,11 @@
         function updateRowHeight() {
             var headerHeight = $("#topleft").height();
             var fullHeight = $(window).height();
-            var rowHeight = (fullHeight-headerHeight)/projects.length;
+            var rowHeight = (fullHeight - headerHeight) / projects.length;
 
 
             $(".cardRow").each(function (i, current) {
-                console.log($("#" + current.id).height());
+                //console.log($("#" + current.id).height());
 
                 $("#" + current.id).height(rowHeight);
 
@@ -608,6 +705,7 @@
             console.log("narrow id: " + id);
 
             columnsWide[id] = false;
+            saveNarrowColumns();
 
             $("#thead_th_" + id).hide();
 
@@ -616,12 +714,61 @@
             });
 
             narrowColumnChildren(id);
+            
 
-            $("#thead_th_fornarrow_" + id).show();
+
+            var columnFromAllColumns = allColumns.find(function (element) {
+                return element.id == id;
+            });
+
+            var columnFromRootColumns = rootColumns.find(function (element) {
+                return element.id == id;
+            });
+
+            var parents = getAllParents(columnFromAllColumns.parent_id);
+            var allParentWide = checkParentsWide(parents);
+
+            if(columnFromRootColumns != undefined){ // if ROOT column, show narrowed column
+                $("#thead_th_fornarrow_" + id).show();
+            }
+            else if (allParentWide) { // if parent is widen, show show narrowed column
+                $("#thead_th_fornarrow_" + id).show();
+            }
+            else{ // else hide
+                $("#thead_th_fornarrow_" + id).hide();
+            }
 
             updateRowHeight();
         }
 
+        // also returns self
+        function getAllParents(id) {
+            var currentParent = allColumns.find(function (element) {
+                return element.id == id;
+            });
+
+            if(currentParent != undefined){
+                var parents = getAllParents(currentParent.parent_id);
+
+                parents.push(currentParent);
+                return parents;
+            }
+            else{
+                return [];
+            }
+        }
+
+        function checkParentsWide(arrayOfParents){
+            var allWide = true;
+
+            $.each(arrayOfParents, function (i, curr) {
+                if(!columnsWide[curr.id]){
+                    allWide = false;
+                }
+            });
+
+            return allWide;
+        }
 
         function narrowColumnChildren(id) {
             // get children
@@ -646,6 +793,7 @@
             console.log("wide id: " + id);
 
             columnsWide[id] = true;
+            saveNarrowColumns();
 
             $("#thead_th_" + id).show();
 
@@ -666,7 +814,7 @@
             $.each(allColumns, function (i, currentLeaf) {
                 if (currentLeaf.parent_id == id) {
 
-                    console.log("column: " + currentLeaf.id + "|| parent: " + currentLeaf.parent_id);
+                    console.log("column: " + currentLeaf.id + " | parent: " + currentLeaf.parent_id);
                     console.log("if parent is wide: " + columnsWide[currentLeaf.parent_id]);
 
                     if (!columnsWide[currentLeaf.parent_id]) {
@@ -701,6 +849,58 @@
                 }
             });
         }
+
+
+        function saveNarrowColumns() {
+            var chckbox = $("#saveNarrowColumnsCheckbox")[0];
+//            console.log("checkbox saved: " + chckbox.checked);
+
+            if (chckbox.checked) {
+                localStorage.setItem("user_" + user.id + "_board_" + board.id, JSON.stringify(columnsWide));
+            }
+            else {
+                localStorage.removeItem("user_" + user.id + "_board_" + board.id);
+            }
+        }
+
+
+        function checkIfSavedNarrowColumns() {
+            var savedCols = {};
+
+            if (localStorage.getItem("user_" + user.id + "_board_" + board.id) != null) {
+//                console.log("columns saved");
+                savedCols = localStorage.getItem("user_" + user.id + "_board_" + board.id);
+                $("#saveNarrowColumnsCheckbox").prop('checked', true);
+
+                savedCols = JSON.parse(savedCols);
+            }
+
+            return savedCols;
+        }
+
+
+
+
+
+
+
+        function sumAllChildrenCards(columnid) {
+            var column = allColumns.find(function (element) {
+                return element.id == columnid;
+            });
+
+            var currNumOfCards = column.cards.length;
+
+            if(column.all_children_cards.length > 0){
+                $.each(column.all_children_cards, function (i, currentChild) {
+                    var childNumOfCards = sumAllChildrenCards(currentChild.id);
+                    currNumOfCards += childNumOfCards;
+                });
+            }
+
+            return currNumOfCards;
+        }
+
 
     </script>
 

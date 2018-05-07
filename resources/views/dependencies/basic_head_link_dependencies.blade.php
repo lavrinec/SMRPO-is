@@ -38,3 +38,11 @@
 
 <!-- Dragula JS for boards -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.js'></script>
+<style>
+    img.full-row{
+        width:100%;
+    }
+    div.align-text-center{
+        text-align:center;
+    }
+</style>

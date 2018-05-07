@@ -1,15 +1,41 @@
 @extends('default.layout')
 
 @section('content')
+    <script>
+        documentationContent = [
+            {
+                title:"Podatki projekta",
+                body: "<div class='col-sm-12'>" +
+                "<p>" +
+                "Vnos podatkov je precej standarden. Podati morate <b>ime</b> projekta, <b>opis</b> projekta, " +
+                "<b>ime naročnika</b> projekta, določiti <b>Datum začetka</b> kdaj bo projekt postal aktiven in <b>Datum zaključka</b> " +
+                "kdaj bo projekt postal neaktiven oz. kdaj se predvideva, da bo zaključen." +
+                "Na koncu morate še izbrati skupino iz izbirnega seznama. Vsak projekt mora biti vezan na eno skupino, drugače se projekta " +
+                "ne more uporabiti na nobeni tabli.</p>" +
+                "<p>Ko vnesete vse podatke boste projekt ustvarili tako, da kliknete na gumb <b>Ustvari</b>.</p>"+
+                "</div>",
+                currentStep : 1,
+                allSteps: 1
+            }
 
+        ];
+    </script>
     <link rel="stylesheet" href="/dependencies/select2/dist/css/select2.min.css">
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                Račun projekta
-            </h1>
+            <div class="row">
+                <div class="col-sm-11">
+                    <h3>
+                        Račun projekta
+                    </h3>
+                </div>
+                <div class="col-sm-1">
+                    {{--color:rgb(67,120,45)--}}
+                    <h2><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h2>
+                </div>
+            </div>
         </section>
 
         <!-- Main content -->

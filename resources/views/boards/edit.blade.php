@@ -1,7 +1,76 @@
 @extends('default.layout')
 
 @section('content')
+    <script>
+        documentationContent = [
+            {
+                title: "Urejanje table",
+                body: "<div class='col-sm-12'>" +
+                "<p>Vnašamo lahko vse podatke kot na maski za novo tablo:" +
+                "<ul>" +
+                "<li>Izbira projekta,</li>" +
+                "<li>Ime table,</li>" +
+                "<li>Opis table,</li>" +
+                "<li>Število dni pred zaključkom (za obveščanje),</li>" +
+                "</ul>" +
+                "Izberete lahko le tiste projekte, ki imajo povezan podatek o tabli na trenutno tablo. Ko zaključite z urejanjem table kliknite na gumb <b>Shrani</b> " +
+                "da se spremembe shranijo." +
+                "</p>" +
+                "</div>",
+                currentStep: 1,
+                allSteps: 1
+            },
+            {
+                title: "Dodajanje stolpcev",
+                body: "<div class='col-sm-12 align-text-center'>" +
+                "<img class='' src='/img/documentation/boards/newColumn.png' style='height:240px;width:45%;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Na zgornji sliki lahko vidite primer grafičnega vmesnika za kreiranje novih stolpcev. Vnesete lahko <b>ime stolpca</b>, <b>opis stolpca</b>," +
+                "<b>WIP omejitev</b> (koliko kartico je lahko naenkrat v stolpcu in <b>vlogo</b> stolpca." +
+                "Izberete lahko le tiste projekte, ki imajo povezan podatek o tabli na trenutno tablo. Ko zaključite z urejanjem table kliknite na gumb <b>Shrani</b> " +
+                "da se spremembe shranijo." +
+                "</p>" +
+                "</div>",
+                currentStep: 1,
+                allSteps: 1
+            },
+            {
+                title: "Funkcije",
+                body: "<div class='col-sm-12 '>" +
+                "<img class='' src='/img/documentation/boards/deleteColumn.png' style='height:50px;width:110px;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Zgornja slika prikazuje gumb za odstranitev stolpca." +
+                "</p>" +
+                "</div>" +
+                "<div class='col-sm-12 '>" +
+                "<img class='' src='/img/documentation/boards/createLeftColumn.png' style='height:50px;width:110px;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Zgornja slika prikazuje gumb dodajanje stolpca na levo stran." +
+                "</p>" +
+                "</div>" +
+                "<div class='col-sm-12 '>" +
+                "<img class='' src='/img/documentation/boards/createRightColumn.png' style='height:50px;width:110px;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Zgornja slika prikazuje gumb dodajanje stolpca na desno stran." +
+                "</p>" +
+                "</div>" +
+                "<div class='col-sm-12 '>" +
+                "<img class='' src='/img/documentation/boards/createSubColumn.png' style='height:50px;width:110px;' />" +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>Zgornja slika prikazuje gumb s katerim ustvarite nov podstolpec.." +
+                "</p>" +
+                "</div>",
+                currentStep: 1,
+                allSteps: 1
+            }
 
+        ];
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -15,6 +84,18 @@
 
     <!-- Main content -->
         <section class="content">
+
+            <div class="row">
+                <div class="col-sm-11">
+
+                </div>
+                <div class="col-sm-1">
+                    {{--color:rgb(67,120,45)--}}
+                    <h3 style="padding:0;margin:0;"><span onclick="openDocumentationModal()"
+                                                          style="color:#3c8dbc;cursor: pointer;"
+                                                          class="glyphicon glyphicon-question-sign"></span></h3>
+                </div>
+            </div>
 
             <div class="row">
 
@@ -32,7 +113,6 @@
                                   action="{{ action('BoardController@update', $board->id) }}">
 
                                 @csrf
-
 
                                 <div class="form-group">
 
@@ -216,7 +296,8 @@
 
         var rootColumns = board.structured_columns_cards;
 
-        allColumns = [];
+        var allColumns = [];
+
 
         window.onload = function () {
 //            makeExisting();
@@ -587,6 +668,7 @@
                 for (var col in rootColumns) {
                     if (rootColumns.hasOwnProperty(col)) {
                         columnsX = columnsX.concat(getColumns(rootColumns[col]));
+
                     }
                 }
             }
@@ -608,13 +690,16 @@
                 for (var key in column.all_children_cards) {
                     if (column.all_children_cards.hasOwnProperty(key)) {
                         columns = columns.concat(getColumns(column.all_children_cards[key]));
+
                     }
                 }
                 return columns;
             }
         }
 
-
+        // naredi se rekurzivno =>
+        // upostevaj se parent WIPe
+        // in children WIPe
         function checkWIPandCards(columnid) {
             console.log("checkWIPandCards " + columnid);
 
@@ -634,29 +719,142 @@
 
 
                 console.log("old wip: " + column.WIP);
-                console.log("num of cards: " + column.cards.length);
+//                console.log("num of cards: " + column.cards.length);
                 console.log("new wip: " + newWIP);
+
+                var allChildCards = sumAllChildrenCards(columnid); // ALSO CARDS FROM THIS COLUMN! (NOT JUST CHILDREN)
+                console.log("allchildcards: " + allChildCards);
 
 
                 // consider putting this in separate function so that it can be called when changing
                 // type of column
                 // (because changing to high_priority causes high priority cards to move to that column)
-                if (newWIP < column.cards.length && newWIP != 0) {
+                if (newWIP < allChildCards && newWIP != 0) {
                     var r = confirm("V stolpcu je več kartic kot znaša nova omejitev WIP.\n" +
                         "Ali ste prepričani, da želite uveljaviti spremembo \n" +
-                        "(kršitev WIP se bo avtomatsko zabeležila)?");
+                        "(kršitev WIP se bo ob shranjevanju avtomatsko zabeležila)?");
                     if (r == true) {
-                        // shrani nekam, da se ob shranitvi zabeleži kršitev
-                        // id stolpca + vzrok = sprememba WIP
+                        // in BoardController, first save new WIP,
+                        // then run checkWipViolation for every card in that column
                     } else {
                         $("#" + columnid + "_wip")[0].value = column.WIP;
                     }
                 }
 
+                if(newWIP>0) {
+                    checkParentWIPs(column, newWIP);
+                    checkChildrenWIPs(column, newWIP);
+                    checkBrothersWIPs(column, newWIP);
+                }
             }
 
+        }
+
+
+        function sumAllChildrenCards(columnid) {
+            var column = allColumns.find(function (element) {
+                return element.id == columnid;
+            });
+
+            var currNumOfCards = column.cards.length;
+
+            if (column.all_children_cards.length > 0) {
+                $.each(column.all_children_cards, function (i, currentChild) {
+                    var childNumOfCards = sumAllChildrenCards(currentChild.id);
+                    currNumOfCards += childNumOfCards;
+                });
+            }
+
+            return currNumOfCards;
+        }
+
+        // check if some parent's WIP is smaller than column's WIP
+        function checkParentWIPs(column, newWIP) {
+
+            var allParents = getAllParents(column.id);
+            var allOK = true;
+
+            $.each(allParents, function (i, current) {
+                var currentWIP = parseInt($("#" + current.id + "_wip")[0].value);
+
+                if ((currentWIP < parseInt(newWIP)) && (currentWIP>0)) {
+                    if(current.id != column.id) {
+                        allOK = false;
+//                        console.log("parentWIP < newWIP");
+//                        console.log($("#" + current.id + "_wip")[0].value + " VS " + newWIP);
+                    }
+                }
+            });
+
+            if (!allOK) {
+                alert("Nova omejitev WIP (" + newWIP + ") presega omejitev WIP enega od staršev stolpca.");
+                $("#" + column.id + "_wip")[0].value = column.WIP;
+            }
 
         }
+
+
+        // also returns self
+        function getAllParents(id) {
+            var currentParent = allColumns.find(function (element) {
+                return element.id == id;
+            });
+
+            if (currentParent != undefined) {
+                var parents = getAllParents(currentParent.parent_id);
+
+                parents.push(currentParent);
+                return parents;
+            }
+            else {
+                return [];
+            }
+        }
+
+        // chech if sum of children on next level is smaller than column's WIP
+        function checkChildrenWIPs(column, newWIP) {
+            var sumChildrenWIP = 0;
+
+            $.each(column.all_children_cards, function (i, current) {
+                sumChildrenWIP += parseInt($("#" + current.id + "_wip")[0].value);
+            });
+
+            if (sumChildrenWIP > parseInt(newWIP)) {
+                alert("Nova omejitev WIP (" + newWIP + ") je manjša kot vsota omejitev WIP otrok.");
+                $("#" + column.id + "_wip")[0].value = column.WIP;
+            }
+        }
+
+        function checkBrothersWIPs(column, newWIP){
+            var sumBrothersWIP = 0;
+//            console.log("brothers");
+            
+            var parent = allColumns.find(function (element) {
+                return element.id == column.parent_id;
+            });
+            var parentWIP = parseInt($("#" + parent.id + "_wip")[0].value)
+
+            $.each(parent.all_children_cards, function (i, current) {
+                if(current.id != column.id) {
+//                    console.log(current.id);
+//                    console.log(parseInt($("#" + current.id + "_wip")[0].value));
+                    sumBrothersWIP += parseInt($("#" + current.id + "_wip")[0].value);
+                }
+            });
+
+            sumBrothersWIP += parseInt(newWIP);
+            
+//            console.log(sumBrothersWIP + " vs " + parentWIP);
+
+            if((parentWIP < sumBrothersWIP) && (parentWIP > 0)){
+                alert("Vsota omejitev bratov in nove omejitve WIP (" + newWIP + ") je večja od omejitve WIP starša.");
+                $("#" + column.id + "_wip")[0].value = column.WIP;
+            }
+
+        }
+
+
+
 
 
     </script>

@@ -2,16 +2,67 @@
 
 @section('content')
 
+    <script>
+        documentationContent = [
+            {
+                title:"Podatki skupine",
+                body: "<div class='col-sm-12'>" +
+                "<p>" +
+                "Na maski lahko vidite <b>ime skupine</b>, <b>opis skupine</b>, <b>seznam uporabnikov</b> in njihovih <b>vlog v skupini</b>(prva leva stranska kartica) in " +
+                "seznam <b>tabel</b> in <b>projektov</b> na katere je vezana trenutno ogledana skupina." +
+                "</p>" +
+                "</div>",
+                currentStep : 1,
+                allSteps: 3
+            },
+            {
+                title:"Uporabniki v skupini",
+                body: "<div class='col-sm-12 align-text-center'>" +
+                "<img class='' src='/img/documentation/groups/listOfUsersInGroup.png' style='height:130px;width:200px;' /> " +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>V stranski kartici <b>Uporabniki v skupini</b>, ki jo prikazuje zgornja slika vam prikazujemo seznam " +
+                "uporabnikov in vlog, ki pripadajo tem uporabnikom v trenutno izbrani skupini." +
+                "</p>" +
+                "<p>Prvo imamo podano v <b>odebeljenem tekstu</b> ime in priimek uporabnika, nato imamo v alinejah pod imenom " +
+                "razvrščene vse vloge, ki jih ima uporabnik v skupini." +
+                "</p>" +
+                "</div>",
+                currentStep : 2,
+                allSteps: 3
+            },
+            {
+                title:"Table in projekti",
+                body: "<div class='col-sm-12 align-text-center'>" +
+                "<img class='' src='/img/documentation/groups/listProjectsAndBoards.png' style='height:100px;width:200px;' /> " +
+                "</div>" +
+                "<div class='col-sm-12'>" +
+                "<p>V stranski kartici <b>Table in projekti</b>, ki jo prikazuje zgornja slika vam prikazujemo seznam " +
+                "vseh tabel v prvi vrstici z <b>odebeljenim tekstom</b> in nato v alinejah razporejene vse projekte, katerim je trenutna skupina dodeljena." +
+                "</p>" +
+                "</div>",
+                currentStep : 2,
+                allSteps: 3
+            }
 
+        ];
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                Račun skupine
-            </h1>
+            <div class="row">
+                <div class="col-sm-11">
+                    <h3>
+                        Račun skupine
+                    </h3>
+                </div>
+                <div class="col-sm-1">
+                    {{--color:rgb(67,120,45)--}}
+                    <h2><span onclick="openDocumentationModal()" style="color:#3c8dbc;cursor: pointer;" class="glyphicon glyphicon-question-sign"></span></h2>
+                </div>
+            </div>
         </section>
-
         <!-- Main content -->
         <section class="content">
 
