@@ -360,10 +360,18 @@ class BoardController extends Controller
         Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->doesnthave('cards')->delete();
 
         $silverBulletCards = Board::where('id', $board->id)->first()->cards->where('is_silver_bullet', 1);
+        $rejectedCards = Board::where('id', $board->id)->first()->cards->where('is_rejected', 1);
+
         $highPriorityColumn = Column::where('board_id', $board->id)->where('high_priority', 1)->first();
+
         foreach($silverBulletCards as $sbcard){
             Card::where('id', $sbcard->id)->update(array('column_id' => $highPriorityColumn->id));
-            checkWipViolation($sbcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila nujnih kartic!");
+            checkWipViolation($sbcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");
+        }
+
+        foreach($rejectedCards as $rcard){
+            Card::where('id', $rcard->id)->update(array('column_id' => $highPriorityColumn->id));
+            checkWipViolation($rcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");
         }
 
         return redirect()->route('boards.show', $board);
