@@ -14,6 +14,12 @@
                 <i class="fa fa-bell" title="kritična kartica"></i>
             @endif
 
+            @if(isset($card->is_rejected) && ($card->is_rejected == 1 || $card->is_rejected == "true"))
+                <i class="fa fa-minus-circle" title="zavrnjena kartica"></i>
+            @endif
+
+
+
         </h5>
         <br>
         <small>pooblaščeni:
