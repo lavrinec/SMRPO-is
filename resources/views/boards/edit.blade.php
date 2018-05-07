@@ -694,6 +694,7 @@
 
         // naredi se rekurzivno =>
         // upostevaj se parent WIPe
+        // in children WIPe
         function checkWIPandCards(columnid) {
             console.log("checkWIPandCards " + columnid);
 
@@ -713,14 +714,17 @@
 
 
                 console.log("old wip: " + column.WIP);
-                console.log("num of cards: " + column.cards.length);
+//                console.log("num of cards: " + column.cards.length);
                 console.log("new wip: " + newWIP);
+
+                var allChildCards = sumAllChildrenCards(columnid); // ALSO CARDS FROM THIS COLUMN! (NOT JUST CHILDREN)
+                console.log("allchildcards: " + allChildCards);
 
 
                 // consider putting this in separate function so that it can be called when changing
                 // type of column
                 // (because changing to high_priority causes high priority cards to move to that column)
-                if (newWIP < column.cards.length && newWIP != 0) {
+                if (newWIP < allChildCards && newWIP != 0) {
                     var r = confirm("V stolpcu je več kartic kot znaša nova omejitev WIP.\n" +
                         "Ali ste prepričani, da želite uveljaviti spremembo \n" +
                         "(kršitev WIP se bo ob shranjevanju avtomatsko zabeležila)?");
@@ -735,6 +739,24 @@
             }
 
 
+        }
+
+
+        function sumAllChildrenCards(columnid) {
+            var column = allColumns.find(function (element) {
+                return element.id == columnid;
+            });
+
+            var currNumOfCards = column.cards.length;
+
+            if(column.all_children_cards.length > 0){
+                $.each(column.all_children_cards, function (i, currentChild) {
+                    var childNumOfCards = sumAllChildrenCards(currentChild.id);
+                    currNumOfCards += childNumOfCards;
+                });
+            }
+
+            return currNumOfCards;
         }
 
     </script>
