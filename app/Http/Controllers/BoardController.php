@@ -358,6 +358,9 @@ class BoardController extends Controller
 
         Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->doesnthave('cards')->delete();
 
+        $cards = Board::where('id', $board->id)->first()->cards->where('is_silver_bullet', 1);
+        dd($cards);
+
         return redirect()->route('boards.show', $board);
     }
 

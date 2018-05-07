@@ -298,6 +298,9 @@
 
         var allColumns = [];
 
+        var silverBulletCards = [];
+        var highPriorityColumn;
+
         window.onload = function () {
 //            makeExisting();
 
@@ -312,6 +315,22 @@
             });
 
             allColumns = getAllColumns();
+
+            highPriorityColumn = allColumns.find(function (element) {
+                if(element.high_priority == 1 || element.high_priority == "true"){
+                    return element;
+                }
+            });
+
+
+            $.each(highPriorityColumn.cards, function (i, current) {
+                if(current.is_silver_bullet == 1 || current.is_silver_bullet == "true"){
+                    silverBulletCards.push(current);
+                }
+            });
+            
+            console.log("silver bullet cards");
+            console.log(silverBulletCards);
 
         };
 
@@ -667,6 +686,7 @@
                 for (var col in rootColumns) {
                     if (rootColumns.hasOwnProperty(col)) {
                         columnsX = columnsX.concat(getColumns(rootColumns[col]));
+
                     }
                 }
             }
@@ -688,6 +708,7 @@
                 for (var key in column.all_children_cards) {
                     if (column.all_children_cards.hasOwnProperty(key)) {
                         columns = columns.concat(getColumns(column.all_children_cards[key]));
+
                     }
                 }
                 return columns;

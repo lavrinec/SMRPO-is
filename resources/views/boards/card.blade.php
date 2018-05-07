@@ -8,10 +8,14 @@
 
             @if(isset($card->is_silver_bullet) && ($card->is_silver_bullet == 1 || $card->is_silver_bullet == "true"))
                 <i class="fa fa-asterisk" title="nujna kartica"></i>
+                @else
+                ni
             @endif
 
             @if(isset($card->is_critical) && ($card->is_critical == 1 || $card->is_critical == "true"))
                 <i class="fa fa-bell" title="kritična kartica"></i>
+                @else
+                ni
             @endif
 
         </h5>
