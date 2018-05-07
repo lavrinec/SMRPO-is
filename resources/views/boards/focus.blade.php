@@ -735,7 +735,7 @@
             updateRowHeight();
         }
 
-
+        // also returns self
         function getAllParents(id) {
             var currentParent = allColumns.find(function (element) {
                 return element.id == id;
