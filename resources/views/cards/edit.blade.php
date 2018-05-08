@@ -94,7 +94,11 @@
                                 @foreach($moves as $move)
                                     <tr>
                                         <td>{{ $move->id }}</th>
-                                        <td>{{ $move->old_column->column_name }} (#{{ $move->old_column->id }})</td>
+                                        <td>
+                                            @if(isset($move->old_column))
+                                                {{ $move->old_column->column_name }} (#{{ $move->old_column->id }})
+                                            @endif
+                                        </td>
                                         <td>{{ $move->new_column->column_name }} (#{{ $move->new_column->id }})</td>
                                     </tr>
                                 @endforeach
