@@ -54,7 +54,7 @@
         ];
     </script>
     <!-- Content Wrapper. Contains page content -->
-    <input type="hidden" name="cardToUpdate" value="" id="board-focus-card-to-update" />
+    <input type="hidden" name="cardToUpdate" value="" id="board-focus-card-to-update"/>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -85,46 +85,62 @@
                     <div class="box">
                         <div class="box-header">
 
+                            <div class="row">
 
-                            @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
-                                @if($isKM)
-                                    <a href="{{ action('BoardController@edit', $board->id) }}"
-                                       class="btn btn-primary pull-right">
-                                        <b>Uredi</b>
-                                    </a>
 
-                                    <a href="{{ route('boards.report', $board->id) }}"
-                                       class="btn btn-primary pull-right" style="margin-right:5px">
-                                        <b>Poročilo</b>
-                                    </a>
-                                    
-                                    <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
-                                @endif
-                                <button type="button" class="btn btn-primary openCard pull-right" data-card-id="0"
-                                        data-board-id="{{ $board->id }}">Dodaj kartico
-                                </button>
-                            @endif
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h3 class="box-title">{{ $board->board_name }}
+                                                <small>{{ $board->description }}</small>
+                                            </h3>
+                                        </div>
 
-                            <div class="pull-right" style="margin: 8px;">
-                                <label for="saveNarrowColumnsCheckbox" class="">
-                                    <input id="saveNarrowColumnsCheckbox"
-                                           name="saveNarrowColumnsCheckbox"
-                                           value="saveNarrowColumns" type="checkbox" class="pull-left"
-                                           onclick="saveNarrowColumns()">
-                                    Ohrani trenutni pogled v prihodnje
-                                </label>
-                            </div>
+                                        <div class="col-sm-12">
+                                            Projekti:
+                                            @foreach($board->projects as $project)
+                                                {{ $project->board_name }},
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <h3 class="box-title">{{ $board->board_name }}</h3>
-                            <div>
-                                {{ $board->description }}
-                                <br>
-                                <div>Projekti:
-                                    @foreach($board->projects as $project)
-                                        {{ $project->board_name }},
-                                    @endforeach
+
+                                <div class="col-sm-6">
+
+                                    @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
+                                        @if($isKM)
+                                            <a href="{{ action('BoardController@edit', $board->id) }}"
+                                               class="btn btn-primary pull-right">
+                                                <b>Uredi</b>
+                                            </a>
+
+                                            <a href="{{ route('boards.report', $board->id) }}"
+                                               class="btn btn-primary pull-right" style="margin-right:5px">
+                                                <b>Poročilo</b>
+                                            </a>
+
+                                            <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
+                                        @endif
+                                        <button type="button" class="btn btn-primary openCard pull-right"
+                                                data-card-id="0"
+                                                data-board-id="{{ $board->id }}">Dodaj kartico
+                                        </button>
+                                    @endif
+
+                                    <div class="pull-right" style="margin: 8px;">
+                                        <label for="saveNarrowColumnsCheckbox" class="">
+                                            <input id="saveNarrowColumnsCheckbox"
+                                                   name="saveNarrowColumnsCheckbox"
+                                                   value="saveNarrowColumns" type="checkbox" class="pull-left"
+                                                   onclick="saveNarrowColumns()">
+                                            Ohrani trenutni pogled v prihodnje
+                                        </label>
+                                    </div>
 
                                 </div>
+
+
                             </div>
                         </div>
                         <!-- /.box-header -->
@@ -143,8 +159,8 @@
 
                                 #board-holder.fullscreen {
                                     z-index: 1040;
-                                    width: 100%;
-                                    height: 100%;
+                                    width: 100vw;
+                                    height: 100vh;
                                     position: fixed;
                                     top: 0;
                                     left: 0;
@@ -338,9 +354,8 @@
 
         var drake = dragula({
             containers: containers,
-            revertOnSpill:true
+            revertOnSpill: true
         });
-
 
 
         var board = {!! $board !!};
@@ -379,6 +394,8 @@
         window.onload = function () {
 //            makeExisting();
 
+            $('body').addClass("sidebar-collapse");
+
             columnsWide = checkIfSavedNarrowColumns();
 
             maxDepth = getMaxDepth();
@@ -392,7 +409,7 @@
             makeBody();
 
             $.each(allColumns, function (i, current) {
-                if(!columnsWide[current.id]){
+                if (!columnsWide[current.id]) {
 //                    console.log("make it narrow " + current.id);
 //                    console.log("current state: " + columnsWide[current.id]);
                     narrowColumn(current.id);
@@ -402,15 +419,10 @@
             });
 
 
-
-
-
         };
 
 
-
-
-        drake.on("drop", function(el, target, source, sibling){
+        drake.on("drop", function (el, target, source, sibling) {
 
             console.log(allColumns);
             console.log(allLeaves);
@@ -423,22 +435,22 @@
             var projectId = previousSplit[2];
             var nextElement = target.id;
             var nextSplit = nextElement.split("_");
-            var foundIndex =-1;
-            var foundPrevious = allLeaves.find(function (element,i){
-                if(element.id == parseInt(previousSplit[3])){
-                    foundIndex=i;
+            var foundIndex = -1;
+            var foundPrevious = allLeaves.find(function (element, i) {
+                if (element.id == parseInt(previousSplit[3])) {
+                    foundIndex = i;
                     return element;
                 }
             });
 
             var foundNext = allLeaves.find(function (element,i){
-                if(element.id == parseInt(nextSplit[3])){
+                if (element.id == parseInt(nextSplit[3])) {
                     return element;
                 }
             });
 
-            var nextIndex = foundIndex+1;
-            var previousIndex = foundIndex-1;
+            var nextIndex = foundIndex + 1;
+            var previousIndex = foundIndex - 1;
             var shouldAllow = false;
 
             if(previousSplit[2] != nextSplit[2]){
@@ -450,17 +462,18 @@
                 drake.cancel();
                 return;
             }
-            if(nextIndex < allLeaves.length){
-                if(allLeaves[nextIndex].id == foundNext.id){
+
+            if (nextIndex < allLeaves.length) {
+                if (allLeaves[nextIndex].id == foundNext.id) {
                     shouldAllow = true;
                 }
             }
-            if(previousIndex >= 0){
-                if(allLeaves[previousIndex].id == foundNext.id){
+            if (previousIndex >= 0) {
+                if (allLeaves[previousIndex].id == foundNext.id) {
                     shouldAllow = true;
                 }
             }
-            if(foundPrevious.acceptance_testing){
+            if (foundPrevious.acceptance_testing) {
                 shouldAllow = true;
             }
             if(foundNext.WIP == foundNext.cards.length){
@@ -502,10 +515,11 @@
                     '_token': "{{ csrf_token() }}",
                     'new_column_id': parseInt(foundNext.id),
                     'old_column_id': parseInt(foundPrevious.id),
-                    'card_id':parseInt(cardId),
+                    'card_id': parseInt(cardId),
                     'user_id': parseInt(user.id),
                     'order': foundCard.order
-                };
+                }
+
                 console.log('kaj pravi wipbreak' + wipBreak);
                 if(wipBreak == true){
                     sendData['wip_breaked'] = true;
@@ -529,8 +543,6 @@
                 drake.cancel();
             }
 
-
-            //var targetElement =
         });
 
         function enableWipBreak(){
@@ -797,7 +809,7 @@
 
             console.log("columns wide column " + column.id + ": " + columnsWide[column.id]);
 
-            if(columnsWide[column.id] == undefined) {
+            if (columnsWide[column.id] == undefined) {
                 console.log("change to true");
                 columnsWide[column.id] = true;
             }
@@ -837,7 +849,7 @@
         function updateRowHeight() {
             var headerHeight = $("#topleft").height();
             var fullHeight = $(window).height();
-            var rowHeight = (fullHeight - headerHeight) / projects.length;
+            var rowHeight = (fullHeight - headerHeight) / projects.length - 12;
 
 
             $(".cardRow").each(function (i, current) {
@@ -862,7 +874,6 @@
             });
 
             narrowColumnChildren(id);
-            
 
 
             var columnFromAllColumns = allColumns.find(function (element) {
@@ -876,13 +887,13 @@
             var parents = getAllParents(columnFromAllColumns.parent_id);
             var allParentWide = checkParentsWide(parents);
 
-            if(columnFromRootColumns != undefined){ // if ROOT column, show narrowed column
+            if (columnFromRootColumns != undefined) { // if ROOT column, show narrowed column
                 $("#thead_th_fornarrow_" + id).show();
             }
             else if (allParentWide) { // if parent is widen, show show narrowed column
                 $("#thead_th_fornarrow_" + id).show();
             }
-            else{ // else hide
+            else { // else hide
                 $("#thead_th_fornarrow_" + id).hide();
             }
 
@@ -895,22 +906,22 @@
                 return element.id == id;
             });
 
-            if(currentParent != undefined){
+            if (currentParent != undefined) {
                 var parents = getAllParents(currentParent.parent_id);
 
                 parents.push(currentParent);
                 return parents;
             }
-            else{
+            else {
                 return [];
             }
         }
 
-        function checkParentsWide(arrayOfParents){
+        function checkParentsWide(arrayOfParents) {
             var allWide = true;
 
             $.each(arrayOfParents, function (i, curr) {
-                if(!columnsWide[curr.id]){
+                if (!columnsWide[curr.id]) {
                     allWide = false;
                 }
             });
@@ -1027,41 +1038,40 @@
         }
 
         /*custom functions*/
-        function findCard(columnId, cardId, arrayOfColumns, nextColumn){
-            var foundColumn = arrayOfColumns.find(function(element,i){
-                if(element.id == columnId){
+        function findCard(columnId, cardId, arrayOfColumns, nextColumn) {
+            var foundColumn = arrayOfColumns.find(function (element, i) {
+                if (element.id == columnId) {
                     return element;
                 }
             });
-            if(foundColumn != undefined && foundColumn != null){
+            if (foundColumn != undefined && foundColumn != null) {
                 console.log(foundColumn);
-                var foundCard=foundColumn.cards.find(function(element,i){
-                    if(element.id == cardId){
+                var foundCard = foundColumn.cards.find(function (element, i) {
+                    if (element.id == cardId) {
                         return element;
                     }
                 });
-                if(foundCard != null && foundCard != undefined){
+                if (foundCard != null && foundCard != undefined) {
                     console.log('here you go');
                     console.log(foundCard);
                     //foundCard.updated_at = new Date();
-                    arrayOfColumns.find(function(element,i){
-                        if(element.id == nextColumn){
+                    arrayOfColumns.find(function (element, i) {
+                        if (element.id == nextColumn) {
                             element.cards.push(foundCard);
                         }
                     });
+<<<<<<< HEAD
                     return foundCard;
                 }else{
+=======
+                } else {
+>>>>>>> d1f45bb286447ec6a2615e5214762918241b7fe6
                     console.log('here you dont go');
                 }
-            }else{
+            } else {
                 console.log('no luck');
             }
         }
-
-
-
-
-
 
 
         function sumAllChildrenCards(columnid) {
@@ -1071,7 +1081,7 @@
 
             var currNumOfCards = column.cards.length;
 
-            if(column.all_children_cards.length > 0){
+            if (column.all_children_cards.length > 0) {
                 $.each(column.all_children_cards, function (i, currentChild) {
                     var childNumOfCards = sumAllChildrenCards(currentChild.id);
                     currNumOfCards += childNumOfCards;
