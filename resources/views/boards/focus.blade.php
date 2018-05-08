@@ -349,6 +349,9 @@
         var projects = {!! $board->projects !!};
         var groups = {!! $board->groups !!};
         var user = {!! Auth::user() !!};
+        var userGroups = {!! $userGroups !!};
+        console.log('usergroups');
+        console.log(userGroups);
         console.log(user);
 
         var rootColumns = board.structured_columns_cards;
@@ -368,6 +371,9 @@
         var numAllLeaves = 0;
 
         var columnsWide = {};
+
+        var wipBreakAllowed = false;
+        var wipBreak = false;
 
 
         window.onload = function () {
@@ -426,7 +432,6 @@
             });
 
             var foundNext = allLeaves.find(function (element,i){
-                console.log("show money" + element.id);
                 if(element.id == parseInt(nextSplit[3])){
                     return element;
                 }
@@ -435,6 +440,16 @@
             var nextIndex = foundIndex+1;
             var previousIndex = foundIndex-1;
             var shouldAllow = false;
+
+            if(previousSplit[2] != nextSplit[2]){
+                $('#boardModal .modal-footer #enableWipBreak').remove();
+                $('#boardModal .modal-header h4').text('Opozorilo!');
+                $('#boardModal .modal-body').html('<p>Ne morete premikati kartice na drugi projekt!</p>');
+                $('#boardModal').modal('show');
+                console.log('cannot move to another project');
+                drake.cancel();
+                return;
+            }
             if(nextIndex < allLeaves.length){
                 if(allLeaves[nextIndex].id == foundNext.id){
                     shouldAllow = true;
@@ -448,49 +463,79 @@
             if(foundPrevious.acceptance_testing){
                 shouldAllow = true;
             }
+            if(foundNext.WIP == foundNext.cards.length){
+                if(!wipBreakAllowed){
+                    $('#boardModal .modal-footer #enableWipBreak').remove();
+                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak()" type="button" class="btn btn-default" data-dismiss="modal">Dovoli kršitev</button>');
+                    $('#boardModal .modal-header h4').text('Opozorilo!');
+                    $('#boardModal .modal-body').html('<p>S tem premikom boste kršili WIP omejitev stolpca! V kolikor zares želite prenesti katico v ' +
+                        'izbrani stolpec pritisnite "Dovoli kršitev" in potem ponovno prenesite kartico</p>');
+                    $('#boardModal').modal('show');
+                    drake.cancel();
+                    return;
+                }else{
+                    wipBreak = true;
+                }
+                console.log('breaks WIP !');
 
+            }
             if(shouldAllow){
-                //
-                console.log('jap');
-                console.log('before');
                 console.log(allLeaves);
-                var foundCard = findCard(foundPrevious.id, cardId, allLeaves, foundNext.id)
+                var foundCard = findCard(foundPrevious.id, cardId, allLeaves, foundNext.id);
                 console.log(foundCard);
                 console.log('after');
+                var foundGroup = userGroups.find(function(element,i){
+                    if(element.group_id == foundCard.project.group_id){
+                        return element;
+                    }
+                });
+                if(foundGroup == null && foundGroup == undefined){
+                    drake.cancel();
+                    return;
+                }
+
                 console.log(allLeaves);
                 $('#board-focus-card-to-update').val(cardId);
                 //var url = ;
                 //url = url.replace(":id", cardId);
-                var blabla= {
-                    "request":{}
+                var sendData= {
+                    '_token': "{{ csrf_token() }}",
+                    'new_column_id': parseInt(foundNext.id),
+                    'old_column_id': parseInt(foundPrevious.id),
+                    'card_id':parseInt(cardId),
+                    'user_id': parseInt(user.id),
+                    'order': foundCard.order
                 };
-                console.log("tototksldfjalsfjfajfa:  " + cardId);
+                console.log('kaj pravi wipbreak' + wipBreak);
+                if(wipBreak == true){
+                    sendData['wip_breaked'] = true;
+                }
+                console.log("tototksldfjalsfjfajfa:  " + foundNext.id);
+                console.log(sendData);
                 $.ajax({
-                    url: "{{action('CardController@what')}}",
+                    url: "{{action('CardController@cardMoved')}}",
                     type: 'post',
-                    data: {
-                        '_token': "{{ csrf_token() }}",
-                        'new_column_id': parseInt(foundNext.id),
-                        'old_column_id': parseInt(foundPrevious.id),
-                        'card_id':parseInt(cardId),
-                        'user_id': parseInt(user.id)
-                    },
+                    data: sendData,
                     success: function (result) {
-                        console.log('johhny go|!');
+                        location.reload();
                     }
                 });
 
             }else{
-                resetDocumentationModel();
-                $('#documentationModel h4.modal-title').html("Slipping away");
-                $('#documentationModel .modal-body').html("Each other!");
-                showDocumentationModel();
+                $('#boardModal .modal-footer #enableWipBreak').remove();
+                $('#boardModal .modal-header h4').text('Opozorilo!');
+                $('#boardModal .modal-body').html('<p>Ne morete premikati kartice za več kot en stolpec naenkrat!</p>');
+                $('#boardModal').modal('show');
                 drake.cancel();
             }
 
 
             //var targetElement =
         });
+
+        function enableWipBreak(){
+            wipBreakAllowed = true;
+        }
 
         /*
          * NEW design
@@ -1004,6 +1049,7 @@
                             element.cards.push(foundCard);
                         }
                     });
+                    return foundCard;
                 }else{
                     console.log('here you dont go');
                 }
@@ -1040,4 +1086,5 @@
 
 
     @include('modals.modal')
+    @include('modals.boardmodal')
 @endsection

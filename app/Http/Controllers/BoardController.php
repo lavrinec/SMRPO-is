@@ -420,17 +420,19 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
      * */
     public function focus($id)
     {
+        $user = Auth::user();
         $board = Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first();
         if ($board == null) {
             return redirect()->route('boards.list')->withErrors(['NoBoard' => 'Tabla ne obstaja, ali je bila zbrisana']);
         }
+        $userGroups = UsersGroup::where('user_id', $user->id)->get();
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();
 
         //$this->getUsersGroupsOfBoard($id);
 
-        return view('boards.focus')->with('board', $board)->with('projects', $projects);
+        return view('boards.focus')->with('board', $board)->with('projects', $projects)->with('userGroups',$userGroups);
     }
 
 //    public function getUsersGroupsOfBoard($boardid){

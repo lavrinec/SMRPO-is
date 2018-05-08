@@ -6,8 +6,8 @@ use App\Models\Board;
 use App\Models\Card;
 use App\Models\Column;
 use App\Models\Move;
+use App\Models\MoveReason;
 use App\Models\User;
-use App\Models\Move;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -66,13 +66,38 @@ class CardController extends Controller
 
 
 
-    public function what(Request $request){
-        $data = $request->except('_token');
+    public function cardMoved(Request $request){
+        $data = $request->except('_token','wip_breaked');
+        $cop = array();
         if(isset($request->card_id)){
+            if(isset($request->wip_breaked)){
+                $moveReasons=array();
+                $moveReasons['move_reason'] = 'Broke wip';
+                $moveReasons['description'] = 'Broken wip';
+                $moveReasons['meta'] = '';
+                $findReason = MoveReason::where('move_reason', 'Broke wip')->first();
+                if($findReason != null){
+                    $data['move_reason_id'] = $findReason->id;
+                }else {
+                    $createdReason = MoveReason::create($moveReasons);
+                    $data['move_reason_id'] = $createdReason->id;
+                }
+            }
+            $cop['user_id']=$request->user_id;
+            $cop['column_id']=$request->new_column_id;
+            $cop['order'] = $request->order;
             $move = Move::create($data);
-            return $this->update($request, $request->card_id);
+            $data['column_id']=$data['new_column_id'];
+            $card = Card::where('id', $request->card_id)->first();
+            $card->update($cop);
+            $card->view = View::make('boards.card')->with('card',$card)->render();
+            return $card;
+
+            //echo($cop);
+            //return 'hh';
+            //return $this->update($cop, $request->card_id);
         }else {
-            return 'hua';
+            return 'No card!';
         }
     }
 
@@ -163,6 +188,7 @@ class CardController extends Controller
             //dd($move);
             Move::create($move);
         } else {
+            //return 'hhhh';
             $card = Card::where('id', $id)->first();
             $card->update($data);
         }
