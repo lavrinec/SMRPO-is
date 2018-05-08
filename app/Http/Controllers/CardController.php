@@ -127,6 +127,7 @@ class CardController extends Controller
             } else {
                 $data['column'] = $data['board']->columns();
                 $data['column'] = $data['column']->where('high_priority', true)->first();
+                $data['highPriotiry'] = true;
                 if(! isset($data['column'])){
                     return view('cards.error')->with(['error' => 'Tabela je brez high priority stolpca! Zato dodajanje kartic ni mogoče za Kanban Masterja.']);
                 }
