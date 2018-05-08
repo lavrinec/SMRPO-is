@@ -177,6 +177,7 @@ class CardController extends Controller
             $maxOrder = Card::where('column_id', $data['column_id'])->orderBy('order','desc')->first();
             $data['order'] = $maxOrder ? $maxOrder->order + 1 : 1;
             //dd($data);
+            $data['is_silver_bullet'] = $data['is_critical'];
             $card = Card::create($data);
             checkWipViolation($card, "Dodajanje nove kartice");
             $move = [
