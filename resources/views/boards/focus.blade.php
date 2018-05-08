@@ -1060,12 +1060,10 @@
                             element.cards.push(foundCard);
                         }
                     });
-<<<<<<< HEAD
+
                     return foundCard;
-                }else{
-=======
+
                 } else {
->>>>>>> d1f45bb286447ec6a2615e5214762918241b7fe6
                     console.log('here you dont go');
                 }
             } else {
