@@ -1,8 +1,13 @@
 @php
     $authUser = Auth::user();
     $canEdit = true;
-    if(isset($card))
+    //dd($card);
+    if(isset($card)){
+        //dd($card);
+        $card->move_reason_id = null;
         $canEdit = $authUser->canEditCard($card);
+    }
+
 @endphp
 <form @if($canEdit) id="updateCard" method="POST" action="{{ action('CardController@update', isset($card) ? $card->id : 0) }}" @endif>
     <div class="modal-header">
@@ -66,10 +71,10 @@
                     <label for="estimation" class="col-form-label">Ocena časa:</label>
                     <input type="number" class="form-control" id="estimation" name="estimation"  value="{{ isset($card) ? $card->estimation : '' }}">
                 </div>
-                <div class="checkbox">
-                    <label><input type="checkbox" name="is_critical" {{ isset($card) && $card->is_critical ? 'checked' : '' }} {{ Auth::user()->isPo() ? '' : 'disabled' }}>Kritičen</label>
+                <div class="checkbox hidden">
+                    <label><input type="checkbox" name="is_critical" {{ ((isset($highPriotiry) && $highPriotiry) || (isset($card) && $card->is_critical)) ? 'checked' : '' }}>Kritičen</label>
                 </div>
-                <div class="checkbox">
+                <div class="checkbox hidden">
                     <label><input type="checkbox" name="is_rejected" {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
                 </div>
                 <!--<input type="submit" style="display: none;">-->
@@ -89,7 +94,11 @@
                                 @foreach($moves as $move)
                                     <tr>
                                         <td>{{ $move->id }}</th>
-                                        <td>{{ $move->old_column->column_name }} (#{{ $move->old_column->id }})</td>
+                                        <td>
+                                            @if(isset($move->old_column))
+                                                {{ $move->old_column->column_name }} (#{{ $move->old_column->id }})
+                                            @endif
+                                        </td>
                                         <td>{{ $move->new_column->column_name }} (#{{ $move->new_column->id }})</td>
                                     </tr>
                                 @endforeach

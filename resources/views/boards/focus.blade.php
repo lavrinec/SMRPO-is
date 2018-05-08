@@ -54,6 +54,7 @@
         ];
     </script>
     <!-- Content Wrapper. Contains page content -->
+    <input type="hidden" name="cardToUpdate" value="" id="board-focus-card-to-update"/>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -84,46 +85,62 @@
                     <div class="box">
                         <div class="box-header">
 
+                            <div class="row">
 
-                            @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
-                                @if($isKM)
-                                    <a href="{{ action('BoardController@edit', $board->id) }}"
-                                       class="btn btn-primary pull-right">
-                                        <b>Uredi</b>
-                                    </a>
 
-                                    <a href="{{ route('boards.report', $board->id) }}"
-                                       class="btn btn-primary pull-right" style="margin-right:5px">
-                                        <b>Poročilo</b>
-                                    </a>
-                                    
-                                    <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
-                                @endif
-                                <button type="button" class="btn btn-primary openCard pull-right" data-card-id="0"
-                                        data-board-id="{{ $board->id }}">Dodaj kartico
-                                </button>
-                            @endif
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h3 class="box-title">{{ $board->board_name }}
+                                                <small>{{ $board->description }}</small>
+                                            </h3>
+                                        </div>
 
-                            <div class="pull-right" style="margin: 8px;">
-                                <label for="saveNarrowColumnsCheckbox" class="">
-                                    <input id="saveNarrowColumnsCheckbox"
-                                           name="saveNarrowColumnsCheckbox"
-                                           value="saveNarrowColumns" type="checkbox" class="pull-left"
-                                           onclick="saveNarrowColumns()">
-                                    Ohrani trenutni pogled v prihodnje
-                                </label>
-                            </div>
+                                        <div class="col-sm-12">
+                                            Projekti:
+                                            @foreach($board->projects as $project)
+                                                {{ $project->board_name }},
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <h3 class="box-title">{{ $board->board_name }}</h3>
-                            <div>
-                                {{ $board->description }}
-                                <br>
-                                <div>Projekti:
-                                    @foreach($board->projects as $project)
-                                        {{ $project->board_name }},
-                                    @endforeach
+
+                                <div class="col-sm-6">
+
+                                    @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
+                                        @if($isKM)
+                                            <a href="{{ action('BoardController@edit', $board->id) }}"
+                                               class="btn btn-primary pull-right">
+                                                <b>Uredi</b>
+                                            </a>
+
+                                            <a href="{{ route('boards.report', $board->id) }}"
+                                               class="btn btn-primary pull-right" style="margin-right:5px">
+                                                <b>Poročilo</b>
+                                            </a>
+
+                                            <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
+                                        @endif
+                                        <button type="button" class="btn btn-primary openCard pull-right"
+                                                data-card-id="0"
+                                                data-board-id="{{ $board->id }}">Dodaj kartico
+                                        </button>
+                                    @endif
+
+                                    <div class="pull-right" style="margin: 8px;">
+                                        <label for="saveNarrowColumnsCheckbox" class="">
+                                            <input id="saveNarrowColumnsCheckbox"
+                                                   name="saveNarrowColumnsCheckbox"
+                                                   value="saveNarrowColumns" type="checkbox" class="pull-left"
+                                                   onclick="saveNarrowColumns()">
+                                            Ohrani trenutni pogled v prihodnje
+                                        </label>
+                                    </div>
 
                                 </div>
+
+
                             </div>
                         </div>
                         <!-- /.box-header -->
@@ -142,8 +159,8 @@
 
                                 #board-holder.fullscreen {
                                     z-index: 1040;
-                                    width: 100%;
-                                    height: 100%;
+                                    width: 100vw;
+                                    height: 100vh;
                                     position: fixed;
                                     top: 0;
                                     left: 0;
@@ -336,16 +353,29 @@
         var containers = [];
 
         var drake = dragula({
-            containers: containers
+            containers: containers,
+            revertOnSpill: true
         });
 
+
         var board = {!! $board !!};
+        console.log("show board");
+        console.log({!! $board !!});
         var projects = {!! $board->projects !!};
-
+        var groups = {!! $board->groups !!};
         var user = {!! Auth::user() !!};
-
+        var userGroups = {!! $userGroups !!};
+        console.log('usergroups');
+        console.log(userGroups);
+        console.log(user);
 
         var rootColumns = board.structured_columns_cards;
+
+        console.log("check this out!");
+        console.log(rootColumns);
+
+        console.log("check user");
+        console.log(groups);
 
         var allLeaves = [];
         var allCards = [];
@@ -357,9 +387,14 @@
 
         var columnsWide = {};
 
+        var wipBreakAllowed = false;
+        var wipBreak = false;
+
 
         window.onload = function () {
 //            makeExisting();
+
+            $('body').addClass("sidebar-collapse");
 
             columnsWide = checkIfSavedNarrowColumns();
 
@@ -374,7 +409,7 @@
             makeBody();
 
             $.each(allColumns, function (i, current) {
-                if(!columnsWide[current.id]){
+                if (!columnsWide[current.id]) {
 //                    console.log("make it narrow " + current.id);
 //                    console.log("current state: " + columnsWide[current.id]);
                     narrowColumn(current.id);
@@ -384,10 +419,135 @@
             });
 
 
-
-
-
         };
+
+
+        drake.on("drop", function (el, target, source, sibling) {
+
+            console.log(allColumns);
+            console.log(allLeaves);
+
+            console.log("kartica");
+            var cardId = el.dataset.cardId;
+
+            var previousElement = source.id;
+            var previousSplit = previousElement.split("_");
+            var projectId = previousSplit[2];
+            var nextElement = target.id;
+            var nextSplit = nextElement.split("_");
+            var foundIndex = -1;
+            var foundPrevious = allLeaves.find(function (element, i) {
+                if (element.id == parseInt(previousSplit[3])) {
+                    foundIndex = i;
+                    return element;
+                }
+            });
+
+            var foundNext = allLeaves.find(function (element,i){
+                if (element.id == parseInt(nextSplit[3])) {
+                    return element;
+                }
+            });
+
+            var nextIndex = foundIndex + 1;
+            var previousIndex = foundIndex - 1;
+            var shouldAllow = false;
+
+            if(previousSplit[2] != nextSplit[2]){
+                $('#boardModal .modal-footer #enableWipBreak').remove();
+                $('#boardModal .modal-header h4').text('Opozorilo!');
+                $('#boardModal .modal-body').html('<p>Ne morete premikati kartice na drugi projekt!</p>');
+                $('#boardModal').modal('show');
+                console.log('cannot move to another project');
+                drake.cancel();
+                return;
+            }
+
+            if (nextIndex < allLeaves.length) {
+                if (allLeaves[nextIndex].id == foundNext.id) {
+                    shouldAllow = true;
+                }
+            }
+            if (previousIndex >= 0) {
+                if (allLeaves[previousIndex].id == foundNext.id) {
+                    shouldAllow = true;
+                }
+            }
+            if (foundPrevious.acceptance_testing) {
+                shouldAllow = true;
+            }
+            if(foundNext.WIP == foundNext.cards.length && foundNext > 0){
+                if(!wipBreakAllowed){
+                    $('#boardModal .modal-footer #enableWipBreak').remove();
+                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak()" type="button" class="btn btn-default" data-dismiss="modal">Dovoli kršitev</button>');
+                    $('#boardModal .modal-header h4').text('Opozorilo!');
+                    $('#boardModal .modal-body').html('<p>S tem premikom boste kršili WIP omejitev stolpca! V kolikor zares želite prenesti katico v ' +
+                        'izbrani stolpec pritisnite "Dovoli kršitev" in potem ponovno prenesite kartico</p>');
+                    $('#boardModal').modal('show');
+                    drake.cancel();
+                    return;
+                }else{
+                    wipBreak = true;
+                }
+                console.log('breaks WIP !');
+
+            }
+            if(shouldAllow){
+                console.log(allLeaves);
+                var foundCard = findCard(foundPrevious.id, cardId, allLeaves, foundNext.id);
+                console.log(foundCard);
+                console.log('after');
+                var foundGroup = userGroups.find(function(element,i){
+                    if(element.group_id == foundCard.project.group_id){
+                        return element;
+                    }
+                });
+                if(foundGroup == null && foundGroup == undefined){
+                    drake.cancel();
+                    return;
+                }
+
+                console.log(allLeaves);
+                $('#board-focus-card-to-update').val(cardId);
+                //var url = ;
+                //url = url.replace(":id", cardId);
+                var sendData= {
+                    '_token': "{{ csrf_token() }}",
+                    'new_column_id': parseInt(foundNext.id),
+                    'old_column_id': parseInt(foundPrevious.id),
+                    'card_id': parseInt(cardId),
+                    'user_id': parseInt(user.id),
+                    'order': foundCard.order
+                }
+
+                console.log('kaj pravi wipbreak' + wipBreak);
+                if(wipBreak == true){
+                    sendData['wip_breaked'] = true;
+                }
+                console.log("tototksldfjalsfjfajfa:  " + foundNext.id);
+                console.log(sendData);
+                $.ajax({
+                    url: "{{action('CardController@cardMoved')}}",
+                    type: 'post',
+                    data: sendData,
+                    success: function (result) {
+                        location.reload();
+                    }
+                });
+
+            }else{
+                $('#boardModal .modal-footer #enableWipBreak').remove();
+                $('#boardModal .modal-header h4').text('Opozorilo!');
+                $('#boardModal .modal-body').html('<p>Ne morete premikati kartice za več kot en stolpec naenkrat!</p>');
+                $('#boardModal').modal('show');
+                drake.cancel();
+            }
+
+        });
+
+        function enableWipBreak(){
+            wipBreakAllowed = true;
+        }
 
         /*
          * NEW design
@@ -649,7 +809,7 @@
 
             console.log("columns wide column " + column.id + ": " + columnsWide[column.id]);
 
-            if(columnsWide[column.id] == undefined) {
+            if (columnsWide[column.id] == undefined) {
                 console.log("change to true");
                 columnsWide[column.id] = true;
             }
@@ -689,7 +849,7 @@
         function updateRowHeight() {
             var headerHeight = $("#topleft").height();
             var fullHeight = $(window).height();
-            var rowHeight = (fullHeight - headerHeight) / projects.length;
+            var rowHeight = (fullHeight - headerHeight) / projects.length - 12;
 
 
             $(".cardRow").each(function (i, current) {
@@ -714,7 +874,6 @@
             });
 
             narrowColumnChildren(id);
-            
 
 
             var columnFromAllColumns = allColumns.find(function (element) {
@@ -728,13 +887,13 @@
             var parents = getAllParents(columnFromAllColumns.parent_id);
             var allParentWide = checkParentsWide(parents);
 
-            if(columnFromRootColumns != undefined){ // if ROOT column, show narrowed column
+            if (columnFromRootColumns != undefined) { // if ROOT column, show narrowed column
                 $("#thead_th_fornarrow_" + id).show();
             }
             else if (allParentWide) { // if parent is widen, show show narrowed column
                 $("#thead_th_fornarrow_" + id).show();
             }
-            else{ // else hide
+            else { // else hide
                 $("#thead_th_fornarrow_" + id).hide();
             }
 
@@ -747,22 +906,22 @@
                 return element.id == id;
             });
 
-            if(currentParent != undefined){
+            if (currentParent != undefined) {
                 var parents = getAllParents(currentParent.parent_id);
 
                 parents.push(currentParent);
                 return parents;
             }
-            else{
+            else {
                 return [];
             }
         }
 
-        function checkParentsWide(arrayOfParents){
+        function checkParentsWide(arrayOfParents) {
             var allWide = true;
 
             $.each(arrayOfParents, function (i, curr) {
-                if(!columnsWide[curr.id]){
+                if (!columnsWide[curr.id]) {
                     allWide = false;
                 }
             });
@@ -878,10 +1037,39 @@
             return savedCols;
         }
 
+        /*custom functions*/
+        function findCard(columnId, cardId, arrayOfColumns, nextColumn) {
+            var foundColumn = arrayOfColumns.find(function (element, i) {
+                if (element.id == columnId) {
+                    return element;
+                }
+            });
+            if (foundColumn != undefined && foundColumn != null) {
+                console.log(foundColumn);
+                var foundCard = foundColumn.cards.find(function (element, i) {
+                    if (element.id == cardId) {
+                        return element;
+                    }
+                });
+                if (foundCard != null && foundCard != undefined) {
+                    console.log('here you go');
+                    console.log(foundCard);
+                    //foundCard.updated_at = new Date();
+                    arrayOfColumns.find(function (element, i) {
+                        if (element.id == nextColumn) {
+                            element.cards.push(foundCard);
+                        }
+                    });
 
+                    return foundCard;
 
-
-
+                } else {
+                    console.log('here you dont go');
+                }
+            } else {
+                console.log('no luck');
+            }
+        }
 
 
         function sumAllChildrenCards(columnid) {
@@ -891,7 +1079,7 @@
 
             var currNumOfCards = column.cards.length;
 
-            if(column.all_children_cards.length > 0){
+            if (column.all_children_cards.length > 0) {
                 $.each(column.all_children_cards, function (i, currentChild) {
                     var childNumOfCards = sumAllChildrenCards(currentChild.id);
                     currNumOfCards += childNumOfCards;
@@ -906,4 +1094,5 @@
 
 
     @include('modals.modal')
+    @include('modals.boardmodal')
 @endsection

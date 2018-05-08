@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Board;
 use App\Models\Card;
 use App\Models\Column;
+use App\Models\Move;
+use App\Models\MoveReason;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,6 +64,44 @@ class CardController extends Controller
         //
     }
 
+
+
+    public function cardMoved(Request $request){
+        $data = $request->except('_token','wip_breaked');
+        $cop = array();
+        if(isset($request->card_id)){
+            if(isset($request->wip_breaked)){
+                $moveReasons=array();
+                $moveReasons['move_reason'] = 'Broke wip';
+                $moveReasons['description'] = 'Broken wip';
+                $moveReasons['meta'] = '';
+                $findReason = MoveReason::where('move_reason', 'Broke wip')->first();
+                if($findReason != null){
+                    $data['move_reason_id'] = $findReason->id;
+                }else {
+                    $createdReason = MoveReason::create($moveReasons);
+                    $data['move_reason_id'] = $createdReason->id;
+                }
+            }
+            $cop['user_id']=$request->user_id;
+            $cop['column_id']=$request->new_column_id;
+            $cop['order'] = $request->order;
+            $data['old_order'] = $data['order'];
+            $move = Move::create($data);
+            $data['column_id']=$data['new_column_id'];
+            $card = Card::where('id', $request->card_id)->first();
+            $card->update($cop);
+            $card->view = View::make('boards.card')->with('card',$card)->render();
+            return $card;
+
+            //echo($cop);
+            //return 'hh';
+            //return $this->update($cop, $request->card_id);
+        }else {
+            return 'No card!';
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -88,6 +128,7 @@ class CardController extends Controller
             } else {
                 $data['column'] = $data['board']->columns();
                 $data['column'] = $data['column']->where('high_priority', true)->first();
+                $data['highPriotiry'] = true;
                 if(! isset($data['column'])){
                     return view('cards.error')->with(['error' => 'Tabela je brez high priority stolpca! Zato dodajanje kartic ni mogoče za Kanban Masterja.']);
                 }
@@ -115,6 +156,7 @@ class CardController extends Controller
         return view('cards.edit')->with($data);
     }
 
+
     /**
      * Update the specified resource in storage.
      *
@@ -136,9 +178,22 @@ class CardController extends Controller
             $maxOrder = Card::where('column_id', $data['column_id'])->orderBy('order','desc')->first();
             $data['order'] = $maxOrder ? $maxOrder->order + 1 : 1;
             //dd($data);
+            if(isset($data['is_critical'])) {
+                $data['is_silver_bullet'] = $data['is_critical'];
+            }
             $card = Card::create($data);
             checkWipViolation($card, "Dodajanje nove kartice");
+            $move = [
+                'card_id' => $card->id,
+                'old_order' => 0,
+                'user_id' => Auth::user()->id,
+                'old_column_id' => $card->old_column_id,
+                'new_column_id' => $card->column_id
+            ];
+            //dd($move);
+            Move::create($move);
         } else {
+            //return 'hhhh';
             $card = Card::where('id', $id)->first();
             $card->update($data);
         }

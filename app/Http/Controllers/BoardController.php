@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Board;
 use App\Models\Column;
 use App\Models\Project;
-use App\Models\Card;
 use App\Models\Move;
+use App\Models\MoveReason;
 use App\Models\UsersGroup;
 use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 
@@ -420,15 +421,27 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
      * */
     public function focus($id)
     {
+        $user = Auth::user();
         $board = Board::where('id', $id)->with('projects', 'structuredColumnsCards')->first();
         if ($board == null) {
             return redirect()->route('boards.list')->withErrors(['NoBoard' => 'Tabla ne obstaja, ali je bila zbrisana']);
         }
+        $userGroups = UsersGroup::where('user_id', $user->id)->get();
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();
-        return view('boards.focus')->with('board', $board)->with('projects', $projects);
+
+        //$this->getUsersGroupsOfBoard($id);
+
+        return view('boards.focus')->with('board', $board)->with('projects', $projects)->with('userGroups',$userGroups);
     }
+
+//    public function getUsersGroupsOfBoard($boardid){
+//        $groups = DB::table("groups")->whereExists(function($query){
+//           $query->DB::table("projects")->where('groups.id', '=' ,'projects.group_id');
+//        })->get();
+//
+//    }
 
     public function columnHeader(Request $request)
     {
@@ -580,19 +593,43 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
 
         Column::where('board_id', $board->id)->whereNotIn('id', $this->allArray)->doesnthave('cards')->delete();
 
+        // move silver bullets and rejected cards if column type (high_priority) was changed
         $silverBulletCards = Board::where('id', $board->id)->first()->cards->where('is_silver_bullet', 1);
         $rejectedCards = Board::where('id', $board->id)->first()->cards->where('is_rejected', 1);
 
         $highPriorityColumn = Column::where('board_id', $board->id)->where('high_priority', 1)->first();
 
         foreach($silverBulletCards as $sbcard){
+            $old_column_id = $sbcard->column_id;
+
             Card::where('id', $sbcard->id)->update(array('column_id' => $highPriorityColumn->id));
             checkWipViolation($sbcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");
+
+            $move = [
+                'card_id' => $sbcard->id,
+                'old_order' => $sbcard->order,
+                'user_id' => Auth::user()->id,
+                'old_column_id' => $old_column_id,
+                'new_column_id' => $highPriorityColumn->id
+            ];
+            Move::create($move);
+
         }
 
         foreach($rejectedCards as $rcard){
+            $old_column_id = $sbcard->column_id;
+
             Card::where('id', $rcard->id)->update(array('column_id' => $highPriorityColumn->id));
             checkWipViolation($rcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");
+
+            $move = [
+                'card_id' => $rcard->id,
+                'old_order' => $rcard->order,
+                'user_id' => Auth::user()->id,
+                'old_column_id' => $old_column_id,
+                'new_column_id' => $highPriorityColumn->id
+            ];
+            Move::create($move);
         }
 
         return redirect()->route('boards.show', $board);

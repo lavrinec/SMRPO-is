@@ -10,7 +10,7 @@ class Move extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'old_order', 'old_column_id', 'new_column_id', 'user_id', 'meta'
+        'old_order', 'old_column_id', 'new_column_id', 'user_id', 'card_id', 'meta', 'move_reason_id'
     ];
 
     public function old_column()
