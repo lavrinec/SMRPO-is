@@ -476,7 +476,7 @@
             if (foundPrevious.acceptance_testing) {
                 shouldAllow = true;
             }
-            if(foundNext.WIP == foundNext.cards.length){
+            if(foundNext.WIP == foundNext.cards.length && foundNext > 0){
                 if(!wipBreakAllowed){
                     $('#boardModal .modal-footer #enableWipBreak').remove();
                     $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak()" type="button" class="btn btn-default" data-dismiss="modal">Dovoli kršitev</button>');
