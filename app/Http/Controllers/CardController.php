@@ -7,7 +7,6 @@ use App\Models\Card;
 use App\Models\Column;
 use App\Models\Move;
 use App\Models\User;
-use App\Models\Move;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
