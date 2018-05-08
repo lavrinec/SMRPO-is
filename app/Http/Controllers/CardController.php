@@ -86,9 +86,9 @@ class CardController extends Controller
             $cop['user_id']=$request->user_id;
             $cop['column_id']=$request->new_column_id;
             $cop['order'] = $request->order;
+            $data['old_order'] = $data['order'];
             $move = Move::create($data);
             $data['column_id']=$data['new_column_id'];
-            $data['old_order'] = $data['order'];
             $card = Card::where('id', $request->card_id)->first();
             $card->update($cop);
             $card->view = View::make('boards.card')->with('card',$card)->render();
