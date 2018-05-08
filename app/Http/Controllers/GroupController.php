@@ -498,11 +498,11 @@ class GroupController extends Controller
         // get roles that need to be inserted --> second array
         $usersGroupsRolesToDelete = array();
         $usersGroupsRolesToInsert = array();
-        dd($databaseRoles);
+        //dd($databaseRoles);
         foreach ($frontEndRoles as $key => $value) {
             foreach ($databaseRoles as $key => $value) {
                 //value == usersGroup
-                dd($value);
+                //dd($value);
             }
         }
 
