@@ -71,11 +71,11 @@
                     <label for="estimation" class="col-form-label">Ocena časa:</label>
                     <input type="number" class="form-control" id="estimation" name="estimation"  value="{{ isset($card) ? $card->estimation : '' }}">
                 </div>
-                <div class="checkbox">
-                    <label><input type="checkbox hidden" name="is_critical" {{ ((isset($highPriotiry) && $highPriotiry) || (isset($card) && $card->is_critical)) ? 'checked' : '' }} {{ Auth::user()->isPo() ? '' : 'disabled' }}>Kritičen</label>
+                <div class="checkbox hidden">
+                    <label><input type="checkbox" name="is_critical" {{ ((isset($highPriotiry) && $highPriotiry) || (isset($card) && $card->is_critical)) ? 'checked' : '' }} {{ Auth::user()->isPo() ? '' : 'disabled' }}>Kritičen</label>
                 </div>
-                <div class="checkbox">
-                    <label><input type="checkbox hidden" name="is_rejected" {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
+                <div class="checkbox hidden">
+                    <label><input type="checkbox" name="is_rejected" {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
                 </div>
                 <!--<input type="submit" style="display: none;">-->
             </div>
