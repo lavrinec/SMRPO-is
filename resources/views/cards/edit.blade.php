@@ -3,7 +3,7 @@
     $canEdit = true;
     //dd($card);
     if(isset($card)){
-        dd($card);
+        //dd($card);
         $card->move_reason_id = null;
         $canEdit = $authUser->canEditCard($card);
     }
