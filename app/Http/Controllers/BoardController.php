@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Column;
-use App\Models\Card;
 use App\Models\Project;
 use App\Models\Card;
 use App\Models\Move;
@@ -261,6 +260,8 @@ public function makeReport(Request $request){
 
     $formatted=$this->formatTime($average_time, $request->show_time);
     //return [$average_time, $formatted];
+
+    request()->flash();
     return view("boards.report")->with("cards",$Cards)->with("board", $full_board)->with('projects', $projects)
     ->with("average_time", $formatted);
 }

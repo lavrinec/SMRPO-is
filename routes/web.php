@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('column', 'BoardController@addColumn')->name('boards.column');
         Route::post('columnShow', 'BoardController@columnShow')->name('boards.columnShow');
         Route::post('columnHeader', 'BoardController@columnHeader')->name('boards.columnHeader');
-        Route::post('makeReport', 'BoardController@makeReport')->name('boards.makeReport');
+        Route::post('{id}/reports', 'BoardController@makeReport')->name('boards.makeReport');
         Route::post('columnBody', 'BoardController@columnBody')->name('boards.columnBody');
         Route::get('', 'BoardController@index')->name('boards.list');
         Route::get('{id}/show', 'BoardController@show')->name('boards.show');

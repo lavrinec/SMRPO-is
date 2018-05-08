@@ -4,7 +4,7 @@
                         </div>
 <div class = "box-body">
 <!-- <p>"{{$board->structuredColumns}}"</p> -->
-<form class="form-horizontal" method="POST" action="{{ route('boards.makeReport')}}">
+<form class="form-horizontal" method="POST" action="{{ route('boards.makeReport', $board->id)}}">
 
 @csrf
 <input type="hidden" class="form-control" id="board" name="board"
