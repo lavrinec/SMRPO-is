@@ -425,7 +425,7 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         if ($board == null) {
             return redirect()->route('boards.list')->withErrors(['NoBoard' => 'Tabla ne obstaja, ali je bila zbrisana']);
         }
-        $userGroups = UsersGroup::where('user_id', $user->id)->get();
+        $userGroups = UsersGroup::where('user_id', $user->id)->with('role')->get();
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();
