@@ -481,7 +481,7 @@
             });
             var highPriorityColumnIndex = -1;
             var highPriorityColumn = allColumns.find(function(element,i){
-                if(parseInt(element.high_priority)==1){
+                if(parseInt(element.high_priority)==true){
                     highPriorityColumnIndex=i;
                     return element;
                 }
@@ -529,7 +529,7 @@
                     shouldAllow = true;
                 }
             }
-            if(parseInt(foundPrevious.acceptance_testing) == 1){
+            if(parseInt(foundPrevious.acceptance_testing) == true){
                 if( foundPORole == null || foundPORole == undefined){
                     $('#boardModal .modal-footer').html('');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
