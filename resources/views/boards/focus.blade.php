@@ -538,7 +538,7 @@
                     shouldAllow = true;
                 }
             }
-            if((foundPrevious.acceptance_testing) == true){
+            if(((foundPrevious.acceptance_testing) == true) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))){
                 if( foundPORole == null || foundPORole == undefined){
                     $('#boardModal .modal-footer').html('');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
@@ -577,6 +577,11 @@
             if(shouldAllow){
                 var needToRecreateDOM = false;
                 if(foundGroup == null && foundGroup == undefined){
+                    $('#boardModal .modal-footer').html('');
+                    $('#boardModal .modal-header h4').text('Opozorilo!');
+                    $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
+                    $('#boardModal .modal-body').html('<p>Samo člani skupine (ki pripadajo k izbranem projektu) lahko premikajo kartice!</p>');
+                    $('#boardModal').modal('show');
                     drake.cancel();
                     return;
                 }
@@ -598,7 +603,7 @@
                     var foundNextString = JSON.stringify(foundNext).replace(/"/g,"'");
                     var foundCardString = JSON.stringify(foundCard).replace(/"/g,"'");
                     console.log((foundPreviousString));
-                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\','+foundPrevious.id+','+foundNext.id+','+foundCard.id+','+foundCard.order+','+foundPrevious.acceptance_testing+','+acceptanceTestingColumnIndex+','+nextIndexInAllColumns+','+'\''+foundCard.color+'\''+',\''+foundCard.meta+'\''+')" type="button" class="btn btn-default">Shrani</button>');
+                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\','+foundPrevious.id+','+foundNext.id+','+foundCard.id+','+foundCard.order+','+foundPrevious.acceptance_testing+','+acceptanceTestingColumnIndex+','+nextIndexInAllColumns+','+previousIndexInAllColumns+','+'\''+foundCard.color+'\''+',\''+foundCard.meta+'\''+','+foundPrevious.parent_id+','+foundNext.parent_id+')" type="button" class="btn btn-default">Shrani</button>');
                     $('#boardModal .modal-footer').append('<button id="cancelWipBreak" onclick="enableWipBreak(\'cancelWipBreak\')" type="button" class="btn btn-default">Prekliči</button>');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
                     $('#boardModal .modal-body').html('<div class="row">' +
@@ -622,9 +627,10 @@
                     'order': foundCard.order,
                     'board_id':board.id
                 }
-                console.log('column' );//(foundPrevious.acceptance_testing == true));
+                console.log('column' + (parseInt(previousIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
+                console.log('column' + (parseInt(previousIndexInAllColumns)) +'  '+(parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
                 console.log(foundPrevious);
-                if((foundPrevious.acceptance_testing == true || foundPrevious.acceptance_testing == 1) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
+                if(((foundPrevious.acceptance_testing == true || foundPrevious.acceptance_testing == 1) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex)) ) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
                     sendData['is_rejected'] = 1;
                     if(foundCard.meta == null || foundCard.meta == undefined || foundCard.meta == '' || !foundCard.meta.includes('previousColor:')) {
                         sendData['meta'] = foundCard.meta + ';previousColor:' + foundCard.color;
@@ -655,6 +661,9 @@
                         console.log('res');
                         console.log(result);
 
+                        console.log('sstolpci');
+                        console.log(foundPrevious);
+
                         resetTableData(result);
                         var numOfCardsNext = sumAllChildrenCardsHeader(foundNext.id);
                         var numOfCardsPrev = sumAllChildrenCardsHeader(foundPrevious.id);
@@ -663,6 +672,16 @@
                         $("#numOfAllCards_" + foundPrevious.id)[0].innerText = numOfCardsPrev;
                         $("#numOfCards_narrow_" + foundNext.id )[0].innerText = numOfCardsNext;
                         $("#numOfCards_narrow_" + foundPrevious.id )[0].innerText = numOfCardsPrev;
+                        if(foundNext.parent_id != null && foundNext.parent_id != undefined){
+                            console.log('ja');
+                            $("#numOfAllCards_" + foundNext.parent_id)[0].innerText = sumAllChildrenCardsHeader(foundNext.parent_id);
+                            $("#numOfCards_narrow_" + foundNext.parent_id )[0].innerText = sumAllChildrenCardsHeader(foundNext.parent_id);
+                        }
+                        if(foundPrevious.parent_id != null && foundPrevious.parent_id != undefined){
+                            console.log('ja1');
+                            $("#numOfAllCards_" + foundPrevious.parent_id)[0].innerText = sumAllChildrenCardsHeader(foundPrevious.parent_id);
+                            $("#numOfCards_narrow_" + foundPrevious.parent_id )[0].innerText = sumAllChildrenCardsHeader(foundPrevious.parent_id);
+                        }
                         if(needToRecreateDOM==true) {
                             resetTable();
                         }
@@ -682,7 +701,7 @@
         });
 
         // function enableWipBreak(buttonid, previd, nextid,cardid,cardorder){
-        function enableWipBreak(buttonid, previd, nextid,cardid, cardorder, acceptance_testing, acceptanceTestingColumnIndex, nextIndexInAllColumns,cardColor, cardMeta){
+        function enableWipBreak(buttonid, previd, nextid,cardid, cardorder, acceptance_testing, acceptanceTestingColumnIndex, nextIndexInAllColumns, previousIndexInAllColumns, cardColor, cardMeta, prevParent, nextParent){
             /*
             * enableWipBreak
             * cancelWipBreak
@@ -708,7 +727,7 @@
                     }
 
 
-                    if((acceptance_testing == true || acceptance_testing == 1 || acceptance_testing == '1') && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
+                    if(((acceptance_testing == true || acceptance_testing == 1 || acceptance_testing == '1') || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
                         sendData['is_rejected'] = 1;
                         if(cardMeta == null || cardMeta == undefined || cardMeta == '' || !cardMeta.includes('previousColor:')) {
                             sendData['meta'] = cardMeta + ';previousColor:' + cardColor;
@@ -748,6 +767,14 @@
                             $("#numOfAllCards_" + previd)[0].innerText = numOfCardsPrev;
                             $("#numOfCards_narrow_" + nextid )[0].innerText = numOfCardsNext;
                             $("#numOfCards_narrow_" + previd )[0].innerText = numOfCardsPrev;
+                            if(prevParent != null && prevParent != undefined && prevParent != ''){
+                                $("#numOfAllCards_" + prevParent)[0].innerText = sumAllChildrenCardsHeader(prevParent);
+                                $("#numOfCards_narrow_" + prevParent )[0].innerText = sumAllChildrenCardsHeader(prevParent);
+                            }
+                            if(nextParent != null && nextParent != undefined && nextParent != ''){
+                                $("#numOfAllCards_" + nextParent)[0].innerText = sumAllChildrenCardsHeader(nextParent);
+                                $("#numOfCards_narrow_" + nextParent )[0].innerText = sumAllChildrenCardsHeader(nextParent);
+                            }
                             if(needToRecreateDOM){
                                 resetTable();
                             }
