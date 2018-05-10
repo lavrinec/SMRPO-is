@@ -580,8 +580,9 @@
                     drake.cancel();
                     return;
                 }
-
-                if( nextIndexInAllColumns > acceptanceTestingColumnIndex && (foundPORole == null || foundPORole == undefined)) {
+                console.log('what____');
+                console.log(foundPORole);
+                if(( nextIndexInAllColumns > acceptanceTestingColumnIndex && (foundPORole == null || foundPORole == undefined)) || (previousIndexInAllColumns > acceptanceTestingColumnIndex && (foundPORole == null || foundPORole == undefined)) ) {
                     $('#boardModal .modal-footer').html('');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
                     $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
