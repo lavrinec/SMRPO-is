@@ -13,7 +13,7 @@
     <label for="projects" class="col-sm-2 control-label">Projekt</label>
 
      <div class="col-sm-10">
-     <select class="col-sm-12" style="width:100%" name="projects[]" id="test" multiple="multiple" placeholder="test">
+     <select class="col-sm-12" style="width:100%" name="projects[]" id="proj" multiple="multiple" placeholder="test">
 
                 @foreach($projects as $project)
                     <option value="{{ $project->id }}" 
@@ -28,7 +28,7 @@
     <label for="type" class="col-sm-2 control-label">Tip kartice</label>
 
      <div class="col-sm-10">
-        <select class="col-sm-12" style="width:100%" name="types[]" class="test" id = "test" multiple="multiple">                                                
+        <select class="col-sm-12" style="width:100%" name="types[]" class="test" id = "type" multiple="multiple">                                                
             <option value="normal"> nova funkcionalnost </option>
             <option value="is_silver_bullet"> silver bullet </option>
             <option value="is_rejected"> zavrnjena zgodba </option>
@@ -44,12 +44,12 @@
 <label for="time_start" class="col-sm-1 control-label">od</label>
      <div class="col-sm-5">
         <input type="number" min=0 class="form-control" id="time_start" name="time_start"
-        value="{{ old('time_start') }}"  >
+        value="{{(isset($old_request))?$old_request->time_start:""}}"  >
     </div>
     <label for="time_end" class="col-sm-1 control-label">do</label>
     <div class="col-sm-5">
         <input type="number" min=0 class="form-control" id="time_end" name="time_end"
-               >
+        value="{{(isset($old_request))?$old_request->time_end:""}}"     >
     </div>
 </div>
 
@@ -59,12 +59,12 @@
 
      <div class="col-sm-11">
         <input type="date" class="form-control" id="creation_start" name="creation_start"
-               placeholder="zacetek">
+               placeholder="zacetek" value="{{(isset($old_request))?$old_request->creation_start:""}}" >
     </div>
     <label for="creation_end" class="col-sm-1 control-label">do</label>
     <div class="col-sm-11">
         <input type="date" class="form-control" id="creation_end" name="creation_end"
-               placeholder="zacetek">
+               placeholder="zacetek" value="{{(isset($old_request))?$old_request->creation_end:""}}">
     </div>
 </div>
 
@@ -74,12 +74,12 @@
 
      <div class="col-sm-11">
         <input type="date" class="form-control" id="finish_start" name="finish_start"
-               placeholder="zacetek">
+               placeholder="zacetek" value="{{(isset($old_request))?$old_request->finish_start:""}}" >
     </div>
     <label for="finish_end" class="col-sm-1 control-label">do</label>
     <div class="col-sm-11">
         <input type="date" class="form-control" id="finish_end" name="finish_end"
-               placeholder="zacetek">
+               placeholder="zacetek" value="{{(isset($old_request))?$old_request->finish_end:""}}">
     </div>
 </div>
 <div class="form-group">
@@ -88,12 +88,12 @@
 
      <div class="col-sm-11">
         <input type="date" class="form-control" id="dev_start" name="dev_start"
-               placeholder="zacetek">
+               placeholder="zacetek" value="{{(isset($old_request))?$old_request->dev_start:""}}">
     </div>
     <label for="dev_end" class="col-sm-1 control-label">do</label>
     <div class="col-sm-11">
         <input type="date" class="form-control" id="dev_end" name="dev_end"
-               placeholder="zacetek">
+               placeholder="zacetek" value="{{(isset($old_request))?$old_request->dev_end:""}}">
     </div>
 </div>
 
@@ -124,7 +124,7 @@
     <label for="type" class="col-sm-2 control-label">Prikaži čas v: </label>
 
      <div class="col-sm-10">
-        <select class="form-control" name="show_time"  id = "show_time">                                                
+        <select class="form-control" name="show_time"  id = "show_time" >                                                
             <option value="d"> dnevih </option>
             <option value="h"> urah </option>
             <option value="m"> minutah </option>
@@ -134,6 +134,8 @@
        
     </div>
 </div>
+
+<p>{{(isset($old_request))?$old_request->time_start:""}}</p>
 
 <input type="hidden" name="leaves" id="leaves">
 
@@ -151,12 +153,24 @@
 
 <script>
 //(function(){$("#test").select2({data:[]});})();
+h = "h";
+d = "d";
+m = "m";
+old_request = {{(isset($old_request->time_start))&&$old_request->time_start!=""?$old_request->time_start:"null"}};
+projects = {{(isset($old_request->projects))&&$old_request->projects!=""?implode(", ",$old_request->projects):"null"}};
+old_start_column = {{(isset($old_request->start_column))&&$old_request->start_column!=""?$old_request->start_column:"null"}};
+old_end_column = {{(isset($old_request->end_column))&&$old_request->end_column!=""?$old_request->end_column:"null"}};
+old_show_time = {{(isset($old_request->show_time))&&$old_request->show_time!=""?$old_request->show_time:"null"}};
 
+console.log(old_start_column!=null?old_start_column:"prazna izjava");
 window.onload = function () {
     findColumns();
     //console.log("log");
-    //console.log($("#test"));
-    $("#test").select2();
+    console.log("ost" + old_show_time);
+    $("#proj").select2();
+    $("#type").select2();
+    //$("#type").val(old_request!=null?);
+    if(old_show_time!=null) $("#show_time").val(old_show_time);
 }
 
 
@@ -200,6 +214,8 @@ var board = {!! $board !!};
                  }
 
                  $("#leaves").attr("value", leave_ids);
+                 if(old_start_column!=null) $("#start_column").val(String(old_start_column));
+                 if(old_end_column!=null) $("#end_column").val(String(old_end_column));
 
         }
         function getAllLeaves() {

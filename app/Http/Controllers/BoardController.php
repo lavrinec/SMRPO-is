@@ -262,10 +262,10 @@ public function makeReport(Request $request){
 
     $formatted=$this->formatTime($average_time, $request->show_time);
     //return [$average_time, $formatted];
-
+    $old_request = $request;
     request()->flash();
     return view("boards.report")->with("cards",$Cards)->with("board", $full_board)->with('projects', $projects)
-    ->with("average_time", $formatted);
+    ->with("average_time", $formatted)->with("old_request", $old_request);
 }
 
 private function formatTime($time, $format){
