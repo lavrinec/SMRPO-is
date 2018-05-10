@@ -151,7 +151,7 @@ class CardController extends Controller
             } else {
                 $data['column'] = $data['board']->columns();
                 $data['column'] = $data['column']->where('high_priority', true)->first();
-                $data['highPriotiry'] = true;
+                $data['highPriority'] = true;
                 if(! isset($data['column'])){
                     return view('cards.error')->with(['error' => 'Tabela je brez high priority stolpca! Zato dodajanje kartic ni mogoče za Kanban Masterja.']);
                 }
@@ -201,9 +201,13 @@ class CardController extends Controller
             $maxOrder = Card::where('column_id', $data['column_id'])->orderBy('order','desc')->first();
             $data['order'] = $maxOrder ? $maxOrder->order + 1 : 1;
             //dd($data);
-            if(isset($data['is_critical'])) {
-                $data['is_silver_bullet'] = $data['is_critical'];
+//            if(isset($data['is_critical'])) { // NAMESTO TEGA
+//                $data['is_silver_bullet'] = $data['is_critical'];
+//            }
+            if(Auth::user()->isKM()){ // MORA BITI TO !!!!!
+                $data['is_silver_bullet'] = true;
             }
+
             $card = Card::create($data);
             checkWipViolation($card, "Dodajanje nove kartice");
             $move = [

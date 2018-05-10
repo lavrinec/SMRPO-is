@@ -372,7 +372,7 @@
 
         var allLeaves = [];
         var allCards = [];
-        allColumns = [];
+        var allColumns = [];
 
         var maxDepth = 0;
 
@@ -1111,7 +1111,7 @@
         function updateRowHeight() {
             var headerHeight = $("#topleft").height();
             var fullHeight = $(window).height();
-            var rowHeight = (fullHeight - headerHeight) / projects.length - 12;
+            var rowHeight = (fullHeight - headerHeight) / projects.length - 15;
 
 
             $(".cardRow").each(function (i, current) {
