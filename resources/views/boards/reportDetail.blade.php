@@ -13,14 +13,13 @@
     <label for="projects" class="col-sm-2 control-label">Projekt</label>
 
      <div class="col-sm-10">
-     <select class="form-control select2-selection select2-selection--multiple select2-selection__rendered" name="projects[]" id="usersgroup"
-                                                    multiple="multiple" placeholder="test">
+     <select class="col-sm-12" style="width:100%" name="projects[]" id="test" multiple="multiple" placeholder="test">
 
-                                                @foreach($projects as $project)
-                                                    <option value="{{ $project->id }}" class = "select2-selection__rendered select2-selection__choice"
-                                                    >{{ $project->board_name }}</option>
-                                                @endforeach
-                                            </select>
+                @foreach($projects as $project)
+                    <option value="{{ $project->id }}" 
+                    >{{ $project->board_name }}</option>
+                @endforeach
+            </select>
     </div>
     
 </div>
@@ -29,7 +28,7 @@
     <label for="type" class="col-sm-2 control-label">Tip kartice</label>
 
      <div class="col-sm-10">
-        <select class="form-control" name="types[]" class="test" id = "test" multiple="multiple">                                                
+        <select class="col-sm-12" style="width:100%" name="types[]" class="test" id = "test" multiple="multiple">                                                
             <option value="normal"> nova funkcionalnost </option>
             <option value="is_silver_bullet"> silver bullet </option>
             <option value="is_rejected"> zavrnjena zgodba </option>
@@ -151,9 +150,17 @@
 
 
 <script>
+//(function(){$("#test").select2({data:[]});})();
+
 window.onload = function () {
     findColumns();
+    //console.log("log");
+    //console.log($("#test"));
+    $("#test").select2();
 }
+
+
+
 
 function checkColumns(){
                 var end = $("#end_column").val();

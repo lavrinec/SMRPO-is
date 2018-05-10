@@ -6,6 +6,7 @@ use App\Models\Board;
 use App\Models\Column;
 use App\Models\Project;
 use App\Models\Move;
+use App\Models\Card;
 use App\Models\MoveReason;
 use App\Models\UsersGroup;
 use App\Models\Group;
