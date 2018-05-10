@@ -5,8 +5,8 @@
 
             <div class="col-sm-10">
 
-                <small>{{ $card->order }}</small>
-                <h5 class="box-title">
+                <h5 class="box-title" style="white-space: normal;">
+                    <small><small>{{ $card->order }}</small></small>
                     {{ $card->card_name }}
 
                 </h5>
