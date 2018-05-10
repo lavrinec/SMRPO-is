@@ -372,7 +372,7 @@
 
         var allLeaves = [];
         var allCards = [];
-        allColumns = [];
+        var allColumns = [];
 
         var maxDepth = 0;
 
