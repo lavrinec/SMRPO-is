@@ -157,7 +157,10 @@ h = "h";
 d = "d";
 m = "m";
 old_request = {{(isset($old_request->time_start))&&$old_request->time_start!=""?$old_request->time_start:"null"}};
-projects = {{(isset($old_request->projects))&&$old_request->projects!=""?implode(", ",$old_request->projects):"null"}};
+projects = '{{(isset($old_request->projects))&&$old_request->projects!=""?(implode(", ",array_map('strval',$old_request->projects))):"null"}}';
+//test = projects;
+proj_array = projects.split(",");
+
 old_start_column = {{(isset($old_request->start_column))&&$old_request->start_column!=""?$old_request->start_column:"null"}};
 old_end_column = {{(isset($old_request->end_column))&&$old_request->end_column!=""?$old_request->end_column:"null"}};
 old_show_time = {{(isset($old_request->show_time))&&$old_request->show_time!=""?$old_request->show_time:"null"}};
@@ -166,11 +169,13 @@ console.log(old_start_column!=null?old_start_column:"prazna izjava");
 window.onload = function () {
     findColumns();
     //console.log("log");
-    console.log("ost" + old_show_time);
+    console.log("test " + proj_array);
     $("#proj").select2();
     $("#type").select2();
     //$("#type").val(old_request!=null?);
     if(old_show_time!=null) $("#show_time").val(old_show_time);
+
+
 }
 
 
