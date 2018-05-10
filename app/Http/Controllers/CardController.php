@@ -7,6 +7,9 @@ use App\Models\Card;
 use App\Models\Column;
 use App\Models\Move;
 use App\Models\MoveReason;
+use App\Models\WipViolation;
+use App\Models\UsersGroup;
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,15 +70,17 @@ class CardController extends Controller
 
 
     public function cardMoved(Request $request){
-        $data = $request->except('_token','wip_breaked');
+        $data = $request->except('_token','wip_breaked','reason','board_id');
         $cop = array();
         if(isset($request->card_id)){
             if(isset($request->wip_breaked)){
+                $wipViolationData = $request->except('_token','wip_breaked','order','board_id');
+                $wipBreak = WipViolation::create($wipViolationData);
                 $moveReasons=array();
-                $moveReasons['move_reason'] = 'Broke wip';
-                $moveReasons['description'] = 'Broken wip';
+                $moveReasons['move_reason'] = $request->reason;
+                $moveReasons['description'] = $request->reason;
                 $moveReasons['meta'] = '';
-                $findReason = MoveReason::where('move_reason', 'Broke wip')->first();
+                $findReason = MoveReason::where('move_reason', $request->reason)->first();
                 if($findReason != null){
                     $data['move_reason_id'] = $findReason->id;
                 }else {
@@ -86,12 +91,22 @@ class CardController extends Controller
             $cop['user_id']=$request->user_id;
             $cop['column_id']=$request->new_column_id;
             $cop['order'] = $request->order;
+            $data['old_order'] = $data['order'];
             $move = Move::create($data);
             $data['column_id']=$data['new_column_id'];
             $card = Card::where('id', $request->card_id)->first();
             $card->update($cop);
-            $card->view = View::make('boards.card')->with('card',$card)->render();
-            return $card;
+            $board = Board::where('id', $request->board_id)->with('projects', 'structuredColumnsCards')->first();
+            $userGroups = UsersGroup::where('user_id', $request->user_id)->with('role')->get();
+            $projects = Project::all();
+            $result = array();
+            $result['card'] = $card;
+            $result['board'] = $board;
+            $result['projects'] = $board->projects;
+            $result['userGroups'] = $userGroups;
+            //$card->with('board',$board)->with('projects', $projects)->with('userGroups',$userGroups);
+            //$card->view = View::make('boards.card')->with('card',$card)->with('board',$board)->with('projects', $projects)->with('userGroups',$userGroups)->render();
+            return $result;
 
             //echo($cop);
             //return 'hh';
@@ -177,6 +192,9 @@ class CardController extends Controller
             $maxOrder = Card::where('column_id', $data['column_id'])->orderBy('order','desc')->first();
             $data['order'] = $maxOrder ? $maxOrder->order + 1 : 1;
             //dd($data);
+            if(isset($data['is_critical'])) {
+                $data['is_silver_bullet'] = $data['is_critical'];
+            }
             $card = Card::create($data);
             checkWipViolation($card, "Dodajanje nove kartice");
             $move = [

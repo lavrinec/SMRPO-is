@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Column;
-use App\Models\Card;
 use App\Models\Project;
 use App\Models\Move;
+use App\Models\Card;
 use App\Models\MoveReason;
 use App\Models\UsersGroup;
 use App\Models\Group;
@@ -262,8 +262,10 @@ public function makeReport(Request $request){
 
     $formatted=$this->formatTime($average_time, $request->show_time);
     //return [$average_time, $formatted];
+    $old_request = $request;
+    request()->flash();
     return view("boards.report")->with("cards",$Cards)->with("board", $full_board)->with('projects', $projects)
-    ->with("average_time", $formatted);
+    ->with("average_time", $formatted)->with("old_request", $old_request);
 }
 
 private function formatTime($time, $format){
@@ -425,7 +427,7 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         if ($board == null) {
             return redirect()->route('boards.list')->withErrors(['NoBoard' => 'Tabla ne obstaja, ali je bila zbrisana']);
         }
-        $userGroups = UsersGroup::where('user_id', $user->id)->get();
+        $userGroups = UsersGroup::where('user_id', $user->id)->with('role')->get();
         //$columns = Column::where('board_id', $id)->whereNull('parent_id')->orderBy('order')->with('allChildren')->get();
         //dd($board);
         $projects = Project::all();

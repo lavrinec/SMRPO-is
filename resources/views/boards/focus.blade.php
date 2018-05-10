@@ -359,23 +359,16 @@
 
 
         var board = {!! $board !!};
-        console.log("show board");
-        console.log({!! $board !!});
+
         var projects = {!! $board->projects !!};
         var groups = {!! $board->groups !!};
         var user = {!! Auth::user() !!};
         var userGroups = {!! $userGroups !!};
-        console.log('usergroups');
-        console.log(userGroups);
-        console.log(user);
+
 
         var rootColumns = board.structured_columns_cards;
 
-        console.log("check this out!");
-        console.log(rootColumns);
 
-        console.log("check user");
-        console.log(groups);
 
         var allLeaves = [];
         var allCards = [];
@@ -391,6 +384,7 @@
         var wipBreak = false;
 
 
+
         window.onload = function () {
 //            makeExisting();
 
@@ -404,6 +398,8 @@
             allLeaves = getAllLeaves();
             allColumns = getAllColumns();
 
+            console.log('columns');
+            console.log(allColumns);
 
             makeHader();
             makeBody();
@@ -421,9 +417,22 @@
 
         };
 
-
+        function findLastColumnOfAParent (columnsArray, parentId){
+            console.log('to je primerjava ' + parentId);
+            for(var i=columnsArray.length-1; i>=0; i--){
+                if(parseInt(columnsArray[i].parent_id)==parseInt(parentId)){
+                    return {
+                        index: i,
+                        column: columnsArray[i]
+                    };
+                }
+            }
+            return null;
+        }
         drake.on("drop", function (el, target, source, sibling) {
-
+            if(target.id == source.id){
+                return;
+            }
             console.log(allColumns);
             console.log(allLeaves);
 
@@ -449,13 +458,60 @@
                 }
             });
 
+            var previousIndexInAllColumns = allColumns.findIndex(function(element,i){
+                console.log('ma imamo index!!' + i);
+                if(parseInt(element.id) == parseInt(foundPrevious.id)){
+                    return true;
+                }
+            });
+            var nextIndexInAllColumns = allColumns.findIndex(function(element,i){
+                if(parseInt(element.id) == parseInt(foundNext.id)){
+                    return true;
+                }
+            });
+            console.log(foundNext);
             var nextIndex = foundIndex + 1;
             var previousIndex = foundIndex - 1;
             var shouldAllow = false;
+            var foundCard = findCard(foundPrevious.id, cardId, allLeaves, foundNext.id);
+            var foundGroup = userGroups.find(function(element,i){
+                if(element.group_id == foundCard.project.group_id){
+                    return element;
+                }
+            });
+            var highPriorityColumnIndex = -1;
+            var highPriorityColumn = allColumns.find(function(element,i){
+                if((element.high_priority)==true){
+                    highPriorityColumnIndex=i;
+                    return element;
+                }
+            });
+
+            if(highPriorityColumn.parent_id == null){
+                var mostRightChild = findLastColumnOfAParent(allColumns, highPriorityColumn.id);
+                if(mostRightChild != null && mostRightChild != undefined){
+                    highPriorityColumnIndex = mostRightChild.index;
+                }
+            }
+
+            /*
+            * če imamo root column za high priority je potrebno poiskati najbolj desnega otroka
+            * */
+            console.log('stolpec HP');
+            console.log(highPriorityColumn);
+            var foundPORole = foundGroup != null && foundGroup != undefined ? foundGroup.role.find(function(element,i){
+                //PO - 2
+                // KM - 3
+                // DEV - 4
+                if(element.role_id == 2){
+                    return element;
+                }
+            }):null;
 
             if(previousSplit[2] != nextSplit[2]){
-                $('#boardModal .modal-footer #enableWipBreak').remove();
+                $('#boardModal .modal-footer').html('');
                 $('#boardModal .modal-header h4').text('Opozorilo!');
+                $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
                 $('#boardModal .modal-body').html('<p>Ne morete premikati kartice na drugi projekt!</p>');
                 $('#boardModal').modal('show');
                 console.log('cannot move to another project');
@@ -473,71 +529,100 @@
                     shouldAllow = true;
                 }
             }
-            if (foundPrevious.acceptance_testing) {
-                shouldAllow = true;
-            }
-            if(foundNext.WIP == foundNext.cards.length){
-                if(!wipBreakAllowed){
-                    $('#boardModal .modal-footer #enableWipBreak').remove();
-                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak()" type="button" class="btn btn-default" data-dismiss="modal">Dovoli kršitev</button>');
+            if((foundPrevious.acceptance_testing) == true){
+                if( foundPORole == null || foundPORole == undefined){
+                    $('#boardModal .modal-footer').html('');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
-                    $('#boardModal .modal-body').html('<p>S tem premikom boste kršili WIP omejitev stolpca! V kolikor zares želite prenesti katico v ' +
-                        'izbrani stolpec pritisnite "Dovoli kršitev" in potem ponovno prenesite kartico</p>');
+                    $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
+                    $('#boardModal .modal-body').html('<p>Iz sprejemnega testiranja lahko premika le "Product owner"!</p>');
                     $('#boardModal').modal('show');
                     drake.cancel();
                     return;
                 }else{
-                    wipBreak = true;
+                    if(nextIndexInAllColumns > highPriorityColumnIndex && nextIndexInAllColumns < previousIndexInAllColumns){
+                        $('#boardModal .modal-footer').html('');
+                        $('#boardModal .modal-header h4').text('Opozorilo!');
+                        $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
+                        $('#boardModal .modal-body').html('<p>Kartico lahko premaknete le v stolpce od stolpca z najvišjo prioriteto (' +
+                            'vključno s stolpcem z najvišjo prioriteto), ali v stolpce naprej od "Sprejemnega testiranja"!</p>');
+                        $('#boardModal').modal('show');
+                        drake.cancel();
+                        return;
+                    }
                 }
-                console.log('breaks WIP !');
+                shouldAllow = true;
 
             }
+            // if (foundPrevious.acceptance_testing) {
+            //     shouldAllow = true;
+            // }
+
+            /*
+            * makeBody();
+            * rootColumns = board.structured_columns_cards;
+            * makeHader();
+            * */
+
+
             if(shouldAllow){
-                console.log(allLeaves);
-                var foundCard = findCard(foundPrevious.id, cardId, allLeaves, foundNext.id);
-                console.log(foundCard);
-                console.log('after');
-                var foundGroup = userGroups.find(function(element,i){
-                    if(element.group_id == foundCard.project.group_id){
-                        return element;
-                    }
-                });
                 if(foundGroup == null && foundGroup == undefined){
                     drake.cancel();
                     return;
                 }
 
-                console.log(allLeaves);
+                if(foundNext.WIP <= foundNext.cards.length && foundNext.WIP > 0){
+                    $('#boardModal .modal-footer').html('');
+                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\','+foundPrevious.id+','+foundNext.id+','+foundCard.id+','+foundCard.order+')" type="button" class="btn btn-default">Shrani</button>');
+                    $('#boardModal .modal-footer').append('<button id="cancelWipBreak" onclick="enableWipBreak(\'cancelWipBreak\')" type="button" class="btn btn-default">Prekliči</button>');
+                    $('#boardModal .modal-header h4').text('Opozorilo!');
+                    $('#boardModal .modal-body').html('<div class="row">' +
+                        '<div class="col-sm-12"><p>S tem premikom boste kršili WIP omejitev stolpca! V kolikor zares želite prenesti katico v ' +
+                        'izbrani stolpec vnesite razlog kršitve in potem ponovno prenesite kartico</p></div></div>' +
+                        '<div class="row"><div class="col-sm-12"><input class="col-sm-12" style="margin-bottom:15px;" id="boardModalWIPComment" type="text" /></div>' +
+                        '<div id="wipBreakError" style="display:none;" class="col-sm-12"><p style="color:rgb(200,20,20);">Če hočete premakniti kartico morate vnesti razlog v polje za vnos!</p></div>' +
+                        '</div>');
+                    $('#boardModal').modal('show');
+                    return;
+                }
+
                 $('#board-focus-card-to-update').val(cardId);
-                //var url = ;
-                //url = url.replace(":id", cardId);
+
                 var sendData= {
                     '_token': "{{ csrf_token() }}",
                     'new_column_id': parseInt(foundNext.id),
                     'old_column_id': parseInt(foundPrevious.id),
                     'card_id': parseInt(cardId),
                     'user_id': parseInt(user.id),
-                    'order': foundCard.order
+                    'order': foundCard.order,
+                    'board_id':board.id
                 }
 
-                console.log('kaj pravi wipbreak' + wipBreak);
-                if(wipBreak == true){
-                    sendData['wip_breaked'] = true;
-                }
-                console.log("tototksldfjalsfjfajfa:  " + foundNext.id);
-                console.log(sendData);
+
                 $.ajax({
                     url: "{{action('CardController@cardMoved')}}",
                     type: 'post',
                     data: sendData,
                     success: function (result) {
-                        location.reload();
+                        console.log('res');
+                        console.log(result);
+
+                        resetTableData(result);
+                        var numOfCardsNext = sumAllChildrenCardsHeader(foundNext.id);
+                        var numOfCardsPrev = sumAllChildrenCardsHeader(foundPrevious.id);
+
+                        $("#numOfAllCards_" + foundNext.id)[0].innerText = numOfCardsNext;
+                        $("#numOfAllCards_" + foundPrevious.id)[0].innerText = numOfCardsPrev;
+                        $("#numOfCards_narrow_" + foundNext.id )[0].innerText = numOfCardsNext;
+                        $("#numOfCards_narrow_" + foundPrevious.id )[0].innerText = numOfCardsPrev;
+
+
                     }
                 });
 
             }else{
-                $('#boardModal .modal-footer #enableWipBreak').remove();
+                $('#boardModal .modal-footer').html('');
                 $('#boardModal .modal-header h4').text('Opozorilo!');
+                $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
                 $('#boardModal .modal-body').html('<p>Ne morete premikati kartice za več kot en stolpec naenkrat!</p>');
                 $('#boardModal').modal('show');
                 drake.cancel();
@@ -545,8 +630,89 @@
 
         });
 
-        function enableWipBreak(){
-            wipBreakAllowed = true;
+        function enableWipBreak(buttonid, previd, nextid,cardid,cardorder){
+            /*
+            * enableWipBreak
+            * cancelWipBreak
+            * */
+            console.log("wip commnet: "+$('#boardModalWIPComment').val());
+            if(buttonid == 'enableWipBreak'){
+                var wipComment = $('#boardModalWIPComment').val();
+                if(wipComment == null || wipComment == ''){
+                    $('#wipBreakError').css('display','block');
+                }else{
+                    var sendData= {
+                        '_token': "{{ csrf_token() }}",
+                        'new_column_id': parseInt(nextid),
+                        'old_column_id': parseInt(previd),
+                        'card_id': parseInt(cardid),
+                        'user_id': parseInt(user.id),
+                        'order': cardorder,
+                        'wip_breaked':true,
+                        'reason': wipComment,
+                        'board_id':board.id
+                    }
+                    $.ajax({
+                        url: "{{action('CardController@cardMoved')}}",
+                        type: 'post',
+                        data: sendData,
+                        success: function (result) {
+                            console.log('res');
+
+                            resetTableData(result);
+                            var numOfCardsNext = sumAllChildrenCardsHeader(nextid);
+                            var numOfCardsPrev = sumAllChildrenCardsHeader(previd);
+
+                            $("#numOfAllCards_" + nextid)[0].innerText = numOfCardsNext;
+                            $("#numOfAllCards_" + previd)[0].innerText = numOfCardsPrev;
+                            $("#numOfCards_narrow_" + nextid )[0].innerText = numOfCardsNext;
+                            $("#numOfCards_narrow_" + previd )[0].innerText = numOfCardsPrev;
+
+                            $('#boardModal').modal('toggle');//zapri ročno modal
+                        }
+                    });
+                }
+            }else {
+                $("#boardTable").html('');
+
+                makeHader();
+                makeBody();
+
+                $.each(allColumns, function (i, current) {
+                    if (!columnsWide[current.id]) {
+                        narrowColumn(current.id);
+                    }
+
+                });
+                $('#boardModal').modal('toggle');//zapri ročno modal
+            }
+        }
+
+        function resetTableData(result){
+            board = result.board;
+            projects = result.projects;
+            userGroups = result.userGroups;
+
+            rootColumns = board.structured_columns_cards;
+
+            allLeaves = [];
+            allCards = [];
+            allColumns = [];
+            maxDepth = 0;
+
+            numAllLeaves = 0;
+
+            columnsWide = {};
+
+
+            columnsWide = checkIfSavedNarrowColumns();
+
+            maxDepth = getMaxDepth();
+            numAllLeaves = getNumAllLeaves();
+
+            allLeaves = getAllLeaves();
+            allColumns = getAllColumns();
+
         }
 
         /*
@@ -559,6 +725,7 @@
             numOfTrs = getMaxDepth();
 
             for (var i = 0; i < numOfTrs; i++) {
+                //$("#boardTable").prepend("<tr id='thead_tr_" + i + "'></tr>");
                 $("#boardTable").append("<tr id='thead_tr_" + i + "'></tr>");
             }
 
@@ -580,12 +747,20 @@
                 }
 
                 // additional cells for narrower view
+                // $("#thead_tr_" + level).append(
+                //     "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
+                //     "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
+                //     "title='Klikni, da me razširiš.'>" +
+                //     "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
+                //     current.column_name + " " + sumAllChildrenCards(current.id) + "/" + current.WIP + "</div>" +
+                //     "</th>"
+                // );
                 $("#thead_tr_" + level).append(
                     "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
                     "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
                     "title='Klikni, da me razširiš.'>" +
                     "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
-                    current.column_name + " " + sumAllChildrenCards(current.id) + "/" + current.WIP + "</div>" +
+                    current.column_name + " <span id='numOfCards_narrow_" + current.id + "'>" + sumAllChildrenCards(current.id) + "</span>/" + current.WIP + "</div>" +
                     "</th>"
                 );
 
@@ -1055,19 +1230,19 @@
                     console.log('here you go');
                     console.log(foundCard);
                     //foundCard.updated_at = new Date();
-                    arrayOfColumns.find(function (element, i) {
-                        if (element.id == nextColumn) {
-                            element.cards.push(foundCard);
-                        }
-                    });
+                    // arrayOfColumns.find(function (element, i) {
+                    //     if (element.id == nextColumn) {
+                    //         element.cards.push(foundCard);
+                    //     }
+                    // });
 
                     return foundCard;
 
                 } else {
-                    console.log('here you dont go');
+                    alert('cannot find card in allLeaves');
                 }
             } else {
-                console.log('no luck');
+                alert('cannot find column');
             }
         }
 
