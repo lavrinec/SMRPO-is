@@ -487,6 +487,14 @@
                 }
             });
 
+            var acceptanceTestingColumnIndex = allColumns.findIndex(function(element, i ){
+                if(element.acceptance_testing == true){
+                    return true;
+                }
+            });
+
+            console.log('acceptance ready index: ' + acceptanceTestingColumnIndex);
+
             if(highPriorityColumn.parent_id == null){
                 var mostRightChild = findLastColumnOfAParent(allColumns, highPriorityColumn.id);
                 if(mostRightChild != null && mostRightChild != undefined){
@@ -518,6 +526,7 @@
                 drake.cancel();
                 return;
             }
+
 
             if (nextIndex < allLeaves.length) {
                 if (allLeaves[nextIndex].id == foundNext.id) {
@@ -553,6 +562,7 @@
                 shouldAllow = true;
 
             }
+
             // if (foundPrevious.acceptance_testing) {
             //     shouldAllow = true;
             // }
@@ -565,14 +575,29 @@
 
 
             if(shouldAllow){
+                var needToRecreateDOM = false;
                 if(foundGroup == null && foundGroup == undefined){
+                    drake.cancel();
+                    return;
+                }
+
+                if( nextIndexInAllColumns > acceptanceTestingColumnIndex && (foundPORole == null || foundPORole == undefined)) {
+                    $('#boardModal .modal-footer').html('');
+                    $('#boardModal .modal-header h4').text('Opozorilo!');
+                    $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
+                    $('#boardModal .modal-body').html('<p>Naprej od sprejemnega testiranja lahko premika le "Product owner"!</p>');
+                    $('#boardModal').modal('show');
                     drake.cancel();
                     return;
                 }
 
                 if(foundNext.WIP <= foundNext.cards.length && foundNext.WIP > 0){
                     $('#boardModal .modal-footer').html('');
-                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\','+foundPrevious.id+','+foundNext.id+','+foundCard.id+','+foundCard.order+')" type="button" class="btn btn-default">Shrani</button>');
+                    var foundPreviousString = JSON.stringify(foundPrevious).replace(/"/g,"'");
+                    var foundNextString = JSON.stringify(foundNext).replace(/"/g,"'");
+                    var foundCardString = JSON.stringify(foundCard).replace(/"/g,"'");
+                    console.log((foundPreviousString));
+                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\','+foundPrevious.id+','+foundNext.id+','+foundCard.id+','+foundCard.order+','+foundPrevious.acceptance_testing+','+acceptanceTestingColumnIndex+','+nextIndexInAllColumns+','+'\''+foundCard.color+'\''+',\''+foundCard.meta+'\''+')" type="button" class="btn btn-default">Shrani</button>');
                     $('#boardModal .modal-footer').append('<button id="cancelWipBreak" onclick="enableWipBreak(\'cancelWipBreak\')" type="button" class="btn btn-default">Prekliči</button>');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
                     $('#boardModal .modal-body').html('<div class="row">' +
@@ -596,7 +621,30 @@
                     'order': foundCard.order,
                     'board_id':board.id
                 }
-
+                console.log('column' );//(foundPrevious.acceptance_testing == true));
+                console.log(foundPrevious);
+                if((foundPrevious.acceptance_testing == true || foundPrevious.acceptance_testing == 1) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
+                    sendData['is_rejected'] = 1;
+                    if(foundCard.meta == null || foundCard.meta == undefined || foundCard.meta == '' || !foundCard.meta.includes('previousColor:')) {
+                        sendData['meta'] = foundCard.meta + ';previousColor:' + foundCard.color;
+                    }
+                    sendData['color'] = '#0DFFA0';
+                    needToRecreateDOM = true;
+                }
+                if(foundNext.acceptance_testing == true || foundNext.acceptance_testing == 1){
+                    var searchString = 'previousColor:'
+                    if(foundCard.meta != null && foundCard.meta != undefined && foundCard.meta.includes(searchString)){
+                        var foundColor = foundCard.meta.split(";").find(function(element,i){
+                            if(element.includes(searchString)){
+                                return element;
+                            }
+                        });
+                        var foundColor = foundColor.substring(searchString.length);
+                        sendData['color'] = foundColor;
+                        sendData['is_rejected'] = 0;
+                        needToRecreateDOM=true;
+                    }
+                }
 
                 $.ajax({
                     url: "{{action('CardController@cardMoved')}}",
@@ -614,7 +662,9 @@
                         $("#numOfAllCards_" + foundPrevious.id)[0].innerText = numOfCardsPrev;
                         $("#numOfCards_narrow_" + foundNext.id )[0].innerText = numOfCardsNext;
                         $("#numOfCards_narrow_" + foundPrevious.id )[0].innerText = numOfCardsPrev;
-
+                        if(needToRecreateDOM==true) {
+                            resetTable();
+                        }
 
                     }
                 });
@@ -630,12 +680,15 @@
 
         });
 
-        function enableWipBreak(buttonid, previd, nextid,cardid,cardorder){
+        // function enableWipBreak(buttonid, previd, nextid,cardid,cardorder){
+        function enableWipBreak(buttonid, previd, nextid,cardid, cardorder, acceptance_testing, acceptanceTestingColumnIndex, nextIndexInAllColumns,cardColor, cardMeta){
             /*
             * enableWipBreak
             * cancelWipBreak
             * */
+
             console.log("wip commnet: "+$('#boardModalWIPComment').val());
+            var needToRecreateDOM = false;
             if(buttonid == 'enableWipBreak'){
                 var wipComment = $('#boardModalWIPComment').val();
                 if(wipComment == null || wipComment == ''){
@@ -652,6 +705,33 @@
                         'reason': wipComment,
                         'board_id':board.id
                     }
+
+
+                    if((acceptance_testing == true || acceptance_testing == 1 || acceptance_testing == '1') && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
+                        sendData['is_rejected'] = 1;
+                        if(cardMeta == null || cardMeta == undefined || cardMeta == '' || !cardMeta.includes('previousColor:')) {
+                            sendData['meta'] = cardMeta + ';previousColor:' + cardColor;
+                        }
+                        sendData['color'] = '#0DFFA0';
+                        needToRecreateDOM = true;
+                    }else if((parseInt(acceptanceTestingColumnIndex)==parseInt(nextIndexInAllColumns) )){
+                        sendData['is_rejected'] = 0;
+                        console.log('jap');
+                        var searchString = 'previousColor:'
+                        if(cardMeta == null || cardMeta == undefined || cardMeta == '' || cardMeta.includes(searchString)) {
+
+                            var foundColor = cardMeta.split(";").find(function(element,i){
+                                if(element.includes(searchString)){
+                                    return element;
+                                }
+                            });
+                            var foundColor = foundColor.substring(searchString.length);
+                            sendData['color'] = foundColor;
+                            needToRecreateDOM = true;
+                        }
+
+
+                    }
                     $.ajax({
                         url: "{{action('CardController@cardMoved')}}",
                         type: 'post',
@@ -667,25 +747,32 @@
                             $("#numOfAllCards_" + previd)[0].innerText = numOfCardsPrev;
                             $("#numOfCards_narrow_" + nextid )[0].innerText = numOfCardsNext;
                             $("#numOfCards_narrow_" + previd )[0].innerText = numOfCardsPrev;
+                            if(needToRecreateDOM){
+                                resetTable();
+                            }
 
                             $('#boardModal').modal('toggle');//zapri ročno modal
                         }
                     });
                 }
             }else {
-                $("#boardTable").html('');
-
-                makeHader();
-                makeBody();
-
-                $.each(allColumns, function (i, current) {
-                    if (!columnsWide[current.id]) {
-                        narrowColumn(current.id);
-                    }
-
-                });
+                resetTable();
                 $('#boardModal').modal('toggle');//zapri ročno modal
             }
+        }
+
+        function resetTable (){
+            $("#boardTable").html('');
+
+            makeHader();
+            makeBody();
+
+            $.each(allColumns, function (i, current) {
+                if (!columnsWide[current.id]) {
+                    narrowColumn(current.id);
+                }
+
+            });
         }
 
         function resetTableData(result){

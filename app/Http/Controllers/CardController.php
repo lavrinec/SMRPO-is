@@ -70,11 +70,11 @@ class CardController extends Controller
 
 
     public function cardMoved(Request $request){
-        $data = $request->except('_token','wip_breaked','reason','board_id');
+        $data = $request->except('_token','wip_breaked','reason','board_id','is_rejected','meta');
         $cop = array();
         if(isset($request->card_id)){
             if(isset($request->wip_breaked)){
-                $wipViolationData = $request->except('_token','wip_breaked','order','board_id');
+                $wipViolationData = $request->except('_token','wip_breaked','order','board_id','is_rejected', 'color', 'meta');
                 $wipBreak = WipViolation::create($wipViolationData);
                 $moveReasons=array();
                 $moveReasons['move_reason'] = $request->reason;
@@ -92,6 +92,15 @@ class CardController extends Controller
             $cop['column_id']=$request->new_column_id;
             $cop['order'] = $request->order;
             $data['old_order'] = $data['order'];
+            if(isset($request->is_rejected)){
+                $cop['is_rejected'] = $request->is_rejected;
+            }
+            if(isset($request->color)){
+                $cop['color'] = $request->color;
+            }
+            if(isset($request->meta)){
+                $cop['meta'] = $request->meta;
+            }
             $move = Move::create($data);
             $data['column_id']=$data['new_column_id'];
             $card = Card::where('id', $request->card_id)->first();
