@@ -629,7 +629,7 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         }
 
         foreach($rejectedCards as $rcard){
-            $old_column_id = $sbcard->column_id;
+            $old_column_id = $rcard->column_id;
 
             Card::where('id', $rcard->id)->update(array('column_id' => $highPriorityColumn->id));
             checkWipViolation($rcard, "Nov stolpec za nujne kartice ima omejitev WIP manjso od stevila kartic!");

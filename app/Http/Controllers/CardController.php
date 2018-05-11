@@ -70,11 +70,11 @@ class CardController extends Controller
 
 
     public function cardMoved(Request $request){
-        $data = $request->except('_token','wip_breaked','reason','board_id');
+        $data = $request->except('_token','wip_breaked','reason','board_id','is_rejected','meta');
         $cop = array();
         if(isset($request->card_id)){
             if(isset($request->wip_breaked)){
-                $wipViolationData = $request->except('_token','wip_breaked','order','board_id');
+                $wipViolationData = $request->except('_token','wip_breaked','order','board_id','is_rejected', 'color', 'meta');
                 $wipBreak = WipViolation::create($wipViolationData);
                 $moveReasons=array();
                 $moveReasons['move_reason'] = $request->reason;
@@ -92,6 +92,15 @@ class CardController extends Controller
             $cop['column_id']=$request->new_column_id;
             $cop['order'] = $request->order;
             $data['old_order'] = $data['order'];
+            if(isset($request->is_rejected)){
+                $cop['is_rejected'] = $request->is_rejected;
+            }
+            if(isset($request->color)){
+                $cop['color'] = $request->color;
+            }
+            if(isset($request->meta)){
+                $cop['meta'] = $request->meta;
+            }
             $move = Move::create($data);
             $data['column_id']=$data['new_column_id'];
             $card = Card::where('id', $request->card_id)->first();
@@ -142,7 +151,7 @@ class CardController extends Controller
             } else {
                 $data['column'] = $data['board']->columns();
                 $data['column'] = $data['column']->where('high_priority', true)->first();
-                $data['highPriotiry'] = true;
+                $data['highPriority'] = true;
                 if(! isset($data['column'])){
                     return view('cards.error')->with(['error' => 'Tabela je brez high priority stolpca! Zato dodajanje kartic ni mogoče za Kanban Masterja.']);
                 }
@@ -192,9 +201,13 @@ class CardController extends Controller
             $maxOrder = Card::where('column_id', $data['column_id'])->orderBy('order','desc')->first();
             $data['order'] = $maxOrder ? $maxOrder->order + 1 : 1;
             //dd($data);
-            if(isset($data['is_critical'])) {
-                $data['is_silver_bullet'] = $data['is_critical'];
+//            if(isset($data['is_critical'])) { // NAMESTO TEGA
+//                $data['is_silver_bullet'] = $data['is_critical'];
+//            }
+            if(Auth::user()->isKM()){ // MORA BITI TO !!!!!
+                $data['is_silver_bullet'] = true;
             }
+
             $card = Card::create($data);
             checkWipViolation($card, "Dodajanje nove kartice");
             $move = [
