@@ -241,6 +241,7 @@ public function makeReport(Request $request){
     foreach ($Cards as $card){
         
         $lead = $this->calculateLeadTime($card->id, $start_column,$end_column, $leaves);
+        //return $lead->id;
 
         if(gettype($lead)!="string"){
             $card->lead = $this->formatTime($lead, $request->show_time);
@@ -306,44 +307,54 @@ private function cardInColumnTime($card_id, $column_id){
 private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $leaves){
     $leadTime =0;
     //poisci premik kartice v prvi stolpec
-    $start = Move::where("new_column_id", $start_column_id)->where("card_id", $card_id)->first();
+    
 
     $skip_final = false;
-
     $start_index = array_search($start_column_id, $leaves);
     $end_index = array_search($end_column_id, $leaves);
 
     //return [$start_index,$end_index];
     //dokler ne prides do zadnjega stolpca v chainu premikov
-    while ($start_column_id!=$end_column_id){
-        //ce kartica ni bila v prvem stolpcu pojdi do naslednje kartice, kjer je bila
-        if ($start==null){
-            $start_index++;
-            while($start_index<=$end_index){
-                $start_column_id = $leaves[$start_index];
-                $start = Move::where("new_column_id", $start_column_id)->where("card_id", $card_id)->first();
-                if($start!=null) break;
-                $start_index++;
-            }
-            //if($card_id == 21)return $start;
-            if($start==null){
-                return "kartica ni bila v izbranih stolpcih";
-            }
-            
-        }
+    $start = Move::where("new_column_id", $start_column_id)->where("card_id", $card_id)->first();
+    $end = Move::where("new_column_id", $end_column_id)->where("card_id",  $card_id)->orderBy('created_at', 'desc')->first();
 
-        $test = Move::where("new_column_id", $start_column_id)->where("card_id", $card_id)->first();
+    while ($start_column_id!=$end_column_id){
+               //ce kartica ni bila v prvem stolpcu pojdi do naslednje kartice, kjer je bila
+               if ($start==null){
+                $start_index++;
+                while($start_index<=$end_index){
+                    $start_column_id = $leaves[$start_index];
+                    $start = Move::where("new_column_id", $start_column_id)->where("card_id", $card_id)->first();
+                    if($start!=null) break;
+                    $start_index++;
+                }
+                //if($card_id == 21)return $start;
+                if($start==null){
+                    return "kartica ni bila v izbranih stolpcih";
+                }
+                
+            }else break;
+
+    }
+
+    if (($end)==null)
+    return $end;
+
+    while ($start->id!=$end->id){
+ 
+
+        
 
         //if ($test == null) return "start ne dela";
 
         $leadTime += $this->cardInColumnTime($card_id, $start_column_id);
-        $next=Move::where("old_column_id",$start_column_id)->where("card_id", $card_id)->first();
+        $start=Move::where("old_column_id",$start_column_id)->where("card_id", $card_id)->first();
         //ce si prisel do konca verige preden si prisel do koncnega stolpca preskoci racunanje koncnega stolpca
-        if($next==null) {
+        if($start==null) {
             $skip_final = true;
             break;
         }        
-        $start_column_id = $next->new_column_id;
+        $start_column_id = $start->new_column_id;
     }
 
     if(!$skip_final){
