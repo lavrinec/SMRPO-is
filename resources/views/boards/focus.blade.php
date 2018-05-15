@@ -169,7 +169,7 @@
                                     background: #fff;
                                 }
 
-                                table, th, td {
+                                #boardTable, #boardTable th, #boardTable td {
                                     border: 1px solid lightgrey;
                                 }
 
@@ -225,7 +225,7 @@
                                     vertical-align: top;
                                 }
 
-                                td {
+                                #boardTable td {
                                     min-width: 250px;
                                     /*min-height: 140px;*/
                                     vertical-align: top;
