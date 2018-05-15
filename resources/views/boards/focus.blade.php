@@ -235,7 +235,7 @@
                                 .forprojects {
                                     text-align: center;
                                     vertical-align: middle;
-                                    min-width: 100px;
+                                    min-width: 100px !important;
                                     background-color: #F8F8FF;
                                 }
 
