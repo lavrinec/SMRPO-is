@@ -193,6 +193,19 @@
     var collapsed = true;
     $disabledResults.select2({ width: "100%" });
     @if(isset($card))
+    function updateTaskCheck(id, box) {
+        console.log(box);
+        var is_finished = $( box ).is(':checked');
+        $.post("/tasks/check",
+            {
+                "_token": "{{ csrf_token() }}",
+                id: id,
+                is_finished: is_finished
+            },
+            function(data, status){
+                console.log("Uspeh");
+            });
+    }
     function openEditing(name, estimation, descrition) {
         var elem = $('#collapseEditingTask');
         $('#collapser').text("Shrani");

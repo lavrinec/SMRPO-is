@@ -45,4 +45,17 @@ class TaskController extends Controller
         return $return;
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function check(Request $request){
+        $data = $request->except('_token', 'id');
+        $id = $request->id;
+        $task = Task::where('id', $id)->first();
+        $finish = $data['is_finished'] !== 'false' ? true : false;
+        $task->update(['is_finished' => $finish]);
+        return $task;
+    }
+
 }

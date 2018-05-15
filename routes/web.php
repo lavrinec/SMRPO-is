@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::prefix('tasks')->group(function () {
         Route::post('edit', 'TaskController@update')->name('tasks.update');
+        Route::post('check', 'TaskController@check')->name('tasks.check');
     });
 
     Route::prefix('cards')->group(function () {
