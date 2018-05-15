@@ -1,6 +1,6 @@
-<div class="box grabbable" style="background-color: {{ $card->color }}; " ondblclick="openCard({{ $card->id }})"
+<div class="box grabbable" style="border: 1px solid {{ $card->color }};" ondblclick="openCard({{ $card->id }})"
      data-card-id="{{ $card->id }}">
-    <div class="box-header">
+    <div class="box-header" style="background-color: {{ $card->color }};">
         <div class="row">
 
             <div class="col-sm-10">
@@ -41,8 +41,12 @@
         </div>
     </div>
 
-    {{--<div class="box-body">--}}
-    {{----}}
-    {{--</div>--}}
-
+    @if (isset($card->tasks))
+        <div class="box-body" style="background-color: #F6F6F6;">  
+            @foreach ($card->tasks as $task)
+                {{ $task["task_name"] }}
+                <br>
+            @endforeach
+        </div>
+    @endif
 </div>

@@ -22,6 +22,7 @@
         @if(isset($card))
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#editing">Urejanje</a></li>
+                <li><a data-toggle="tab" href="#tasks">Naloge</a></li>
                 <li><a data-toggle="tab" href="#moves">Premiki</a></li>
                 <li><a data-toggle="tab" href="#wip">Kršitve WIP</a></li>
                 <li {!! $authUser->canDeleteCard($card) ? '' : 'style="display:none;"' !!}
@@ -35,7 +36,7 @@
                 <input type="hidden" class="form-control" id="column_id" name="column_id" value="{{ $column->id }}">
                 <!--<input type="hidden" class="form-control" id="id" value="{{ isset($card) ? $card->id : '0' }}">-->
                 <div class="form-group">
-                    <label for="card_name" class="col-form-label">Ime naloge:</label>
+                    <label for="card_name" class="col-form-label">Ime kartice:</label>
                     <input type="text" class="form-control" id="card_name" name="card_name" value="{{ isset($card) ? $card->card_name : '' }}" required>
                 </div>
                 <div class="form-group">
@@ -80,6 +81,40 @@
                 <!--<input type="submit" style="display: none;">-->
             </div>
             @if(isset($card))
+                <div id="tasks" class="tab-pane fade">
+                    <div class="collapse" id="collapseEditingTask">
+                        <div class="card card-body">
+                            <div class="row" data-id="0">
+                                <div class="col-sm-5">
+                                    <p><input class="form-control" type="text" placeholder="Ime naloge"></p>
+                                    <p><input class="form-control" type="number" placeholder="Ocena časa"></p>
+                                </div>
+                                <div class="col-sm-7">
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        <button class="btn btn-primary" type="button" id="collapser"> + </button>
+                    </p>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Potrditev</th>
+                            <th scope="col">Ime naloge</th>
+                            <th scope="col">Opis naloge</th>
+                            <th scope="col">Ocena časa</th>
+                            <th scope="col">Uredi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($card->tasks as $task)
+                            @include('tasks.td')
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
                 <div id="moves" class="tab-pane fade">
                     @if(count($moves) > 0)
                         <table class="table table-bordered">
@@ -93,7 +128,7 @@
                             <tbody>
                                 @foreach($moves as $move)
                                     <tr>
-                                        <td>{{ $move->id }}</th>
+                                        <td  style="min-width: 75px;">{{ $move->id }}</th>
                                         <td>
                                             @if(isset($move->old_column))
                                                 {{ $move->old_column->column_name }} (#{{ $move->old_column->id }})
@@ -110,7 +145,7 @@
                 </div>
                 <div id="wip" class="tab-pane fade">
                     @if(count($WipViolations) > 0)
-                        <table class="table table-bordered">
+                        <table class="table table-bordered" id="tasks">
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -122,10 +157,10 @@
                             <tbody>
                             @foreach($WipViolations as $violation)
                                 <tr>
-                                    <td>{{ $violation->id }}</th>
+                                    <td style="min-width: 75px;">{{ $violation->id }}</th>
                                     <td>{{ $violation->reason }}</td>
-                                    <td>{{ $violation->old_column->column_name }} (#{{ $violation->old_column->id }})</td>
-                                    <td>{{ $violation->new_column->column_name }} (#{{ $violation->new_column->id }})</td>
+                                    <td style="min-width: 150px;">{{ $violation->old_column->column_name }} (#{{ $violation->old_column->id }})</td>
+                                    <td style="min-width: 150px;">{{ $violation->new_column->column_name }} (#{{ $violation->new_column->id }})</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -154,9 +189,85 @@
 </form>
 <script>
     var $disabledResults = $(".select2");
+    var tasks = 0;
+    var collapsed = true;
     $disabledResults.select2({ width: "100%" });
     @if(isset($card))
+    function updateTaskCheck(id, box) {
+        console.log(box);
+        var is_finished = $( box ).is(':checked');
+        $.post("/tasks/check",
+            {
+                "_token": "{{ csrf_token() }}",
+                id: id,
+                is_finished: is_finished
+            },
+            function(data, status){
+                console.log("Uspeh");
+            });
+    }
+    function openEditing(name, estimation, descrition) {
+        var elem = $('#collapseEditingTask');
+        $('#collapser').text("Shrani");
+        elem.show("slow");
+        collapsed = false;
+        var input = elem.find('input');
+        input.first().val(name);
+        input.eq(1).val(estimation);
+        elem.find('textarea').val(descrition);
+    }
     $( document ).ready(function() {
+        function editFunction(e) {
+            var target = $( e.target );
+            var parent = target.closest('tr');
+            var td = parent.find('td');
+            tasks = parent.data('taskId');
+            openEditing(td.eq(1).text(),td.eq(3).text(),td.eq(2).text());
+            //console.log(tasks, parent);
+        }
+        $(".editTask").click(editFunction);
+
+        $("#collapser").click(function (e) {
+            var elem = $('#collapseEditingTask');
+            if(collapsed){
+                openEditing("","","");
+                tasks = 0;
+            } else {
+                var target = $( e.target );
+                var input = elem.find('input'),
+                    name = input.first().val(),
+                    estimation = input.eq(1).val(),
+                    description = elem.find('textarea').val();
+                if(name.length < 1){
+                    alert("Ime ne sme biti prazno!");
+                    return;
+                }
+                $.post("/tasks/edit",
+                    {
+                        "_token": "{{ csrf_token() }}",
+                        id: tasks,
+                        task_name: name,
+                        card_id: {{ $card->id }},
+                        estimation: estimation,
+                        description: description
+                    },
+                    function(data, status){
+                        elem.hide("slow");
+                        collapsed = true;
+                        target.text("+");
+                        var table = $("#tasks");
+                        if(tasks === 0){
+                            table.find("tbody").append(data.taskHtml);
+                            tasks = data.task.id;
+                        } else {
+                            table.find('[data-task-id="' + tasks + '"]').replaceWith( data.taskHtml );
+                        }
+                        table.find('[data-task-id="' + tasks + '"] .editTask').click(editFunction);
+                        tasks = 0;
+                    });
+            }
+        });
+
         $("#spinner").hide();
         $("#deleteCard").click(function(e){
             console.log("delete clicked");
