@@ -101,7 +101,7 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th scope="col">Končana</th>
+                            <th scope="col">Potrditev</th>
                             <th scope="col">Ime naloge</th>
                             <th scope="col">Opis naloge</th>
                             <th scope="col">Ocena časa</th>
@@ -110,13 +110,7 @@
                         </thead>
                         <tbody>
                         @foreach($card->tasks as $task)
-                            <tr data-task-id="{{ $task->id }}">
-                                <td  style="min-width: 75px;">{{ $task->id }}</th>
-                                <td>{{ $task->task_name }}</td>
-                                <td>{{ $task->description }}</td>
-                                <td style="min-width: 75px;">{{ $task->estimation }}</td>
-                                <td style="min-width: 75px;" class="editTask"><i class="far fa-edit"></i></td>
-                            </tr>
+                            @include('tasks.td')
                         @endforeach
                         </tbody>
                     </table>
@@ -201,55 +195,66 @@
     @if(isset($card))
     function openEditing(name, estimation, descrition) {
         var elem = $('#collapseEditingTask');
+        $('#collapser').text("Shrani");
+        elem.show("slow");
+        collapsed = false;
         var input = elem.find('input');
         input.first().val(name);
         input.eq(1).val(estimation);
         elem.find('textarea').val(descrition);
     }
     $( document ).ready(function() {
+        function editFunction(e) {
+            var target = $( e.target );
+            var parent = target.closest('tr');
+            var td = parent.find('td');
+            tasks = parent.data('taskId');
+            openEditing(td.eq(1).text(),td.eq(3).text(),td.eq(2).text());
+            //console.log(tasks, parent);
+        }
+        $(".editTask").click(editFunction);
+
         $("#collapser").click(function (e) {
             var elem = $('#collapseEditingTask');
-            var target = $( e.target );
             if(collapsed){
-                elem.show("slow");
-                target.text("Shrani");
                 openEditing("","","");
                 tasks = 0;
             } else {
+                var target = $( e.target );
                 var input = elem.find('input'),
                     name = input.first().val(),
                     estimation = input.eq(1).val(),
                     description = elem.find('textarea').val();
-
+                if(name.length < 1){
+                    alert("Ime ne sme biti prazno!");
+                    return;
+                }
                 $.post("/tasks/edit",
                     {
                         "_token": "{{ csrf_token() }}",
                         id: tasks,
-                        name: name,
+                        task_name: name,
+                        card_id: {{ $card->id }},
                         estimation: estimation,
                         description: description
                     },
                     function(data, status){
                         elem.hide("slow");
+                        collapsed = true;
                         target.text("+");
                         var table = $("#tasks");
                         if(tasks === 0){
                             table.find("tbody").append(data.taskHtml);
+                            tasks = data.task.id;
                         } else {
                             table.find('[data-task-id="' + tasks + '"]').replaceWith( data.taskHtml );
                         }
+                        table.find('[data-task-id="' + tasks + '"] .editTask').click(editFunction);
+                        tasks = 0;
                     });
             }
-            collapsed = !collapsed;
         });
-        $(".editTask").click(function (e) {
-            var target = $( e.target );
-            var parent = target.parent();
-            var td = parent.find('td');
-            tasks = parent.data('taskId');
-            openEditing(td.eq(1).text(),td.eq(3).text(),td.eq(2).text());
-            console.log(tasks);
-        });
+
         $("#spinner").hide();
         $("#deleteCard").click(function(e){
             console.log("delete clicked");

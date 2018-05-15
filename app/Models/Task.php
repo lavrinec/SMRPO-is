@@ -10,7 +10,7 @@ class Task extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'card_id', 'meta', 'task:_name', 'description', 'is_finished', 'order', 'estimation'
+        'user_id', 'card_id', 'meta', 'task_name', 'description', 'is_finished', 'order', 'estimation'
     ];
 
     public function card()
