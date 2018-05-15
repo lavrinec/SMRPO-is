@@ -45,6 +45,7 @@
         <div class="box-body" style="background-color: #F6F6F6;">  
             @foreach ($card->tasks as $task)
                 {{ $task["task_name"] }}
+                <br>
             @endforeach
         </div>
     @endif
