@@ -223,6 +223,7 @@
 
                 $.post("/tasks/edit",
                     {
+                        "_token": "{{ csrf_token() }}",
                         id: tasks,
                         name: name,
                         estimation: estimation,

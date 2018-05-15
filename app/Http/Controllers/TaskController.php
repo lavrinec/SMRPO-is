@@ -13,9 +13,9 @@ class TaskController extends Controller
      * @param  Request $request
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request)
+    public function update(Request $request)
     {
-        //dd($request);
+        dd($request);
 
         return view('tasks.edit')->with($request);
     }
