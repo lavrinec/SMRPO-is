@@ -1,5 +1,5 @@
 <div class="box grabbable" style="border: 2px solid {{ $card->color }};" ondblclick="openCard({{ $card->id }})"
-     data-card-id="{{ $card->id }}">
+     data-card-id="{{ $card->id }}" title="Dvokliknite za urejanje kartice">
     <div class="box-header" style="background-color: {{ $card->color }};">
         <div class="row">
 
@@ -41,8 +41,9 @@
         </div>
     </div>
 
-    @if (isset($card->tasks))
-        <div class="box-body" style="background-color: #F6F6F6;">           
+    <div class="box-body" style="background-color: #F6F6F6;"> 
+    @if (isset($card->tasks) && count($card->tasks)>0 )
+                  
               
             @foreach ($card->tasks as $task)       
             <div class='row {{ (isset($task["is_finished"]) && ($task["is_finished"] == 1 || $task["is_finished"] == "true")) ? "text-muted": ""}}'>
@@ -70,7 +71,9 @@
             </div>
             @endforeach
             
-
-        </div>
+    @else
+    <i class="fa fa-plus"></i> Dodaj nalogo
+        
     @endif
+    </div>
 </div>

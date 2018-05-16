@@ -108,8 +108,8 @@
 
                                 <div class="col-sm-8">
 
-                                    <button class='btn btn-primary pull-right control-buttons' onclick='makeFull()'>Full
-                                        Screen
+                                    <button class='btn btn-primary pull-right control-buttons' onclick='makeFull()'>
+                                        Full Screen
                                     </button>
 
 
@@ -241,6 +241,7 @@
                                 #topleft {
                                     padding-top: 5px;
                                     vertical-align: top;
+                                    border: 1px solid lightgrey;
                                 }
 
                                 .narrow {
@@ -257,6 +258,7 @@
                                     background-color: #F8F8FF;
                                     vertical-align: top;
                                     max-height: 100vh;
+                                    border: 1px solid lightgrey;
                                 }
 
                                 .verticaltext {
@@ -849,6 +851,9 @@
             }
 
             $("#thead_tr_0").append("<th id='topleft' class='forprojects' rowspan='" + numOfTrs + "'>" +
+                    "<button class='btn btn-primary' onclick='makeFull()'>" +
+                            "Full Screen" +
+                        "</button>" +
                 "</th>");
 
             makeHeaderTr(rootColumns, 0);
@@ -869,7 +874,7 @@
                 // $("#thead_tr_" + level).append(
                 //     "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
                 //     "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
-                //     "title='Klikni, da me razširiš.'>" +
+                //     "title='Kliknite za razširitev stolpca.'>" +
                 //     "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
                 //     current.column_name + " " + sumAllChildrenCards(current.id) + "/" + current.WIP + "</div>" +
                 //     "</th>"
@@ -877,7 +882,7 @@
                 $("#thead_tr_" + level).append(
                     "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
                     "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
-                    "title='Klikni, da me razširiš.'>" +
+                    "title='Kliknite za razširitev stolpca.'>" +
                     "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
                     current.column_name + " <span id='numOfCards_narrow_" + current.id + "'>" + sumAllChildrenCards(current.id) + "</span>/" + current.WIP + "</div>" +
                     "</th>"
@@ -886,7 +891,7 @@
                 // headers of columns
                 $("#thead_tr_" + level).append(
                     "<th class='thead_th' id='thead_th_" + current.id + "' colspan='" + getNumOfLeaves(current) +
-                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")' title='Klikni, da me skrčiš.'></th>"
+                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")' title='Kliknite za skrčitev stolpca.'></th>"
                 );
 
                 addColHeader(current, "thead_th_" + current.id);
