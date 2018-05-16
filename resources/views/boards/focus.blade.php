@@ -236,6 +236,7 @@
                                     vertical-align: middle;
                                     min-width: 100px !important;
                                     background-color: #F8F8FF;
+                                    border: 1px solid lightgrey;
                                 }
 
                                 #topleft {
