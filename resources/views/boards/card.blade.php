@@ -1,4 +1,4 @@
-<div class="box grabbable" style="border: 1px solid {{ $card->color }};" ondblclick="openCard({{ $card->id }})"
+<div class="box grabbable" style="border: 2px solid {{ $card->color }};" ondblclick="openCard({{ $card->id }})"
      data-card-id="{{ $card->id }}">
     <div class="box-header" style="background-color: {{ $card->color }};">
         <div class="row">
@@ -42,11 +42,35 @@
     </div>
 
     @if (isset($card->tasks))
-        <div class="box-body" style="background-color: #F6F6F6;">  
-            @foreach ($card->tasks as $task)
-                {{ $task["task_name"] }}
-                <br>
+        <div class="box-body" style="background-color: #F6F6F6;">           
+              
+            @foreach ($card->tasks as $task)       
+            <div class='row {{ (isset($task["is_finished"]) && ($task["is_finished"] == 1 || $task["is_finished"] == "true")) ? "text-muted": ""}}'>
+            
+                <div class="dd col-sm-9" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        
+                    {{-- show checkbox for completing --}}
+                    @if(isset($task["is_finished"]) && ($task["is_finished"] == 1 || $task["is_finished"] == "true"))        
+                        <input id="" name="" class=""
+                        value="" type="checkbox"
+                        onclick="" disabled>
+                    @else
+                        <input id="" name="" class=""
+                        value="" type="checkbox"
+                        onclick="">
+                    @endif 
+                    
+                    {{ $task["task_name"] }}
+                </div>
+
+                <div class="dd col-sm-2">
+                    {{ $task["estimation"] }}
+                </div>
+                    
+            </div>
             @endforeach
+            
+
         </div>
     @endif
 </div>

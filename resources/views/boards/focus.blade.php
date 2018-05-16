@@ -168,7 +168,7 @@
                                     background: #fff;
                                 }
 
-                                #boardTable, #boardTable th, #boardTable td {
+                                #boardTable, #boardTable .thead_th, #boardTable .dragdrop {
                                     border: 1px solid lightgrey;
                                 }
 
@@ -224,7 +224,7 @@
                                     vertical-align: top;
                                 }
 
-                                #boardTable td {
+                                #boardTable .dragdrop {
                                     min-width: 250px;
                                     /*min-height: 140px;*/
                                     vertical-align: top;
