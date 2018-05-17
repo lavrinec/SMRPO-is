@@ -125,15 +125,25 @@
 
      <div class="col-sm-10">
         <select class="form-control" name="show_time"  id = "show_time" >                                                
-            <option value="d"> dnevih </option>
-            <option value="h"> urah </option>
-            <option value="m"> minutah </option>
+            <option value="d" {{ isset($data['show_time']) && "d" == $data['show_time'] ? 'selected' : '' }}> dnevih </option>
+            <option value="h" {{ isset($data['show_time']) && "h" == $data['show_time'] ? 'selected' : '' }}> urah </option>
+            <option value="m" {{ isset($data['show_time']) && "m" == $data['show_time'] ? 'selected' : '' }}> minutah </option>
                                                
         </select>
-
-       
     </div>
 </div>
+    <div class="form-group">
+        <label for="type" class="col-sm-2 control-label">Tip poročila: </label>
+
+        <div class="col-sm-10">
+            <select class="form-control" name="report_type"  id = "report_type" >
+                <option value="time" {{ isset($data['report_type']) && "time" == $data['report_type'] ? 'selected' : '' }}> Povprečni potreben čas </option>
+                <option value="wip" {{ isset($data['report_type']) && "wip" == $data['report_type'] ? 'selected' : '' }}> Kršitve omejitev WIP </option>
+            </select>
+
+
+        </div>
+    </div>
 
 <p>{{(isset($old_request))?$old_request->time_start:""}}</p>
 
