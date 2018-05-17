@@ -16,7 +16,7 @@
      <select class="col-sm-12" style="width:100%" name="projects[]" id="proj" multiple="multiple" placeholder="test">
 
                 @foreach($projects as $project)
-                    <option value="{{ $project->id }}" 
+                    <option value="{{ $project->id }}" {{ isset($data['projects']) && in_array($project->id . "", $data['projects']) ? 'selected' : '' }}
                     >{{ $project->board_name }}</option>
                 @endforeach
             </select>
@@ -29,9 +29,9 @@
 
      <div class="col-sm-10">
         <select class="col-sm-12" style="width:100%" name="types[]" class="test" id = "type" multiple="multiple">                                                
-            <option value="normal"> nova funkcionalnost </option>
-            <option value="is_silver_bullet"> silver bullet </option>
-            <option value="is_rejected"> zavrnjena zgodba </option>
+            <option value="normal" {{ isset($data['types']) && in_array("normal", $data['types']) ? 'selected' : '' }}> nova funkcionalnost </option>
+            <option value="is_silver_bullet" {{ isset($data['types']) && in_array("is_silver_bullet", $data['types']) ? 'selected' : '' }}> silver bullet </option>
+            <option value="is_rejected" {{ isset($data['types']) && in_array("is_rejected", $data['types']) ? 'selected' : '' }}> zavrnjena zgodba </option>
                                                
         </select>
 

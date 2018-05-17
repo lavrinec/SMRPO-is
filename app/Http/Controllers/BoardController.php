@@ -150,6 +150,8 @@ public function report($id){
 
 public function makeReport(Request $request){
 
+    $data = $request->except('_token');
+    //dd($data);
     $project = $request->projects;
     $types = $request->types;
 
@@ -265,7 +267,7 @@ public function makeReport(Request $request){
     $old_request = $request;
     request()->flash();
     return view("boards.report")->with("cards",$Cards)->with("board", $full_board)->with('projects', $projects)
-    ->with("average_time", $formatted)->with("old_request", $old_request);
+    ->with("average_time", $formatted)->with("old_request", $old_request)->with("data", $data);
 }
 
 private function formatTime($time, $format){
