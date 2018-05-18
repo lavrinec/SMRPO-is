@@ -162,7 +162,15 @@ public function makeReport(Request $request){
     $all_projects=Project::where("board_id", $board)->pluck("id");
     
     //get all cards for this board
-    $Cards = Card::whereIn("project_id", $all_projects)->get();
+    $Cards = Card::whereIn("project_id", $all_projects);
+    $report_type = isset($request->report_type) ? $request->report_type : '';
+    if($report_type == 'wip'){
+        $Cards = $Cards->with(['wipViolations' => function ($e){
+            $e->with('old_column', 'new_column', 'user');
+        }]);
+        $data['counter'] = 0;
+    }
+    $Cards = $Cards->get();
     
     //get cards for chosen projects
     if ($project) {
@@ -266,8 +274,9 @@ public function makeReport(Request $request){
     //return [$average_time, $formatted];
     $old_request = $request;
     request()->flash();
+    //dd($Cards);
     return view("boards.report")->with("cards",$Cards)->with("board", $full_board)->with('projects', $projects)
-    ->with("average_time", $formatted)->with("old_request", $old_request)->with("data", $data);
+    ->with("average_time", $formatted)->with("old_request", $old_request)->with("data", $data)->with("report_type", $report_type);
 }
 
 private function formatTime($time, $format){
