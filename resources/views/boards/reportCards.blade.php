@@ -7,15 +7,15 @@
         @if($report_type == 'wip')
             <table id="example1" class="table table-bordered table-striped table-hover">
                 <thead>
-                    <tr>
-                        <th>št.</th>
-                        <th>Kartica</th>
-                        <th>Datum</th>
-                        <th>Iz</th>
-                        <th>V</th>
-                        <th>Uporabnik</th>
-                        <th>Vzrok</th>
-                    </tr>
+                <tr>
+                    <th>št.</th>
+                    <th>Kartica</th>
+                    <th>Datum</th>
+                    <th>Iz</th>
+                    <th>V</th>
+                    <th>Uporabnik</th>
+                    <th>Vzrok</th>
+                </tr>
                 </thead>
                 <tbody>
                 @foreach($cards as $index => $card)
@@ -25,10 +25,16 @@
                             <td>
                                 {{ $card->card_name }}
                             </td>
-                            <td>{{ date("d.m.Y", strtotime($violation->created_at)) }}</td>
+                            <td data-sort="{{ $violation->created_at }}">
+                                {{ date("d.m.Y", strtotime($violation->created_at)) }}
+                            </td>
                             <td>{{ isset($violation->old_column) ? $violation->old_column->column_name : '' }}</td>
                             <td>{{ isset($violation->new_column) ? $violation->new_column->column_name : '' }}</td>
-                            <td>{{ isset($violation->user) ? ($violation->user->id . '. ' . $violation->user->first_name . $violation->user->last_name) : '' }}</td>
+                            <td>
+                                {{ isset($violation->user)
+                                ? ($violation->user->id . '. ' . $violation->user->first_name . $violation->user->last_name)
+                                : '' }}
+                            </td>
                             <td>{{ $violation->reason }}</td>
 
 
@@ -37,15 +43,15 @@
                 @endforeach
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <th>št.</th>
-                        <th>Kartica</th>
-                        <th>Datum</th>
-                        <th>Iz</th>
-                        <th>V</th>
-                        <th>Uporabnik</th>
-                        <th>Vzrok</th>
-                    </tr>
+                <tr>
+                    <th>št.</th>
+                    <th>Kartica</th>
+                    <th>Datum</th>
+                    <th>Iz</th>
+                    <th>V</th>
+                    <th>Uporabnik</th>
+                    <th>Vzrok</th>
+                </tr>
                 </tfoot>
             </table>
         @else
