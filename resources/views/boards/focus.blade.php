@@ -350,7 +350,7 @@
 
     <script>
 
-
+        @include('tasks.update')
         /*
          * Drag&Drop functionality provided by Dragula
          *
@@ -1362,7 +1362,7 @@
         }
 
         /*custom functions*/
-        function findCard(columnId, cardId, arrayOfColumns, nextColumn) {
+        function findCard(columnId, cardId, arrayOfColumns, nextColumn = null, notyfy = true) {
             var foundColumn = arrayOfColumns.find(function (element, i) {
                 if (element.id == columnId) {
                     return element;
@@ -1388,7 +1388,10 @@
                     return foundCard;
 
                 } else {
-                    alert('cannot find card in allLeaves');
+                    if(notyfy)
+                        alert('cannot find card in allLeaves');
+                    else
+                        return null;
                 }
             } else {
                 alert('cannot find column');

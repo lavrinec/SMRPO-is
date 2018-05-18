@@ -51,16 +51,11 @@
                 <div class="dd col-sm-9" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         
                     {{-- show checkbox for completing --}}
-                    @if(isset($task["is_finished"]) && ($task["is_finished"] == 1 || $task["is_finished"] == "true"))        
-                        <input id="" name="" class=""
-                        value="" type="checkbox"
-                        onclick="" disabled>
-                    @else
-                        <input id="" name="" class=""
-                        value="" type="checkbox"
-                        onclick="">
-                    @endif 
-                    
+                    <input type="checkbox" onchange="updateTaskCheck({{ $task['id'] }}, this, {{ $card->id }})"
+                           @if(isset($task["is_finished"]) && ($task["is_finished"] == 1 || $task["is_finished"] == "true"))
+                                checked
+                            @endif
+                    >
                     {{ $task["task_name"] }}
                 </div>
 

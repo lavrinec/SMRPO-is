@@ -193,6 +193,7 @@
     var collapsed = true;
     $disabledResults.select2({ width: "100%" });
     @if(isset($card))
+    @include('tasks.update')
     function updateTaskCheck(id, box) {
         console.log(box);
         var is_finished = $( box ).is(':checked');
