@@ -603,6 +603,19 @@
                     drake.cancel();
                     return;
                 }
+                if (foundNext.acceptance_testing == true || foundNext.acceptance_testing == 1) {
+                    //console.log(foundCard, "AAAAAAAAAAA");
+                    if( Array.isArray(foundCard.tasks) && (
+                        foundCard.tasks.filter(function (o) { return o.is_finished == 0 || o.is_finished == false}).length > 0)) {
+                        $('#boardModal .modal-footer').html('');
+                        $('#boardModal .modal-header h4').text('Opozorilo!');
+                        $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
+                        $('#boardModal .modal-body').html('<p>Naprej končajte vse naloge!</p>');
+                        $('#boardModal').modal('show');
+                        drake.cancel();
+                        return;
+                    }
+                }
 
                 if (foundNext.WIP <= foundNext.cards.length && foundNext.WIP > 0) {
                     $('#boardModal .modal-footer').html('');
