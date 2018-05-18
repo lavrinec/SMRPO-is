@@ -11,6 +11,7 @@
                     <th>št.</th>
                     <th>Kartica</th>
                     <th>Datum</th>
+                    <th>Ura</th>
                     <th>Iz</th>
                     <th>V</th>
                     <th>Uporabnik</th>
@@ -27,6 +28,9 @@
                             </td>
                             <td data-sort="{{ $violation->created_at }}">
                                 {{ date("d.m.Y", strtotime($violation->created_at)) }}
+                            </td>
+                            <td data-sort="{{ $violation->created_at }}">
+                                {{ date("H:i", strtotime($violation->created_at)) }}
                             </td>
                             <td>{{ isset($violation->old_column) ? $violation->old_column->column_name : '' }}</td>
                             <td>{{ isset($violation->new_column) ? $violation->new_column->column_name : '' }}</td>
@@ -47,6 +51,7 @@
                     <th>št.</th>
                     <th>Kartica</th>
                     <th>Datum</th>
+                    <th>Ura</th>
                     <th>Iz</th>
                     <th>V</th>
                     <th>Uporabnik</th>
