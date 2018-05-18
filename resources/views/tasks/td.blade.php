@@ -1,5 +1,8 @@
 <tr data-task-id="{{ $task->id }}">
-    <td  style="min-width: 75px;"><input type="checkbox" onchange="updateTaskCheck({{ $task->id }}, this, {{ $card->id }})"
+    <td  style="min-width: 75px;">
+        <input type="checkbox"
+               onchange="updateTaskCheck({{ $task->id }}, this, {{ $card->id }})"
+               data-checkbox-task-id="{{ $task->id }}"
         @if($task->is_finished)
             checked
          @endif

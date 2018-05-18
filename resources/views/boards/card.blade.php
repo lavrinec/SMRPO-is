@@ -55,6 +55,7 @@
                            @if(isset($task["is_finished"]) && ($task["is_finished"] == 1 || $task["is_finished"] == "true"))
                                 checked
                             @endif
+                           data-checkbox-task-id="{{ $task['id'] }}"
                     >
                     {{ $task["task_name"] }}
                 </div>
