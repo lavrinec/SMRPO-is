@@ -1,6 +1,6 @@
-<div class="box grabbable" style="background-color: {{ $card->color }}; " ondblclick="openCard({{ $card->id }})"
-     data-card-id="{{ $card->id }}">
-    <div class="box-header">
+<div class="box grabbable" style="border: 2px solid {{ $card->color }};" ondblclick="openCard({{ $card->id }})"
+     data-card-id="{{ $card->id }}" title="Dvokliknite za urejanje kartice">
+    <div class="box-header" style="background-color: {{ $card->color }};">
         <div class="row">
 
             <div class="col-sm-10">
@@ -41,8 +41,35 @@
         </div>
     </div>
 
-    {{--<div class="box-body">--}}
-    {{----}}
-    {{--</div>--}}
+    <div class="box-body" style="background-color: #F6F6F6;"> 
+    @if (isset($card->tasks) && count($card->tasks)>0 )
+                  
+              
+            @foreach ($card->tasks as $task)       
+            <div class='row {{ (isset($task["is_finished"]) && ($task["is_finished"] == 1 || $task["is_finished"] == "true")) ? "text-muted": ""}}'>
+            
+                <div class="dd col-sm-9" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        
+                    {{-- show checkbox for completing --}}
+                    <input type="checkbox" onchange="updateTaskCheck({{ $task['id'] }}, this, {{ $card->id }})"
+                           @if(isset($task["is_finished"]) && ($task["is_finished"] == 1 || $task["is_finished"] == "true"))
+                                checked
+                            @endif
+                           data-checkbox-task-id="{{ $task['id'] }}"
+                    >
+                    {{ $task["task_name"] }}
+                </div>
 
+                <div class="dd col-sm-2">
+                    {{ $task["estimation"] }}
+                </div>
+                    
+            </div>
+            @endforeach
+            
+    @else
+    <i class="fa fa-plus"></i> Dodaj nalogo
+        
+    @endif
+    </div>
 </div>

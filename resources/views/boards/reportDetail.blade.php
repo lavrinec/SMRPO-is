@@ -16,7 +16,7 @@
      <select class="col-sm-12" style="width:100%" name="projects[]" id="proj" multiple="multiple" placeholder="test">
 
                 @foreach($projects as $project)
-                    <option value="{{ $project->id }}" 
+                    <option value="{{ $project->id }}" {{ isset($data['projects']) && in_array($project->id . "", $data['projects']) ? 'selected' : '' }}
                     >{{ $project->board_name }}</option>
                 @endforeach
             </select>
@@ -29,9 +29,9 @@
 
      <div class="col-sm-10">
         <select class="col-sm-12" style="width:100%" name="types[]" class="test" id = "type" multiple="multiple">                                                
-            <option value="normal"> nova funkcionalnost </option>
-            <option value="is_silver_bullet"> silver bullet </option>
-            <option value="is_rejected"> zavrnjena zgodba </option>
+            <option value="normal" {{ isset($data['types']) && in_array("normal", $data['types']) ? 'selected' : '' }}> nova funkcionalnost </option>
+            <option value="is_silver_bullet" {{ isset($data['types']) && in_array("is_silver_bullet", $data['types']) ? 'selected' : '' }}> silver bullet </option>
+            <option value="is_rejected" {{ isset($data['types']) && in_array("is_rejected", $data['types']) ? 'selected' : '' }}> zavrnjena zgodba </option>
                                                
         </select>
 
@@ -125,15 +125,25 @@
 
      <div class="col-sm-10">
         <select class="form-control" name="show_time"  id = "show_time" >                                                
-            <option value="d"> dnevih </option>
-            <option value="h"> urah </option>
-            <option value="m"> minutah </option>
+            <option value="d" {{ isset($data['show_time']) && "d" == $data['show_time'] ? 'selected' : '' }}> dnevih </option>
+            <option value="h" {{ isset($data['show_time']) && "h" == $data['show_time'] ? 'selected' : '' }}> urah </option>
+            <option value="m" {{ isset($data['show_time']) && "m" == $data['show_time'] ? 'selected' : '' }}> minutah </option>
                                                
         </select>
-
-       
     </div>
 </div>
+    <div class="form-group">
+        <label for="type" class="col-sm-2 control-label">Tip poročila: </label>
+
+        <div class="col-sm-10">
+            <select class="form-control" name="report_type"  id = "report_type" >
+                <option value="time" {{ isset($data['report_type']) && "time" == $data['report_type'] ? 'selected' : '' }}> Povprečni potreben čas </option>
+                <option value="wip" {{ isset($data['report_type']) && "wip" == $data['report_type'] ? 'selected' : '' }}> Kršitve omejitev WIP </option>
+            </select>
+
+
+        </div>
+    </div>
 
 <p>{{(isset($old_request))?$old_request->time_start:""}}</p>
 

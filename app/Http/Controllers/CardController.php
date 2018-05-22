@@ -135,7 +135,7 @@ class CardController extends Controller
     {
         $data = ['card' => null, 'column' => $column, 'board' => $board];
         if($id != 0){
-            $data['card'] = Card::findOrFail($id);
+            $data['card'] = Card::where('id',$id)->with('tasks')->first();
             if(!isset($board)) $data['board'] = $data['card']->board()->first();
             if(!isset($column)) $data['column'] = $data['card']->column()->first();
             $data['moves'] = $data['card']->moves()->with('old_column', 'new_column')->get();

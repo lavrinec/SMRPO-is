@@ -88,7 +88,7 @@
                             <div class="row">
 
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <h3 class="box-title">{{ $board->board_name }}
@@ -106,40 +106,39 @@
                                 </div>
 
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-8">
+
+                                    <button class='btn btn-primary pull-right control-buttons' onclick='makeFull()'>
+                                        Full Screen
+                                    </button>
+
 
                                     @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
                                         @if($isKM)
                                             <a href="{{ action('BoardController@edit', $board->id) }}"
-                                               class="btn btn-primary pull-right">
+                                               class="btn btn-primary pull-right control-buttons">
                                                 <b>Uredi</b>
                                             </a>
 
                                             <a href="{{ route('boards.report', $board->id) }}"
-                                               class="btn btn-primary pull-right" style="margin-right:5px">
+                                               class="btn btn-primary pull-right control-buttons">
                                                 <b>Poročilo</b>
                                             </a>
-
-                                            <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
                                         @endif
-                                        <button type="button" class="btn btn-primary openCard pull-right"
+                                        <button type="button"
+                                                class="btn btn-primary openCard pull-right control-buttons"
                                                 data-card-id="0"
                                                 data-board-id="{{ $board->id }}">Dodaj kartico
                                         </button>
                                     @endif
 
-                                    <div class="pull-right" style="margin: 8px;">
-                                        <label for="saveNarrowColumnsCheckbox" class="">
-                                            <input id="saveNarrowColumnsCheckbox"
-                                                   name="saveNarrowColumnsCheckbox"
-                                                   value="saveNarrowColumns" type="checkbox" class="pull-left"
-                                                   onclick="saveNarrowColumns()">
-                                            Ohrani trenutni pogled v prihodnje
-                                        </label>
-                                    </div>
+
+                                    <button class='btn btn-primary pull-right control-buttons'
+                                            onclick="openViewSettings()">Nastavitve pogleda
+                                    </button>
+
 
                                 </div>
-
 
                             </div>
                         </div>
@@ -169,7 +168,7 @@
                                     background: #fff;
                                 }
 
-                                table, th, td {
+                                #boardTable, #boardTable .thead_th, #boardTable .dragdrop {
                                     border: 1px solid lightgrey;
                                 }
 
@@ -225,7 +224,7 @@
                                     vertical-align: top;
                                 }
 
-                                td {
+                                #boardTable .dragdrop {
                                     min-width: 250px;
                                     /*min-height: 140px;*/
                                     vertical-align: top;
@@ -235,13 +234,15 @@
                                 .forprojects {
                                     text-align: center;
                                     vertical-align: middle;
-                                    min-width: 100px;
+                                    min-width: 100px !important;
                                     background-color: #F8F8FF;
+                                    border: 1px solid lightgrey;
                                 }
 
                                 #topleft {
                                     padding-top: 5px;
                                     vertical-align: top;
+                                    border: 1px solid lightgrey;
                                 }
 
                                 .narrow {
@@ -258,6 +259,7 @@
                                     background-color: #F8F8FF;
                                     vertical-align: top;
                                     max-height: 100vh;
+                                    border: 1px solid lightgrey;
                                 }
 
                                 .verticaltext {
@@ -271,6 +273,10 @@
                                     margin-top: 5px;
                                 }
 
+                                .control-buttons {
+                                    margin-left: 5px;
+                                    /*margin-right: 5px;*/
+                                }
 
                             </style>
 
@@ -344,7 +350,7 @@
 
     <script>
 
-
+        @include('tasks.update')
         /*
          * Drag&Drop functionality provided by Dragula
          *
@@ -369,7 +375,6 @@
         var rootColumns = board.structured_columns_cards;
 
 
-
         var allLeaves = [];
         var allCards = [];
         var allColumns = [];
@@ -379,10 +384,10 @@
         var numAllLeaves = 0;
 
         var columnsWide = {};
+        var saveNarrowCols = true;
 
         var wipBreakAllowed = false;
         var wipBreak = false;
-
 
 
         window.onload = function () {
@@ -417,10 +422,10 @@
 
         };
 
-        function findLastColumnOfAParent (columnsArray, parentId){
+        function findLastColumnOfAParent(columnsArray, parentId) {
             console.log('to je primerjava ' + parentId);
-            for(var i=columnsArray.length-1; i>=0; i--){
-                if(parseInt(columnsArray[i].parent_id)==parseInt(parentId)){
+            for (var i = columnsArray.length - 1; i >= 0; i--) {
+                if (parseInt(columnsArray[i].parent_id) == parseInt(parentId)) {
                     return {
                         index: i,
                         column: columnsArray[i]
@@ -430,7 +435,7 @@
             return null;
         }
         drake.on("drop", function (el, target, source, sibling) {
-            if(target.id == source.id){
+            if (target.id == source.id) {
                 return;
             }
             console.log(allColumns);
@@ -452,20 +457,20 @@
                 }
             });
 
-            var foundNext = allLeaves.find(function (element,i){
+            var foundNext = allLeaves.find(function (element, i) {
                 if (element.id == parseInt(nextSplit[3])) {
                     return element;
                 }
             });
 
-            var previousIndexInAllColumns = allColumns.findIndex(function(element,i){
+            var previousIndexInAllColumns = allColumns.findIndex(function (element, i) {
                 console.log('ma imamo index!!' + i);
-                if(parseInt(element.id) == parseInt(foundPrevious.id)){
+                if (parseInt(element.id) == parseInt(foundPrevious.id)) {
                     return true;
                 }
             });
-            var nextIndexInAllColumns = allColumns.findIndex(function(element,i){
-                if(parseInt(element.id) == parseInt(foundNext.id)){
+            var nextIndexInAllColumns = allColumns.findIndex(function (element, i) {
+                if (parseInt(element.id) == parseInt(foundNext.id)) {
                     return true;
                 }
             });
@@ -474,49 +479,49 @@
             var previousIndex = foundIndex - 1;
             var shouldAllow = false;
             var foundCard = findCard(foundPrevious.id, cardId, allLeaves, foundNext.id);
-            var foundGroup = userGroups.find(function(element,i){
-                if(element.group_id == foundCard.project.group_id){
+            var foundGroup = userGroups.find(function (element, i) {
+                if (element.group_id == foundCard.project.group_id) {
                     return element;
                 }
             });
             var highPriorityColumnIndex = -1;
-            var highPriorityColumn = allColumns.find(function(element,i){
-                if((element.high_priority)==true){
-                    highPriorityColumnIndex=i;
+            var highPriorityColumn = allColumns.find(function (element, i) {
+                if ((element.high_priority) == true) {
+                    highPriorityColumnIndex = i;
                     return element;
                 }
             });
 
-            var acceptanceTestingColumnIndex = allColumns.findIndex(function(element, i ){
-                if(element.acceptance_testing == true){
+            var acceptanceTestingColumnIndex = allColumns.findIndex(function (element, i) {
+                if (element.acceptance_testing == true) {
                     return true;
                 }
             });
 
             console.log('acceptance ready index: ' + acceptanceTestingColumnIndex);
 
-            if(highPriorityColumn.parent_id == null){
+            if (highPriorityColumn.parent_id == null) {
                 var mostRightChild = findLastColumnOfAParent(allColumns, highPriorityColumn.id);
-                if(mostRightChild != null && mostRightChild != undefined){
+                if (mostRightChild != null && mostRightChild != undefined) {
                     highPriorityColumnIndex = mostRightChild.index;
                 }
             }
 
             /*
-            * če imamo root column za high priority je potrebno poiskati najbolj desnega otroka
-            * */
+             * če imamo root column za high priority je potrebno poiskati najbolj desnega otroka
+             * */
             console.log('stolpec HP');
             console.log(highPriorityColumn);
-            var foundPORole = foundGroup != null && foundGroup != undefined ? foundGroup.role.find(function(element,i){
+            var foundPORole = foundGroup != null && foundGroup != undefined ? foundGroup.role.find(function (element, i) {
                 //PO - 2
                 // KM - 3
                 // DEV - 4
-                if(element.role_id == 2){
+                if (element.role_id == 2) {
                     return element;
                 }
-            }):null;
+            }) : null;
 
-            if(previousSplit[2] != nextSplit[2]){
+            if (previousSplit[2] != nextSplit[2]) {
                 $('#boardModal .modal-footer').html('');
                 $('#boardModal .modal-header h4').text('Opozorilo!');
                 $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
@@ -538,6 +543,7 @@
                     shouldAllow = true;
                 }
             }
+
             if(((foundPrevious.acceptance_testing) == true) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))){
                 if( foundPORole == null || foundPORole == undefined){
                     $('#boardModal .modal-footer').html('');
@@ -547,8 +553,8 @@
                     $('#boardModal').modal('show');
                     drake.cancel();
                     return;
-                }else{
-                    if(nextIndexInAllColumns > highPriorityColumnIndex && nextIndexInAllColumns < previousIndexInAllColumns){
+                } else {
+                    if (nextIndexInAllColumns > highPriorityColumnIndex && nextIndexInAllColumns < previousIndexInAllColumns) {
                         $('#boardModal .modal-footer').html('');
                         $('#boardModal .modal-header h4').text('Opozorilo!');
                         $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
@@ -568,14 +574,15 @@
             // }
 
             /*
-            * makeBody();
-            * rootColumns = board.structured_columns_cards;
-            * makeHader();
-            * */
+             * makeBody();
+             * rootColumns = board.structured_columns_cards;
+             * makeHader();
+             * */
 
 
-            if(shouldAllow){
+            if (shouldAllow) {
                 var needToRecreateDOM = false;
+
                 if(foundGroup == null && foundGroup == undefined){
                     $('#boardModal .modal-footer').html('');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
@@ -596,12 +603,25 @@
                     drake.cancel();
                     return;
                 }
+                if (foundNext.acceptance_testing == true || foundNext.acceptance_testing == 1) {
+                    //console.log(foundCard, "AAAAAAAAAAA");
+                    if( Array.isArray(foundCard.tasks) && (
+                        foundCard.tasks.filter(function (o) { return o.is_finished == 0 || o.is_finished == false}).length > 0)) {
+                        $('#boardModal .modal-footer').html('');
+                        $('#boardModal .modal-header h4').text('Opozorilo!');
+                        $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
+                        $('#boardModal .modal-body').html('<p>Naprej končajte vse naloge!</p>');
+                        $('#boardModal').modal('show');
+                        drake.cancel();
+                        return;
+                    }
+                }
 
-                if(foundNext.WIP <= foundNext.cards.length && foundNext.WIP > 0){
+                if (foundNext.WIP <= foundNext.cards.length && foundNext.WIP > 0) {
                     $('#boardModal .modal-footer').html('');
-                    var foundPreviousString = JSON.stringify(foundPrevious).replace(/"/g,"'");
-                    var foundNextString = JSON.stringify(foundNext).replace(/"/g,"'");
-                    var foundCardString = JSON.stringify(foundCard).replace(/"/g,"'");
+                    var foundPreviousString = JSON.stringify(foundPrevious).replace(/"/g, "'");
+                    var foundNextString = JSON.stringify(foundNext).replace(/"/g, "'");
+                    var foundCardString = JSON.stringify(foundCard).replace(/"/g, "'");
                     console.log((foundPreviousString));
                     $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\','+foundPrevious.id+','+foundNext.id+','+foundCard.id+','+foundCard.order+','+foundPrevious.acceptance_testing+','+acceptanceTestingColumnIndex+','+nextIndexInAllColumns+','+previousIndexInAllColumns+','+'\''+foundCard.color+'\''+',\''+foundCard.meta+'\''+','+foundPrevious.parent_id+','+foundNext.parent_id+')" type="button" class="btn btn-default">Shrani</button>');
                     $('#boardModal .modal-footer').append('<button id="cancelWipBreak" onclick="enableWipBreak(\'cancelWipBreak\')" type="button" class="btn btn-default">Prekliči</button>');
@@ -618,38 +638,38 @@
 
                 $('#board-focus-card-to-update').val(cardId);
 
-                var sendData= {
+                var sendData = {
                     '_token': "{{ csrf_token() }}",
                     'new_column_id': parseInt(foundNext.id),
                     'old_column_id': parseInt(foundPrevious.id),
                     'card_id': parseInt(cardId),
                     'user_id': parseInt(user.id),
                     'order': foundCard.order,
-                    'board_id':board.id
+                    'board_id': board.id
                 }
                 console.log('column' + (parseInt(previousIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
                 console.log('column' + (parseInt(previousIndexInAllColumns)) +'  '+(parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
                 console.log(foundPrevious);
                 if(((foundPrevious.acceptance_testing == true || foundPrevious.acceptance_testing == 1) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex)) ) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
                     sendData['is_rejected'] = 1;
-                    if(foundCard.meta == null || foundCard.meta == undefined || foundCard.meta == '' || !foundCard.meta.includes('previousColor:')) {
+                    if (foundCard.meta == null || foundCard.meta == undefined || foundCard.meta == '' || !foundCard.meta.includes('previousColor:')) {
                         sendData['meta'] = foundCard.meta + ';previousColor:' + foundCard.color;
                     }
                     sendData['color'] = '#0DFFA0';
                     needToRecreateDOM = true;
                 }
-                if(foundNext.acceptance_testing == true || foundNext.acceptance_testing == 1){
+                if (foundNext.acceptance_testing == true || foundNext.acceptance_testing == 1) {
                     var searchString = 'previousColor:'
-                    if(foundCard.meta != null && foundCard.meta != undefined && foundCard.meta.includes(searchString)){
-                        var foundColor = foundCard.meta.split(";").find(function(element,i){
-                            if(element.includes(searchString)){
+                    if (foundCard.meta != null && foundCard.meta != undefined && foundCard.meta.includes(searchString)) {
+                        var foundColor = foundCard.meta.split(";").find(function (element, i) {
+                            if (element.includes(searchString)) {
                                 return element;
                             }
                         });
                         var foundColor = foundColor.substring(searchString.length);
                         sendData['color'] = foundColor;
                         sendData['is_rejected'] = 0;
-                        needToRecreateDOM=true;
+                        needToRecreateDOM = true;
                     }
                 }
 
@@ -689,7 +709,7 @@
                     }
                 });
 
-            }else{
+            } else {
                 $('#boardModal .modal-footer').html('');
                 $('#boardModal .modal-header h4').text('Opozorilo!');
                 $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
@@ -703,45 +723,45 @@
         // function enableWipBreak(buttonid, previd, nextid,cardid,cardorder){
         function enableWipBreak(buttonid, previd, nextid,cardid, cardorder, acceptance_testing, acceptanceTestingColumnIndex, nextIndexInAllColumns, previousIndexInAllColumns, cardColor, cardMeta, prevParent, nextParent){
             /*
-            * enableWipBreak
-            * cancelWipBreak
-            * */
+             * enableWipBreak
+             * cancelWipBreak
+             * */
 
-            console.log("wip commnet: "+$('#boardModalWIPComment').val());
+            console.log("wip commnet: " + $('#boardModalWIPComment').val());
             var needToRecreateDOM = false;
-            if(buttonid == 'enableWipBreak'){
+            if (buttonid == 'enableWipBreak') {
                 var wipComment = $('#boardModalWIPComment').val();
-                if(wipComment == null || wipComment == ''){
-                    $('#wipBreakError').css('display','block');
-                }else{
-                    var sendData= {
+                if (wipComment == null || wipComment == '') {
+                    $('#wipBreakError').css('display', 'block');
+                } else {
+                    var sendData = {
                         '_token': "{{ csrf_token() }}",
                         'new_column_id': parseInt(nextid),
                         'old_column_id': parseInt(previd),
                         'card_id': parseInt(cardid),
                         'user_id': parseInt(user.id),
                         'order': cardorder,
-                        'wip_breaked':true,
+                        'wip_breaked': true,
                         'reason': wipComment,
-                        'board_id':board.id
+                        'board_id': board.id
                     }
 
 
                     if(((acceptance_testing == true || acceptance_testing == 1 || acceptance_testing == '1') || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
                         sendData['is_rejected'] = 1;
-                        if(cardMeta == null || cardMeta == undefined || cardMeta == '' || !cardMeta.includes('previousColor:')) {
+                        if (cardMeta == null || cardMeta == undefined || cardMeta == '' || !cardMeta.includes('previousColor:')) {
                             sendData['meta'] = cardMeta + ';previousColor:' + cardColor;
                         }
                         sendData['color'] = '#0DFFA0';
                         needToRecreateDOM = true;
-                    }else if((parseInt(acceptanceTestingColumnIndex)==parseInt(nextIndexInAllColumns) )){
+                    } else if ((parseInt(acceptanceTestingColumnIndex) == parseInt(nextIndexInAllColumns) )) {
                         sendData['is_rejected'] = 0;
                         console.log('jap');
                         var searchString = 'previousColor:'
-                        if(cardMeta == null || cardMeta == undefined || cardMeta == '' || cardMeta.includes(searchString)) {
+                        if (cardMeta == null || cardMeta == undefined || cardMeta == '' || cardMeta.includes(searchString)) {
 
-                            var foundColor = cardMeta.split(";").find(function(element,i){
-                                if(element.includes(searchString)){
+                            var foundColor = cardMeta.split(";").find(function (element, i) {
+                                if (element.includes(searchString)) {
                                     return element;
                                 }
                             });
@@ -783,13 +803,13 @@
                         }
                     });
                 }
-            }else {
+            } else {
                 resetTable();
                 $('#boardModal').modal('toggle');//zapri ročno modal
             }
         }
 
-        function resetTable (){
+        function resetTable() {
             $("#boardTable").html('');
 
             makeHader();
@@ -803,7 +823,7 @@
             });
         }
 
-        function resetTableData(result){
+        function resetTableData(result) {
             board = result.board;
             projects = result.projects;
             userGroups = result.userGroups;
@@ -845,7 +865,10 @@
             }
 
             $("#thead_tr_0").append("<th id='topleft' class='forprojects' rowspan='" + numOfTrs + "'>" +
-                "<button class='btn btn-primary' onclick='makeFull()'>Full Screen</button></th>");
+                    "<button class='btn btn-primary' onclick='makeFull()'>" +
+                            "Full Screen" +
+                        "</button>" +
+                "</th>");
 
             makeHeaderTr(rootColumns, 0);
         }
@@ -865,7 +888,7 @@
                 // $("#thead_tr_" + level).append(
                 //     "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
                 //     "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
-                //     "title='Klikni, da me razširiš.'>" +
+                //     "title='Kliknite za razširitev stolpca.'>" +
                 //     "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
                 //     current.column_name + " " + sumAllChildrenCards(current.id) + "/" + current.WIP + "</div>" +
                 //     "</th>"
@@ -873,7 +896,7 @@
                 $("#thead_tr_" + level).append(
                     "<th class='fornarrow' id='thead_th_fornarrow_" + current.id + "' colspan='" + getNumOfLeaves(current) +
                     "' rowspan='" + parseInt(maxDepth - level + projects.length) + "' onclick='wideColumn(" + current.id + ")'" +
-                    "title='Klikni, da me razširiš.'>" +
+                    "title='Kliknite za razširitev stolpca.'>" +
                     "<div class='verticaltext'><small>" + current.id + "</small> <span><i class='fa fa-expand'></i></span> " +
                     current.column_name + " <span id='numOfCards_narrow_" + current.id + "'>" + sumAllChildrenCards(current.id) + "</span>/" + current.WIP + "</div>" +
                     "</th>"
@@ -882,7 +905,7 @@
                 // headers of columns
                 $("#thead_tr_" + level).append(
                     "<th class='thead_th' id='thead_th_" + current.id + "' colspan='" + getNumOfLeaves(current) +
-                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")' title='Klikni, da me skrčiš.'></th>"
+                    "' rowspan='" + rowspan + "' onclick='narrowColumn(" + current.id + ")' title='Kliknite za skrčitev stolpca.'></th>"
                 );
 
                 addColHeader(current, "thead_th_" + current.id);
@@ -1302,9 +1325,18 @@
 
         function saveNarrowColumns() {
             var chckbox = $("#saveNarrowColumnsCheckbox")[0];
-//            console.log("checkbox saved: " + chckbox.checked);
 
-            if (chckbox.checked) {
+
+            if(chckbox != undefined && chckbox.checked){
+                console.log("checkbox saved: " + chckbox.checked);
+                saveNarrowCols=true;
+            }
+            else if(chckbox != undefined && !chckbox.checked){
+                console.log("checkbox saved: " + chckbox.checked);
+                saveNarrowCols=false;
+            }
+
+            if (saveNarrowCols) {
                 localStorage.setItem("user_" + user.id + "_board_" + board.id, JSON.stringify(columnsWide));
             }
             else {
@@ -1317,9 +1349,11 @@
             var savedCols = {};
 
             if (localStorage.getItem("user_" + user.id + "_board_" + board.id) != null) {
+                saveNarrowCols = true;
+
 //                console.log("columns saved");
                 savedCols = localStorage.getItem("user_" + user.id + "_board_" + board.id);
-                $("#saveNarrowColumnsCheckbox").prop('checked', true);
+//                $("#saveNarrowColumnsCheckbox").prop('checked', true);
 
                 savedCols = JSON.parse(savedCols);
             }
@@ -1328,7 +1362,7 @@
         }
 
         /*custom functions*/
-        function findCard(columnId, cardId, arrayOfColumns, nextColumn) {
+        function findCard(columnId, cardId, arrayOfColumns, nextColumn = null, notyfy = true) {
             var foundColumn = arrayOfColumns.find(function (element, i) {
                 if (element.id == columnId) {
                     return element;
@@ -1354,7 +1388,10 @@
                     return foundCard;
 
                 } else {
-                    alert('cannot find card in allLeaves');
+                    if(notyfy)
+                        alert('cannot find card in allLeaves');
+                    else
+                        return null;
                 }
             } else {
                 alert('cannot find column');
@@ -1377,6 +1414,92 @@
             }
 
             return currNumOfCards;
+        }
+
+
+        function openViewSettings() {
+
+
+            {{-- DAJ V MODAL ZA NASTAVITVE POGLEDA --}}
+            {{-- spremeni, da bo neka spremenljivka true/false --}}
+            {{-- ne pa da saveNarrowColumns gleda checkbox! --}}
+
+            $('#boardModal .modal-content').html(
+                '<form id="updateBoardView" method="POST" action="#">' +
+
+                '<div class="modal-header" style="border-bottom:none;">' +
+                    '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+                    '<h4 style="text-align: center;" class="modal-title">Nastavitve pogleda</h4>' +
+                '</div>' +
+
+                '<div class="modal-body">' +
+                    '<h4>Prikaz ozkih stolpcev:</h4>' +
+
+                    '<label for="saveNarrowColumnsCheckbox" class="">' +
+                        '<input id="saveNarrowColumnsCheckbox" name="saveNarrowColumnsCheckbox" ' +
+                            'value="saveNarrowColumns" type="checkbox" class="pull-left" ' +
+                            'onclick="saveNarrowColumns()">' +
+                            ' Ohrani trenutni pogled v prihodnje' +
+                    '</label>' +
+                    '<br><br>'+
+
+                    '<h4>Prikaz podatkov na karticah:</h4>' +
+                    '<p>Na karticah so privzeto prikazani <b>identifikator kartice</b>, <b>ime kartice</b> in <b>odgovorni razvijalec</b>.<br>' +
+                    'Spodaj lahko določite, kateri dodatni podatki se še prikazujejo na kartici.</p>' +
+
+                    '<label for="showPriority" class="">' +
+                        '<input id="showPriority" type="checkbox" class="pull-left" name="meta[showPriority]" ' +
+                        'value="showPriority" ' +
+                        '{{ isset($board->meta->showPriority) && $board->meta->showPriority == true ? "checked" : "" }}>' +
+                        ' Prioriteta' +
+                    '</label>' +
+                    '<br>' +
+
+                    '<label for="showEstimation" class="">' +
+                        '<input id="showEstimation" type="checkbox" class="pull-left" name="meta[showEstimation]" ' +
+                        'value="showEstimation" ' +
+                        '{{ isset($board->meta->showEstimation) && $board->meta->showEstimation == true ? "checked" : "" }}>' +
+                        ' Ocena zahtevnosti' +
+                    '</label>' +
+                    '<br>' +
+
+                    '<label for="showDeadline" class="">' +
+                        '<input id="showDeadline" type="checkbox" class="pull-left" name="meta[showDeadline]" ' +
+                        'value="showDeadline" ' +
+                        '{{ isset($board->meta->showDeadline) && $board->meta->showDeadline == true ? "checked" : "" }}>' +
+                        ' Rok za dokončanje' +
+                    '</label>' +
+                    '<br>' +
+
+                    '<label for="showProject" class="">' +
+                        '<input id="showProject" type="checkbox" class="pull-left" name="meta[showProject]" ' +
+                        'value="showProject" ' +
+                        '{{ isset($board->meta->showProject) && $board->meta->showProject == true ? "checked" : "" }}>' +
+                        ' Projekt, kamor kartica spada' +
+                    '</label>' +
+                    '<br>' +
+                '</div>' +
+
+                '<div class="modal-footer">' +
+                    '<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Zapri</button>' +
+                    '<button type="submit" class="btn btn-success" id="saveBoardView">Shrani</button>' +
+                '</div>' +
+
+                '</form>'
+
+
+
+
+            );
+
+            if (localStorage.getItem("user_" + user.id + "_board_" + board.id) != null) {
+                $("#saveNarrowColumnsCheckbox").prop('checked', true);
+            }
+
+
+            {{-- preveri se, ce je user KM, omogoci izbiranje podatkov za prikaz na kartici --}}
+
+            $('#boardModal').modal('show');
         }
 
 
