@@ -88,9 +88,17 @@
                                 <div class="col-sm-5">
                                     <p><input class="form-control" type="text" placeholder="Ime naloge"></p>
                                     <p><input class="form-control" type="number" placeholder="Ocena časa"></p>
+                                    <p>
+                                        <select class="form-control select2">
+                                            <option value="0">Nosilec</option>
+                                            @foreach($users as $user)
+                                                <option value="{{$user->id}}" {{ isset($card) && $user->id == $card->user_id ? 'selected' : ''}} {{ $user->deactivated ? 'disabled' : ''}}>{{$user->first_name}} {{$user->last_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </p>
                                 </div>
                                 <div class="col-sm-7">
-                                    <textarea class="form-control"></textarea>
+                                    <textarea class="form-control" rows="5"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -104,6 +112,7 @@
                             <th scope="col">Potrditev</th>
                             <th scope="col">Ime naloge</th>
                             <th scope="col">Opis naloge</th>
+                            <th scope="col">Nosilec</th>
                             <th scope="col">Ocena časa</th>
                             <th scope="col">Uredi</th>
                         </tr>
@@ -226,6 +235,7 @@
                 var input = elem.find('input'),
                     name = input.first().val(),
                     estimation = input.eq(1).val(),
+                    user = elem.find('select').val(),
                     description = elem.find('textarea').val();
                 if(name.length < 1){
                     alert("Ime ne sme biti prazno!");
@@ -236,6 +246,7 @@
                         "_token": "{{ csrf_token() }}",
                         id: tasks,
                         task_name: name,
+                        user_id: user,
                         card_id: {{ $card->id }},
                         estimation: estimation,
                         description: description

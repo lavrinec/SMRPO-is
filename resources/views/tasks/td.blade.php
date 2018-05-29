@@ -9,6 +9,7 @@
         ></th>
     <td>{{ $task->task_name }}</td>
     <td>{{ $task->description }}</td>
+    <td>{{ isset($task->user) ? $task->user->first_name . " " . $task->user->last_name : '' }}</td>
     <td style="min-width: 75px;">{{ $task->estimation }}</td>
     <td style="min-width: 75px;" class="editTask"><i class="fa fa-edit"></i></td>
 </tr>
