@@ -87,7 +87,7 @@
                             <div class="row" data-id="0">
                                 <div class="col-sm-5">
                                     <p><input class="form-control" type="text" placeholder="Ime naloge"></p>
-                                    <p><input class="form-control" type="number" placeholder="Ocena časa"></p>
+                                    <p><input class="form-control" type="number" placeholder="Ocena časa" min="0"></p>
                                     <p>
                                         <select class="form-control select2">
                                             <option value="0">Nosilec</option>
@@ -204,7 +204,8 @@
     @if(isset($card))
     @include('tasks.update')
 
-    function openEditing(name, estimation, descrition) {
+    function openEditing(name, estimation, descrition, owner) {
+        console.log(owner);
         var elem = $('#collapseEditingTask');
         $('#collapser').text("Shrani");
         elem.show("slow");
@@ -213,6 +214,7 @@
         input.first().val(name);
         input.eq(1).val(estimation);
         elem.find('textarea').val(descrition);
+        elem.find('select').val(owner).trigger('change');
     }
     $( document ).ready(function() {
         function editFunction(e) {
@@ -220,7 +222,7 @@
             var parent = target.closest('tr');
             var td = parent.find('td');
             tasks = parent.data('taskId');
-            openEditing(td.eq(1).text(),td.eq(3).text(),td.eq(2).text());
+            openEditing(td.eq(1).text(), td.eq(4).text(), td.eq(2).text(), td.eq(3).data('id'));
             //console.log(tasks, parent);
         }
         $(".editTask").click(editFunction);
@@ -228,7 +230,7 @@
         $("#collapser").click(function (e) {
             var elem = $('#collapseEditingTask');
             if(collapsed){
-                openEditing("","","");
+                openEditing("", "", "", 0);
                 tasks = 0;
             } else {
                 var target = $( e.target );
