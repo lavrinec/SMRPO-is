@@ -76,7 +76,7 @@
                     <label><input type="checkbox" name="is_critical" {{ ((isset($highPriotiry) && $highPriotiry) || (isset($card) && $card->is_critical)) ? 'checked' : '' }}>Kritičen</label>
                 </div>
                 <div class="checkbox hidden">
-                    <label><input type="checkbox" name="is_rejected" {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
+                    <label><input type="checkbox" name="is_rejected" {{ idsset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
                 </div>
                 <!--<input type="submit" style="display: none;">-->
             </div>
@@ -205,7 +205,7 @@
     @include('tasks.update')
 
     function openEditing(name, estimation, descrition, owner) {
-        console.log(owner);
+        //console.log(owner);
         var elem = $('#collapseEditingTask');
         $('#collapser').text("Shrani");
         elem.show("slow");
