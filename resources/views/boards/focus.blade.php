@@ -1450,7 +1450,6 @@
                 '<br>' +
 
 
-
                 '@if(Auth::user()->isKM())' +
                 '<hr>' +
                 '<h4>Prikaz podatkov na karticah:</h4>' +
@@ -1504,17 +1503,19 @@
                 $("#saveNarrowColumnsCheckbox").prop('checked', true);
             }
 
-            if (board_meta.showPriority == "true") {
-                $("#showPriority").prop('checked', true);
-            }
-            if (board_meta.showEstimation == "true") {
-                $("#showEstimation").prop('checked', true);
-            }
-            if (board_meta.showDeadline == "true") {
-                $("#showDeadline").prop('checked', true);
-            }
-            if (board_meta.showProject == "true") {
-                $("#showProject").prop('checked', true);
+            if (board_meta != null) {
+                if (board_meta.showPriority == "true") {
+                    $("#showPriority").prop('checked', true);
+                }
+                if (board_meta.showEstimation == "true") {
+                    $("#showEstimation").prop('checked', true);
+                }
+                if (board_meta.showDeadline == "true") {
+                    $("#showDeadline").prop('checked', true);
+                }
+                if (board_meta.showProject == "true") {
+                    $("#showProject").prop('checked', true);
+                }
             }
 
 
@@ -1525,7 +1526,7 @@
 
 
         function saveViewSettings() {
-            if({!! Auth::user()->isKM()? "true" : "false"  !!}) {
+            if ({!! Auth::user()->isKM()? "true" : "false"  !!}) {
                 $.ajax({
                     type: 'POST',
                     url: "{{ action('BoardController@saveViewSettings') }}",
@@ -1549,38 +1550,46 @@
                     }
                 });
             }
-            else{
+            else {
                 $('#boardModal').modal('toggle');
             }
         }
 
         function updateCardDataView() {
-            if (board_meta.showPriority == undefined || board_meta.showPriority == "false") {
+            if (board_meta == null) {
                 $(".priority_data").hide();
-            }
-            else {
-                $(".priority_data").show();
-            }
-
-            if (board_meta.showEstimation == undefined || board_meta.showEstimation == "false") {
                 $(".estimation_data").hide();
-            }
-            else {
-                $(".estimation_data").show();
-            }
-
-            if (board_meta.showDeadline == undefined || board_meta.showDeadline == "false") {
                 $(".deadline_data").hide();
-            }
-            else {
-                $(".deadline_data").show();
-            }
-
-            if (board_meta.showProject == undefined || board_meta.showProject == "false") {
                 $(".project_data").hide();
             }
             else {
-                $(".project_data").show();
+                if (board_meta.showPriority == undefined || board_meta.showPriority == "false") {
+                    $(".priority_data").hide();
+                }
+                else {
+                    $(".priority_data").show();
+                }
+
+                if (board_meta.showEstimation == undefined || board_meta.showEstimation == "false") {
+                    $(".estimation_data").hide();
+                }
+                else {
+                    $(".estimation_data").show();
+                }
+
+                if (board_meta.showDeadline == undefined || board_meta.showDeadline == "false") {
+                    $(".deadline_data").hide();
+                }
+                else {
+                    $(".deadline_data").show();
+                }
+
+                if (board_meta.showProject == undefined || board_meta.showProject == "false") {
+                    $(".project_data").hide();
+                }
+                else {
+                    $(".project_data").show();
+                }
             }
         }
 
