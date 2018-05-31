@@ -105,13 +105,13 @@
                 {{-- by Ziga --}}
 
                 {{-- ce tezave: komentiraj do komentarja "do tu" --}}
-                <div class="checkbox hidden">
-                    <label>
-                        <input type="checkbox" name="is_critical"
-                                {{ ((isset($highPriority) && $highPriority) || (isset($card) && $card->is_critical)) ? 'checked' : '' }}>
-                        Kritičen
-                    </label>
-                </div>
+                {{--<div class="checkbox hidden">--}}
+                    {{--<label>--}}
+                        {{--<input type="checkbox" name="is_critical"--}}
+                                {{--{{ ((isset($highPriority) && $highPriority) || (isset($card) && $card->is_critical)) ? 'checked' : '' }}>--}}
+                        {{--Kritičen--}}
+                    {{--</label>--}}
+                {{--</div>--}}
                 {{-- do tu --}}
 
                 <div class="checkbox hidden">
