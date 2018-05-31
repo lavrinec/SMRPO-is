@@ -76,7 +76,7 @@
                     <label><input type="checkbox" name="is_critical" {{ ((isset($highPriotiry) && $highPriotiry) || (isset($card) && $card->is_critical)) ? 'checked' : '' }}>Kritičen</label>
                 </div>
                 <div class="checkbox hidden">
-                    <label><input type="checkbox" name="is_rejected" {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
+                    <label><input type="checkbox" name="is_rejected" {{ idsset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
                 </div>
                 <!--<input type="submit" style="display: none;">-->
             </div>
@@ -87,10 +87,18 @@
                             <div class="row" data-id="0">
                                 <div class="col-sm-5">
                                     <p><input class="form-control" type="text" placeholder="Ime naloge"></p>
-                                    <p><input class="form-control" type="number" placeholder="Ocena časa"></p>
+                                    <p><input class="form-control" type="number" placeholder="Ocena časa" min="0"></p>
+                                    <p>
+                                        <select class="form-control select2">
+                                            <option value="0">Nosilec</option>
+                                            @foreach($users as $user)
+                                                <option value="{{$user->id}}" {{ isset($card) && $user->id == $card->user_id ? 'selected' : ''}} {{ $user->deactivated ? 'disabled' : ''}}>{{$user->first_name}} {{$user->last_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </p>
                                 </div>
                                 <div class="col-sm-7">
-                                    <textarea class="form-control"></textarea>
+                                    <textarea class="form-control" rows="5"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -104,6 +112,7 @@
                             <th scope="col">Potrditev</th>
                             <th scope="col">Ime naloge</th>
                             <th scope="col">Opis naloge</th>
+                            <th scope="col">Nosilec</th>
                             <th scope="col">Ocena časa</th>
                             <th scope="col">Uredi</th>
                         </tr>
@@ -195,7 +204,8 @@
     @if(isset($card))
     @include('tasks.update')
 
-    function openEditing(name, estimation, descrition) {
+    function openEditing(name, estimation, descrition, owner) {
+        //console.log(owner);
         var elem = $('#collapseEditingTask');
         $('#collapser').text("Shrani");
         elem.show("slow");
@@ -204,6 +214,7 @@
         input.first().val(name);
         input.eq(1).val(estimation);
         elem.find('textarea').val(descrition);
+        elem.find('select').val(owner).trigger('change');
     }
     $( document ).ready(function() {
         function editFunction(e) {
@@ -211,7 +222,7 @@
             var parent = target.closest('tr');
             var td = parent.find('td');
             tasks = parent.data('taskId');
-            openEditing(td.eq(1).text(),td.eq(3).text(),td.eq(2).text());
+            openEditing(td.eq(1).text(), td.eq(4).text(), td.eq(2).text(), td.eq(3).data('id'));
             //console.log(tasks, parent);
         }
         $(".editTask").click(editFunction);
@@ -219,13 +230,14 @@
         $("#collapser").click(function (e) {
             var elem = $('#collapseEditingTask');
             if(collapsed){
-                openEditing("","","");
+                openEditing("", "", "", 0);
                 tasks = 0;
             } else {
                 var target = $( e.target );
                 var input = elem.find('input'),
                     name = input.first().val(),
                     estimation = input.eq(1).val(),
+                    user = elem.find('select').val(),
                     description = elem.find('textarea').val();
                 if(name.length < 1){
                     alert("Ime ne sme biti prazno!");
@@ -236,6 +248,7 @@
                         "_token": "{{ csrf_token() }}",
                         id: tasks,
                         task_name: name,
+                        user_id: user,
                         card_id: {{ $card->id }},
                         estimation: estimation,
                         description: description

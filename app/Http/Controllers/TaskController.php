@@ -22,6 +22,9 @@ class TaskController extends Controller
         if(empty($data['estimation'])){
             $data['estimation'] = 0;
         }
+        if(isset($data['user_id']) && $data['user_id'] == 0){
+            unset($data['user_id']);
+        }
         //dd($data);
         if($id == 0){
             $data["is_finished"] = false;
