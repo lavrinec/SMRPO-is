@@ -72,4 +72,29 @@
         
     @endif
     </div>
+
+    <script>
+        var card = {!! json_encode($card) !!};
+
+        var column = allLeaves.find(function (element, i) {
+            if (element.id == card.column_id) {
+                return element;
+            }
+        });
+
+        var existingCard = column.cards.find(function (element, i) {
+            if (element.id == card.id) {
+                return element;
+            }
+        });
+
+        if(existingCard == undefined){
+            console.log("dodajam");
+            column.cards.push(card);
+        }
+
+        
+    </script>
+    
+    
 </div>
