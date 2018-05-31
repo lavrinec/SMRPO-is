@@ -20,7 +20,7 @@
                 </small>
                 <br>
 
-                <small class="priority_data">Prioriteta: </small>
+                <small class="priority_data">Prioriteta: {{ gettype(json_decode($card->meta)) == 'object' ? json_decode($card->meta)->priority : "" }} </small>
                 <br class="priority_data">
 
                 <small class="estimation_data">Zahtevnost: {{ $card->estimation }} </small>
@@ -112,6 +112,7 @@
 
         
     </script>
-    
+
+
     
 </div>

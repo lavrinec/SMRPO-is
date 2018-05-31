@@ -9,12 +9,15 @@
     }
 
 @endphp
-<form @if($canEdit) id="updateCard" method="POST" action="{{ action('CardController@update', isset($card) ? $card->id : 0) }}" @endif>
+<form @if($canEdit) id="updateCard" method="POST"
+      action="{{ action('CardController@update', isset($card) ? $card->id : 0) }}" @endif>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Kartica
             @if(isset($card))
-                <small class="pull-right" style="margin-top: 2px;">ID: <b>{{ $card->id }}</b>, Stolpec: <b>{{ $column->column_name }}</b>, Zaporedna št.: <b>{{ $card->order }}</b> &nbsp;&nbsp;</small>
+                <small class="pull-right" style="margin-top: 2px;">ID: <b>{{ $card->id }}</b>, Stolpec:
+                    <b>{{ $column->column_name }}</b>, Zaporedna št.: <b>{{ $card->order }}</b> &nbsp;&nbsp;
+                </small>
             @endif
         </h4>
     </div>
@@ -34,14 +37,16 @@
             <div id="editing" class="tab-pane fade in active">
                 <input type="hidden" class="form-control" id="_token" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" class="form-control" id="column_id" name="column_id" value="{{ $column->id }}">
-                <!--<input type="hidden" class="form-control" id="id" value="{{ isset($card) ? $card->id : '0' }}">-->
+            <!--<input type="hidden" class="form-control" id="id" value="{{ isset($card) ? $card->id : '0' }}">-->
                 <div class="form-group">
                     <label for="card_name" class="col-form-label">Ime kartice:</label>
-                    <input type="text" class="form-control" id="card_name" name="card_name" value="{{ isset($card) ? $card->card_name : '' }}" required>
+                    <input type="text" class="form-control" id="card_name" name="card_name"
+                           value="{{ isset($card) ? $card->card_name : '' }}" required>
                 </div>
                 <div class="form-group">
                     <label for="description" class="col-form-label">Opis:</label>
-                    <textarea class="form-control" id="description" name="description">{{ isset($card) ? $card->description : '' }}</textarea>
+                    <textarea class="form-control" id="description"
+                              name="description">{{ isset($card) ? $card->description : '' }}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="user_id" class="col-form-label">Projekt:</label>
@@ -62,21 +67,55 @@
                 </div>
                 <div class="form-group">
                     <label for="deadline" class="col-form-label">Rok:</label>
-                    <input type="date" class="form-control" id="deadline" name="deadline"  value="{{ isset($card) ? $card->deadline : '' }}">
+                    <input type="date" class="form-control" id="deadline" name="deadline"
+                           value="{{ isset($card) ? $card->deadline : '' }}">
                 </div>
                 <div class="form-group">
                     <label for="color" class="col-form-label">Barva:</label>
-                    <input type="color" class="form-control" id="color" name="color"  value="{{ isset($card) ? $card->color : '#6fdede' }}">
+                    <input type="color" class="form-control" id="color" name="color"
+                           value="{{ isset($card) ? $card->color : '#6fdede' }}">
                 </div>
                 <div class="form-group">
                     <label for="estimation" class="col-form-label">Ocena časa:</label>
-                    <input type="number" class="form-control" id="estimation" name="estimation"  value="{{ isset($card) ? $card->estimation : '' }}">
+                    <input type="number" class="form-control" id="estimation" name="estimation"
+                           value="{{ isset($card) ? $card->estimation : '' }}">
                 </div>
-                <div class="checkbox hidden">
-                    <label><input type="checkbox" name="is_critical" {{ ((isset($highPriotiry) && $highPriotiry) || (isset($card) && $card->is_critical)) ? 'checked' : '' }}>Kritičen</label>
+
+                <div class="form-group">
+                    <label for="priority" class="col-form-label">Prioriteta:</label>
+                    <select class="form-control select2" id="priority" name="priority">
+                        <option value=""></option>
+                        <option value="MUST have" {{ isset($card) && $card->meta != NULL && $card->meta->priority=="MUST have" ? 'selected' : ''}} >
+                            MUST have
+                        </option>
+                        <option value="SHOULD have" {{ isset($card) && $card->meta != NULL && $card->meta->priority=="SHOULD have" ? 'selected' : ''}} >
+                            SHOULD have
+                        </option>
+                        <option value="COULD have" {{ isset($card) && $card->meta != NULL && $card->meta->priority=="COULD have" ? 'selected' : ''}} >
+                            COULD have
+                        </option>
+
+                    </select>
                 </div>
+
+
+
+                {{-- MATJAZ, upam, da te tole ne moti ... ker sem zakomentiral, ker meni ni delalo drugace --}}
+                {{-- by Ziga --}}
+
+                {{--<div class="checkbox hidden">--}}
+                    {{--<label>--}}
+                        {{--<input type="checkbox" name="is_critical"--}}
+                                {{--{{ ((isset($highPriority) && $highPriority) || (isset($card) && $card->is_critical)) ? 'checked' : '' }}>--}}
+                        {{--Kritičen--}}
+                    {{--</label>--}}
+                {{--</div>--}}
                 <div class="checkbox hidden">
-                    <label><input type="checkbox" name="is_rejected" {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>Zavrnjen</label>
+                    <label>
+                        <input type="checkbox" name="is_rejected"
+                            {{ isset($card) && $card->is_rejected ? 'checked' : '' }}>
+                        Zavrnjen
+                    </label>
                 </div>
                 <!--<input type="submit" style="display: none;">-->
             </div>
@@ -104,7 +143,7 @@
                         </div>
                     </div>
                     <p>
-                        <button class="btn btn-primary" type="button" id="collapser"> + </button>
+                        <button class="btn btn-primary" type="button" id="collapser"> +</button>
                     </p>
                     <table class="table table-bordered">
                         <thead>
@@ -128,24 +167,25 @@
                     @if(count($moves) > 0)
                         <table class="table table-bordered">
                             <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Iz stolpca</th>
-                                    <th scope="col">V stolpec</th>
-                                </tr>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Iz stolpca</th>
+                                <th scope="col">V stolpec</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @foreach($moves as $move)
-                                    <tr>
-                                        <td  style="min-width: 75px;">{{ $move->id }}</th>
-                                        <td>
-                                            @if(isset($move->old_column))
-                                                {{ $move->old_column->column_name }} (#{{ $move->old_column->id }})
-                                            @endif
-                                        </td>
-                                        <td>{{ $move->new_column->column_name }} (#{{ $move->new_column->id }})</td>
-                                    </tr>
-                                @endforeach
+                            @foreach($moves as $move)
+                                <tr>
+                                    <td style="min-width: 75px;">
+                                    {{ $move->id }}</th>
+                                    <td>
+                                        @if(isset($move->old_column))
+                                            {{ $move->old_column->column_name }} (#{{ $move->old_column->id }})
+                                        @endif
+                                    </td>
+                                    <td>{{ $move->new_column->column_name }} (#{{ $move->new_column->id }})</td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     @else
@@ -166,10 +206,15 @@
                             <tbody>
                             @foreach($WipViolations as $violation)
                                 <tr>
-                                    <td style="min-width: 75px;">{{ $violation->id }}</th>
+                                    <td style="min-width: 75px;">
+                                    {{ $violation->id }}</th>
                                     <td>{{ $violation->reason }}</td>
-                                    <td style="min-width: 150px;">{{ $violation->old_column->column_name }} (#{{ $violation->old_column->id }})</td>
-                                    <td style="min-width: 150px;">{{ $violation->new_column->column_name }} (#{{ $violation->new_column->id }})</td>
+                                    <td style="min-width: 150px;">{{ $violation->old_column->column_name }}
+                                        (#{{ $violation->old_column->id }})
+                                    </td>
+                                    <td style="min-width: 150px;">{{ $violation->new_column->column_name }}
+                                        (#{{ $violation->new_column->id }})
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -200,7 +245,7 @@
     var $disabledResults = $(".select2");
     var tasks = 0;
     var collapsed = true;
-    $disabledResults.select2({ width: "100%" });
+    $disabledResults.select2({width: "100%"});
     @if(isset($card))
     @include('tasks.update')
 
@@ -216,30 +261,31 @@
         elem.find('textarea').val(descrition);
         elem.find('select').val(owner).trigger('change');
     }
-    $( document ).ready(function() {
+    $(document).ready(function () {
         function editFunction(e) {
-            var target = $( e.target );
+            var target = $(e.target);
             var parent = target.closest('tr');
             var td = parent.find('td');
             tasks = parent.data('taskId');
             openEditing(td.eq(1).text(), td.eq(4).text(), td.eq(2).text(), td.eq(3).data('id'));
             //console.log(tasks, parent);
         }
+
         $(".editTask").click(editFunction);
 
         $("#collapser").click(function (e) {
             var elem = $('#collapseEditingTask');
-            if(collapsed){
+            if (collapsed) {
                 openEditing("", "", "", 0);
                 tasks = 0;
             } else {
-                var target = $( e.target );
+                var target = $(e.target);
                 var input = elem.find('input'),
                     name = input.first().val(),
                     estimation = input.eq(1).val(),
                     user = elem.find('select').val(),
                     description = elem.find('textarea').val();
-                if(name.length < 1){
+                if (name.length < 1) {
                     alert("Ime ne sme biti prazno!");
                     return;
                 }
@@ -253,16 +299,16 @@
                         estimation: estimation,
                         description: description
                     },
-                    function(data, status){
+                    function (data, status) {
                         elem.hide("slow");
                         collapsed = true;
                         target.text("+");
                         var table = $("#tasks");
-                        if(tasks === 0){
+                        if (tasks === 0) {
                             table.find("tbody").append(data.taskHtml);
                             tasks = data.task.id;
                         } else {
-                            table.find('[data-task-id="' + tasks + '"]').replaceWith( data.taskHtml );
+                            table.find('[data-task-id="' + tasks + '"]').replaceWith(data.taskHtml);
                         }
                         table.find('[data-task-id="' + tasks + '"] .editTask').click(editFunction);
                         tasks = 0;
@@ -271,11 +317,11 @@
         });
 
         $("#spinner").hide();
-        $("#deleteCard").click(function(e){
+        $("#deleteCard").click(function (e) {
             console.log("delete clicked");
             e.preventDefault();
             var text = $('textarea#deletingReason').val();
-            if(text.length < 2){
+            if (text.length < 2) {
                 alert("Za izbris morate navesti razlog!");
             } else {
                 $("#spinner").show();
@@ -290,7 +336,7 @@
                     success: function () {
                         console.log("uspesno izbrisana");
                         $('#cardModal').modal('hide');
-                        $( document ).find("[data-card-id='{{ $card->id }}']").remove();
+                        $(document).find("[data-card-id='{{ $card->id }}']").remove();
 
                     }
 

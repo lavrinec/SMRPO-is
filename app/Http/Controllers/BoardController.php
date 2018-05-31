@@ -577,19 +577,14 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
     }
 
 
-
     public function saveViewSettings(Request $request){
-//        dd($request->showProject);
-
         $board = Board::where('id', $request->board_id)->first();
-
         $meta = json_decode($board->meta, true);
 
         $meta['showPriority'] = $request->showPriority;
         $meta['showEstimation'] = $request->showEstimation;
         $meta['showDeadline'] = $request->showDeadline;
         $meta['showProject'] = $request->showProject;
-
 
         $board->update(['meta' => json_encode($meta)]);
 
@@ -598,14 +593,7 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
             'state' => 'saved',
             'board_meta' => $meta
         ]);
-
-
-
     }
-
-
-
-
 
 
     private $tranmitionArray = [];

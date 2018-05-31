@@ -135,7 +135,12 @@ class CardController extends Controller
     {
         $data = ['card' => null, 'column' => $column, 'board' => $board];
         if($id != 0){
-            $data['card'] = Card::where('id',$id)->with('tasks.user')->first();
+            $cardX = Card::where('id',$id)->with('tasks.user')->first();
+            $cardX->meta = json_decode($cardX->meta);
+            $data['card'] = $cardX;
+
+//            $data['card'] = Card::where('id',$id)->with('tasks.user')->first();
+
             if(!isset($board)) $data['board'] = $data['card']->board()->first();
             if(!isset($column)) $data['column'] = $data['card']->column()->first();
             $data['moves'] = $data['card']->moves()->with('old_column', 'new_column')->get();
@@ -190,9 +195,11 @@ class CardController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $data = request()->except('_token', 'deletingReason');
+        $data = request()->except('_token', 'deletingReason', 'priority');
+
         if(!isset($data['user_id']) || $data['user_id'] == 0) $data['user_id'] = null;
         if(!isset($data['deadline']) || $data['deadline'] == '') $data['deadline'] = null;
+//        else $data['deadline'] = date("Y-m-d", strtotime($data['deadline']));
         if(!isset($data['estimation']) || $data['estimation'] == '') $data['estimation'] = 0;
         if(Auth::user()->isPo())
             $data['is_critical'] = (! (!isset($data['is_critical']) || $data['is_critical'] == '' || $data['is_critical'] == 'off'));
@@ -208,6 +215,9 @@ class CardController extends Controller
                 $data['is_silver_bullet'] = true;
             }
 
+            $meta["priority"] = $request->priority;
+            $data['meta'] = json_encode($meta);
+
             $card = Card::create($data);
             checkWipViolation($card, "Dodajanje nove kartice");
             $move = [
@@ -222,6 +232,11 @@ class CardController extends Controller
         } else {
             //return 'hhhh';
             $card = Card::where('id', $id)->first();
+
+            $meta = json_decode($card->meta, true);
+            $meta['priority'] = $request->priority;
+            $data['meta'] = json_encode($meta);
+
             $card->update($data);
         }
 
