@@ -6,7 +6,7 @@
             <div class="col-sm-10">
 
                 <h5 class="box-title" style="white-space: normal;">
-                    <small><small>{{ $card->order }}</small></small>
+                    <small><small>{{ $card->id }}</small></small>
                     {{ $card->card_name }}
 
                 </h5>
@@ -19,7 +19,17 @@
                     @endif
                 </small>
                 <br>
-                <small>Projekt: {{ $card->project["board_name"] }}</small>
+
+                <small class="priority_data">Prioriteta: </small>
+                <br class="priority_data">
+
+                <small class="estimation_data">Zahtevnost: {{ $card->estimation }} </small>
+                <br class="estimation_data">
+
+                <small class="deadline_data">Rok: {{ $card->deadline=='' ? '-' : date("d. m. Y", strtotime($card->deadline)) }}</small>
+                <br class="deadline_data">
+
+                <small class="project_data">Projekt: {{ $card->project["board_name"] }}</small>
 
             </div>
 
@@ -99,6 +109,7 @@
         fixMissingCardInColumnsVar(card, allLeaves);
         fixMissingCardInColumnsVar(card, rootColumns);
         fixMissingCardInColumnsVar(card, allColumns);
+
         
     </script>
     

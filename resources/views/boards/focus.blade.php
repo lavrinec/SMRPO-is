@@ -365,6 +365,7 @@
 
 
         var board = {!! $board !!};
+        var board_meta = JSON.parse(board.meta);
 
         var projects = {!! $board->projects !!};
         var groups = {!! $board->groups !!};
@@ -544,8 +545,8 @@
                 }
             }
 
-            if(((foundPrevious.acceptance_testing) == true) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))){
-                if( foundPORole == null || foundPORole == undefined){
+            if (((foundPrevious.acceptance_testing) == true) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))) {
+                if (foundPORole == null || foundPORole == undefined) {
                     $('#boardModal .modal-footer').html('');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
                     $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
@@ -583,7 +584,7 @@
             if (shouldAllow) {
                 var needToRecreateDOM = false;
 
-                if(foundGroup == null && foundGroup == undefined){
+                if (foundGroup == null && foundGroup == undefined) {
                     $('#boardModal .modal-footer').html('');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
                     $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
@@ -594,7 +595,7 @@
                 }
                 console.log('what____');
                 console.log(foundPORole);
-                if(( nextIndexInAllColumns > acceptanceTestingColumnIndex && (foundPORole == null || foundPORole == undefined)) || (previousIndexInAllColumns > acceptanceTestingColumnIndex && (foundPORole == null || foundPORole == undefined)) ) {
+                if (( nextIndexInAllColumns > acceptanceTestingColumnIndex && (foundPORole == null || foundPORole == undefined)) || (previousIndexInAllColumns > acceptanceTestingColumnIndex && (foundPORole == null || foundPORole == undefined))) {
                     $('#boardModal .modal-footer').html('');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
                     $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
@@ -605,8 +606,10 @@
                 }
                 if (foundNext.acceptance_testing == true || foundNext.acceptance_testing == 1) {
                     //console.log(foundCard, "AAAAAAAAAAA");
-                    if( Array.isArray(foundCard.tasks) && (
-                        foundCard.tasks.filter(function (o) { return o.is_finished == 0 || o.is_finished == false}).length > 0)) {
+                    if (Array.isArray(foundCard.tasks) && (
+                        foundCard.tasks.filter(function (o) {
+                            return o.is_finished == 0 || o.is_finished == false
+                        }).length > 0)) {
                         $('#boardModal .modal-footer').html('');
                         $('#boardModal .modal-header h4').text('Opozorilo!');
                         $('#boardModal .modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">Zapri</button>');
@@ -623,7 +626,7 @@
                     var foundNextString = JSON.stringify(foundNext).replace(/"/g, "'");
                     var foundCardString = JSON.stringify(foundCard).replace(/"/g, "'");
                     console.log((foundPreviousString));
-                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\','+foundPrevious.id+','+foundNext.id+','+foundCard.id+','+foundCard.order+','+foundPrevious.acceptance_testing+','+acceptanceTestingColumnIndex+','+nextIndexInAllColumns+','+previousIndexInAllColumns+','+'\''+foundCard.color+'\''+',\''+foundCard.meta+'\''+','+foundPrevious.parent_id+','+foundNext.parent_id+')" type="button" class="btn btn-default">Shrani</button>');
+                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\',' + foundPrevious.id + ',' + foundNext.id + ',' + foundCard.id + ',' + foundCard.order + ',' + foundPrevious.acceptance_testing + ',' + acceptanceTestingColumnIndex + ',' + nextIndexInAllColumns + ',' + previousIndexInAllColumns + ',' + '\'' + foundCard.color + '\'' + ',\'' + foundCard.meta + '\'' + ',' + foundPrevious.parent_id + ',' + foundNext.parent_id + ')" type="button" class="btn btn-default">Shrani</button>');
                     $('#boardModal .modal-footer').append('<button id="cancelWipBreak" onclick="enableWipBreak(\'cancelWipBreak\')" type="button" class="btn btn-default">Prekliči</button>');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
                     $('#boardModal .modal-body').html('<div class="row">' +
@@ -648,9 +651,9 @@
                     'board_id': board.id
                 }
                 console.log('column' + (parseInt(previousIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
-                console.log('column' + (parseInt(previousIndexInAllColumns)) +'  '+(parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
+                console.log('column' + (parseInt(previousIndexInAllColumns)) + '  ' + (parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
                 console.log(foundPrevious);
-                if(((foundPrevious.acceptance_testing == true || foundPrevious.acceptance_testing == 1) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex)) ) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
+                if (((foundPrevious.acceptance_testing == true || foundPrevious.acceptance_testing == 1) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex)) ) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))) {
                     sendData['is_rejected'] = 1;
                     if (foundCard.meta == null || foundCard.meta == undefined || foundCard.meta == '' || !foundCard.meta.includes('previousColor:')) {
                         sendData['meta'] = foundCard.meta + ';previousColor:' + foundCard.color;
@@ -690,19 +693,19 @@
 
                         $("#numOfAllCards_" + foundNext.id)[0].innerText = numOfCardsNext;
                         $("#numOfAllCards_" + foundPrevious.id)[0].innerText = numOfCardsPrev;
-                        $("#numOfCards_narrow_" + foundNext.id )[0].innerText = numOfCardsNext;
-                        $("#numOfCards_narrow_" + foundPrevious.id )[0].innerText = numOfCardsPrev;
-                        if(foundNext.parent_id != null && foundNext.parent_id != undefined){
+                        $("#numOfCards_narrow_" + foundNext.id)[0].innerText = numOfCardsNext;
+                        $("#numOfCards_narrow_" + foundPrevious.id)[0].innerText = numOfCardsPrev;
+                        if (foundNext.parent_id != null && foundNext.parent_id != undefined) {
                             console.log('ja');
                             $("#numOfAllCards_" + foundNext.parent_id)[0].innerText = sumAllChildrenCardsHeader(foundNext.parent_id);
-                            $("#numOfCards_narrow_" + foundNext.parent_id )[0].innerText = sumAllChildrenCardsHeader(foundNext.parent_id);
+                            $("#numOfCards_narrow_" + foundNext.parent_id)[0].innerText = sumAllChildrenCardsHeader(foundNext.parent_id);
                         }
-                        if(foundPrevious.parent_id != null && foundPrevious.parent_id != undefined){
+                        if (foundPrevious.parent_id != null && foundPrevious.parent_id != undefined) {
                             console.log('ja1');
                             $("#numOfAllCards_" + foundPrevious.parent_id)[0].innerText = sumAllChildrenCardsHeader(foundPrevious.parent_id);
-                            $("#numOfCards_narrow_" + foundPrevious.parent_id )[0].innerText = sumAllChildrenCardsHeader(foundPrevious.parent_id);
+                            $("#numOfCards_narrow_" + foundPrevious.parent_id)[0].innerText = sumAllChildrenCardsHeader(foundPrevious.parent_id);
                         }
-                        if(needToRecreateDOM==true) {
+                        if (needToRecreateDOM == true) {
                             resetTable();
                         }
 
@@ -721,7 +724,7 @@
         });
 
         // function enableWipBreak(buttonid, previd, nextid,cardid,cardorder){
-        function enableWipBreak(buttonid, previd, nextid,cardid, cardorder, acceptance_testing, acceptanceTestingColumnIndex, nextIndexInAllColumns, previousIndexInAllColumns, cardColor, cardMeta, prevParent, nextParent){
+        function enableWipBreak(buttonid, previd, nextid, cardid, cardorder, acceptance_testing, acceptanceTestingColumnIndex, nextIndexInAllColumns, previousIndexInAllColumns, cardColor, cardMeta, prevParent, nextParent) {
             /*
              * enableWipBreak
              * cancelWipBreak
@@ -747,7 +750,7 @@
                     }
 
 
-                    if(((acceptance_testing == true || acceptance_testing == 1 || acceptance_testing == '1') || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))){
+                    if (((acceptance_testing == true || acceptance_testing == 1 || acceptance_testing == '1') || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))) {
                         sendData['is_rejected'] = 1;
                         if (cardMeta == null || cardMeta == undefined || cardMeta == '' || !cardMeta.includes('previousColor:')) {
                             sendData['meta'] = cardMeta + ';previousColor:' + cardColor;
@@ -785,17 +788,17 @@
 
                             $("#numOfAllCards_" + nextid)[0].innerText = numOfCardsNext;
                             $("#numOfAllCards_" + previd)[0].innerText = numOfCardsPrev;
-                            $("#numOfCards_narrow_" + nextid )[0].innerText = numOfCardsNext;
-                            $("#numOfCards_narrow_" + previd )[0].innerText = numOfCardsPrev;
-                            if(prevParent != null && prevParent != undefined && prevParent != ''){
+                            $("#numOfCards_narrow_" + nextid)[0].innerText = numOfCardsNext;
+                            $("#numOfCards_narrow_" + previd)[0].innerText = numOfCardsPrev;
+                            if (prevParent != null && prevParent != undefined && prevParent != '') {
                                 $("#numOfAllCards_" + prevParent)[0].innerText = sumAllChildrenCardsHeader(prevParent);
-                                $("#numOfCards_narrow_" + prevParent )[0].innerText = sumAllChildrenCardsHeader(prevParent);
+                                $("#numOfCards_narrow_" + prevParent)[0].innerText = sumAllChildrenCardsHeader(prevParent);
                             }
-                            if(nextParent != null && nextParent != undefined && nextParent != ''){
+                            if (nextParent != null && nextParent != undefined && nextParent != '') {
                                 $("#numOfAllCards_" + nextParent)[0].innerText = sumAllChildrenCardsHeader(nextParent);
-                                $("#numOfCards_narrow_" + nextParent )[0].innerText = sumAllChildrenCardsHeader(nextParent);
+                                $("#numOfCards_narrow_" + nextParent)[0].innerText = sumAllChildrenCardsHeader(nextParent);
                             }
-                            if(needToRecreateDOM){
+                            if (needToRecreateDOM) {
                                 resetTable();
                             }
 
@@ -865,9 +868,9 @@
             }
 
             $("#thead_tr_0").append("<th id='topleft' class='forprojects' rowspan='" + numOfTrs + "'>" +
-                    "<button class='btn btn-primary' onclick='makeFull()'>" +
-                            "Full Screen" +
-                        "</button>" +
+                "<button class='btn btn-primary' onclick='makeFull()'>" +
+                "Full Screen" +
+                "</button>" +
                 "</th>");
 
             makeHeaderTr(rootColumns, 0);
@@ -965,6 +968,7 @@
             }
 
             updateRowHeight();
+
         }
 
 
@@ -979,6 +983,8 @@
                 },
                 success: function (data) {
                     $("#" + place).append(data);
+
+                    updateCardDataView();
 
                 }
             });
@@ -1327,13 +1333,13 @@
             var chckbox = $("#saveNarrowColumnsCheckbox")[0];
 
 
-            if(chckbox != undefined && chckbox.checked){
+            if (chckbox != undefined && chckbox.checked) {
                 console.log("checkbox saved: " + chckbox.checked);
-                saveNarrowCols=true;
+                saveNarrowCols = true;
             }
-            else if(chckbox != undefined && !chckbox.checked){
+            else if (chckbox != undefined && !chckbox.checked) {
                 console.log("checkbox saved: " + chckbox.checked);
-                saveNarrowCols=false;
+                saveNarrowCols = false;
             }
 
             if (saveNarrowCols) {
@@ -1388,7 +1394,7 @@
                     return foundCard;
 
                 } else {
-                    if(notyfy)
+                    if (notyfy)
                         alert('cannot find card in allLeaves');
                     else
                         return null;
@@ -1425,75 +1431,90 @@
             {{-- ne pa da saveNarrowColumns gleda checkbox! --}}
 
             $('#boardModal .modal-content').html(
-                '<form id="updateBoardView" method="POST" action="#">' +
+                '<form id="updateBoardView" method="POST" action="javascript:saveViewSettings()">' +
 
                 '<div class="modal-header" style="border-bottom:none;">' +
-                    '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
-                    '<h4 style="text-align: center;" class="modal-title">Nastavitve pogleda</h4>' +
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+                '<h4 style="text-align: center;" class="modal-title">Nastavitve pogleda</h4>' +
                 '</div>' +
 
                 '<div class="modal-body">' +
-                    '<h4>Prikaz ozkih stolpcev:</h4>' +
 
-                    '<label for="saveNarrowColumnsCheckbox" class="">' +
-                        '<input id="saveNarrowColumnsCheckbox" name="saveNarrowColumnsCheckbox" ' +
-                            'value="saveNarrowColumns" type="checkbox" class="pull-left" ' +
-                            'onclick="saveNarrowColumns()">' +
-                            ' Ohrani trenutni pogled v prihodnje' +
-                    '</label>' +
-                    '<br><br>'+
+                '<h4>Prikaz ozkih stolpcev:</h4>' +
+                '<label for="saveNarrowColumnsCheckbox" class="">' +
+                '<input id="saveNarrowColumnsCheckbox" name="saveNarrowColumnsCheckbox" ' +
+                'value="saveNarrowColumns" type="checkbox" class="pull-left" ' +
+                'onclick="saveNarrowColumns()">' +
+                ' Ohrani trenutni pogled v prihodnje' +
+                '</label>' +
+                '<br>' +
 
-                    '<h4>Prikaz podatkov na karticah:</h4>' +
-                    '<p>Na karticah so privzeto prikazani <b>identifikator kartice</b>, <b>ime kartice</b> in <b>odgovorni razvijalec</b>.<br>' +
-                    'Spodaj lahko določite, kateri dodatni podatki se še prikazujejo na kartici.</p>' +
 
-                    '<label for="showPriority" class="">' +
-                        '<input id="showPriority" type="checkbox" class="pull-left" name="meta[showPriority]" ' +
-                        'value="showPriority" ' +
-                        '{{ isset($board->meta->showPriority) && $board->meta->showPriority == true ? "checked" : "" }}>' +
-                        ' Prioriteta' +
-                    '</label>' +
-                    '<br>' +
 
-                    '<label for="showEstimation" class="">' +
-                        '<input id="showEstimation" type="checkbox" class="pull-left" name="meta[showEstimation]" ' +
-                        'value="showEstimation" ' +
-                        '{{ isset($board->meta->showEstimation) && $board->meta->showEstimation == true ? "checked" : "" }}>' +
-                        ' Ocena zahtevnosti' +
-                    '</label>' +
-                    '<br>' +
+                '@if(Auth::user()->isKM())' +
+                '<hr>' +
+                '<h4>Prikaz podatkov na karticah:</h4>' +
+                '<p>Na karticah so privzeto prikazani <b>identifikator kartice</b>, <b>ime kartice</b> in <b>odgovorni razvijalec</b>.<br>' +
+                'Spodaj lahko določite, kateri dodatni podatki se še prikazujejo na kartici.</p>' +
 
-                    '<label for="showDeadline" class="">' +
-                        '<input id="showDeadline" type="checkbox" class="pull-left" name="meta[showDeadline]" ' +
-                        'value="showDeadline" ' +
-                        '{{ isset($board->meta->showDeadline) && $board->meta->showDeadline == true ? "checked" : "" }}>' +
-                        ' Rok za dokončanje' +
-                    '</label>' +
-                    '<br>' +
+                '<label for="showPriority" class="">' +
+                '<input id="showPriority" type="checkbox" class="pull-left" name="meta[showPriority]" ' +
+                'value="showPriority" ' +
+                '{{ isset($board->meta->showPriority) && $board->meta->showPriority == true ? "checked" : "" }}>' +
+                ' Prioriteta' +
+                '</label>' +
+                '<br>' +
 
-                    '<label for="showProject" class="">' +
-                        '<input id="showProject" type="checkbox" class="pull-left" name="meta[showProject]" ' +
-                        'value="showProject" ' +
-                        '{{ isset($board->meta->showProject) && $board->meta->showProject == true ? "checked" : "" }}>' +
-                        ' Projekt, kamor kartica spada' +
-                    '</label>' +
-                    '<br>' +
+                '<label for="showEstimation" class="">' +
+                '<input id="showEstimation" type="checkbox" class="pull-left" name="meta[showEstimation]" ' +
+                'value="showEstimation" ' +
+                '{{ isset($board->meta->showEstimation) && $board->meta->showEstimation == true ? "checked" : "" }}>' +
+                ' Ocena zahtevnosti' +
+                '</label>' +
+                '<br>' +
+
+                '<label for="showDeadline" class="">' +
+                '<input id="showDeadline" type="checkbox" class="pull-left" name="meta[showDeadline]" ' +
+                'value="showDeadline" ' +
+                '{{ isset($board->meta->showDeadline) && $board->meta->showDeadline == true ? "checked" : "" }}>' +
+                ' Rok za dokončanje' +
+                '</label>' +
+                '<br>' +
+
+                '<label for="showProject" class="">' +
+                '<input id="showProject" type="checkbox" class="pull-left" name="meta[showProject]" ' +
+                'value="showProject" ' +
+                '{{ isset($board->meta->showProject) && $board->meta->showProject == true ? "checked" : "" }}>' +
+                ' Projekt, h katerem kartica spada' +
+                '</label>' +
+                '<br>' +
+                '@endif' +
+
                 '</div>' +
 
                 '<div class="modal-footer">' +
-                    '<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Zapri</button>' +
-                    '<button type="submit" class="btn btn-success" id="saveBoardView">Shrani</button>' +
+                '<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Zapri</button>' +
+                '<button type="submit" class="btn btn-success" id="saveBoardView">Shrani</button>' +
                 '</div>' +
 
                 '</form>'
-
-
-
-
             );
 
             if (localStorage.getItem("user_" + user.id + "_board_" + board.id) != null) {
                 $("#saveNarrowColumnsCheckbox").prop('checked', true);
+            }
+
+            if (board_meta.showPriority == "true") {
+                $("#showPriority").prop('checked', true);
+            }
+            if (board_meta.showEstimation == "true") {
+                $("#showEstimation").prop('checked', true);
+            }
+            if (board_meta.showDeadline == "true") {
+                $("#showDeadline").prop('checked', true);
+            }
+            if (board_meta.showProject == "true") {
+                $("#showProject").prop('checked', true);
             }
 
 
@@ -1502,6 +1523,66 @@
             $('#boardModal').modal('show');
         }
 
+
+        function saveViewSettings() {
+            if({!! Auth::user()->isKM()? "true" : "false"  !!}) {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ action('BoardController@saveViewSettings') }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'showPriority': $("#showPriority")[0].checked,
+                        'showEstimation': $("#showEstimation")[0].checked,
+                        'showDeadline': $("#showDeadline")[0].checked,
+                        'showProject': $("#showProject")[0].checked,
+                        'board_id': board.id
+                    },
+                    success: function (data) {
+                        // wait until saved, then close
+
+                        board.meta = JSON.stringify(data.board_meta);
+                        board_meta = data.board_meta;
+
+                        updateCardDataView();
+
+                        $('#boardModal').modal('toggle');
+                    }
+                });
+            }
+            else{
+                $('#boardModal').modal('toggle');
+            }
+        }
+
+        function updateCardDataView() {
+            if (board_meta.showPriority == undefined || board_meta.showPriority == "false") {
+                $(".priority_data").hide();
+            }
+            else {
+                $(".priority_data").show();
+            }
+
+            if (board_meta.showEstimation == undefined || board_meta.showEstimation == "false") {
+                $(".estimation_data").hide();
+            }
+            else {
+                $(".estimation_data").show();
+            }
+
+            if (board_meta.showDeadline == undefined || board_meta.showDeadline == "false") {
+                $(".deadline_data").hide();
+            }
+            else {
+                $(".deadline_data").show();
+            }
+
+            if (board_meta.showProject == undefined || board_meta.showProject == "false") {
+                $(".project_data").hide();
+            }
+            else {
+                $(".project_data").show();
+            }
+        }
 
     </script>
 

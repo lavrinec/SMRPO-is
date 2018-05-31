@@ -504,14 +504,16 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
 
 //        dd($cards);
 
-
         foreach ($cards as $card) {
             if ($card["project_id"] != $project_id) {
                 unset($card);
             }
         }
 
-        return view('boards.columnBody')->with(['cards' => $cards, 'project_id' => $project_id]);
+        return view('boards.columnBody')->with([
+            'cards' => $cards,
+            'project_id' => $project_id
+            ]);
     }
 
 
@@ -573,6 +575,37 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         }
 
     }
+
+
+
+    public function saveViewSettings(Request $request){
+//        dd($request->showProject);
+
+        $board = Board::where('id', $request->board_id)->first();
+
+        $meta = json_decode($board->meta, true);
+
+        $meta['showPriority'] = $request->showPriority;
+        $meta['showEstimation'] = $request->showEstimation;
+        $meta['showDeadline'] = $request->showDeadline;
+        $meta['showProject'] = $request->showProject;
+
+
+        $board->update(['meta' => json_encode($meta)]);
+
+        return response()->json([
+            'status' => '200',
+            'state' => 'saved',
+            'board_meta' => $meta
+        ]);
+
+
+
+    }
+
+
+
+
 
 
     private $tranmitionArray = [];

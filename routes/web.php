@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('columnHeader', 'BoardController@columnHeader')->name('boards.columnHeader');
         Route::post('{id}/reports', 'BoardController@makeReport')->name('boards.makeReport');
         Route::post('columnBody', 'BoardController@columnBody')->name('boards.columnBody');
+        Route::post('saveViewSettings', 'BoardController@saveViewSettings')->name('boards.saveViewSettings');
         Route::get('', 'BoardController@index')->name('boards.list');
         Route::get('{id}/show', 'BoardController@show')->name('boards.show');
         Route::get('{id}/focus', 'BoardController@focus')->name('boards.focus');
