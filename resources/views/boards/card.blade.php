@@ -74,25 +74,31 @@
     </div>
 
     <script>
-        var card = {!! json_encode($card) !!};
 
-        var column = allLeaves.find(function (element, i) {
-            if (element.id == card.column_id) {
-                return element;
+        function fixMissingCardInColumnsVar(card, columnsVar) {
+            var column = columnsVar.find(function (element, i) {
+                if (element.id == card.column_id) {
+                    return element;
+                }
+            });
+
+            if(column != undefined) {
+                var existingCard = column.cards.find(function (element, i) {
+                    if (element.id == card.id) {
+                        return element;
+                    }
+                });
+
+                if (existingCard == undefined) {
+                    column.cards.push(card);
+                }
             }
-        });
-
-        var existingCard = column.cards.find(function (element, i) {
-            if (element.id == card.id) {
-                return element;
-            }
-        });
-
-        if(existingCard == undefined){
-            console.log("dodajam");
-            column.cards.push(card);
         }
 
+        var card = {!! json_encode($card) !!};
+        fixMissingCardInColumnsVar(card, allLeaves);
+        fixMissingCardInColumnsVar(card, rootColumns);
+        fixMissingCardInColumnsVar(card, allColumns);
         
     </script>
     
