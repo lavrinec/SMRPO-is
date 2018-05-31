@@ -2,7 +2,7 @@
 <div class="box-header">
                             <h3 class="box-title">Izbor kartic</h3>
                         </div>
-<div class = "box-body">
+<div class = "box-body" id = "box">
 <!-- <p>"{{$board->structuredColumns}}"</p> -->
 <form class="form-horizontal" method="POST" action="{{ route('boards.makeReport', $board->id)}}">
 
@@ -132,24 +132,28 @@
         </select>
     </div>
 </div>
-    <div class="form-group">
+    <div class="form-group" id = "krneki" >
         <label for="type" class="col-sm-2 control-label">Tip poročila: </label>
 
         <div class="col-sm-10">
-            <select class="form-control" name="report_type"  id = "report_type" >
+            <select class="form-control" onchange="getval(this);" name="report_type"  id = "report_type" >
                 <option value="time" {{ isset($data['report_type']) && "time" == $data['report_type'] ? 'selected' : '' }}> Povprečni potreben čas </option>
                 <option value="wip" {{ isset($data['report_type']) && "wip" == $data['report_type'] ? 'selected' : '' }}> Kršitve omejitev WIP </option>
+                <option value="workflow" {{ isset($data['report_type']) && "workflow" == $data['report_type'] ? 'selected' : '' }}> Diagram delovnega toka </option>
             </select>
 
 
         </div>
     </div>
 
+    <div class="form-group">
+</div>
+
 <p>{{(isset($old_request))?$old_request->time_start:""}}</p>
 
 <input type="hidden" name="leaves" id="leaves">
 
-<div class="form-group">
+<div class="form-group" id = "zadnji">
     <div class="col-sm-offset-7 col-sm-4">
         <button type="submit" class="btn btn-primary" id="submit_report">Pripravi poročilo</button>
     </div>
@@ -166,6 +170,36 @@
 h = "h";
 d = "d";
 m = "m";
+
+function getval(sel)
+{    console.log(sel.value);
+    if(sel.value=="workflow"){
+        $("#workflow-time").remove();
+    $( `
+    <div class="form-group" id = "workflow-time">
+<label  class="col-sm-12 left control-label" style = "text-align:left">Časovni interval poročila</label>
+    <label for="creation_start" class="col-sm-1 control-label">od</label>
+
+     <div class="col-sm-11">
+        <input type="date" class="form-control" id="report_start" name="report_start"
+             value="{{(isset($old_request))?$old_request->creation_start:""}}" >
+    </div>
+    <label for="creation_end" class="col-sm-1 control-label">do</label>
+    <div class="col-sm-11">
+        <input type="date" class="form-control" id="report_end" name="report_end"
+               value="{{(isset($old_request))?$old_request->creation_end:""}}">
+    </div>
+</div>
+    ` ).insertAfter( "#krneki" );
+    }else{
+        $("#workflow-time").remove();
+    }
+ 
+}
+
+
+
+
 old_request = {{(isset($old_request->time_start))&&$old_request->time_start!=""?$old_request->time_start:"null"}};
 projects = '{{(isset($old_request->projects))&&$old_request->projects!=""?(implode(", ",array_map('strval',$old_request->projects))):"null"}}';
 //test = projects;

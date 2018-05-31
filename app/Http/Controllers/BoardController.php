@@ -276,8 +276,29 @@ public function makeReport(Request $request){
     $old_request = $request;
     request()->flash();
     //dd($Cards);
+
+    return [$request->report_start, $request->report_end, $Cards];
+
     return view("boards.report")->with("cards",$Cards)->with("board", $full_board)->with('projects', $projects)
     ->with("average_time", $formatted)->with("old_request", $old_request)->with("data", $data)->with("report_type", $report_type);
+}
+
+private function calculateWorkflow($cards, $start, $end, $column){
+    $days = $end->diffInDays($start);
+    $cardsInColumn = array_fill(0, $days, 0);
+    foreach ($cards as $card){
+        $in = Move::where("new_column_id", $column)->where("card_id", $card)->first();
+        $out = Move::where("old_column_id", $column)->where("card_id", $card)->first();
+        $current = $start;
+        //za celo dolzino izbranega casa poglej
+        for($i = 0; $i < $days; $i++) {
+            if($in->created_at <= $current && $current < $out->$created_at){
+                $days[$i]++;
+            }
+            $current = $current->addDays(1);
+        }
+    }
+
 }
 
 private function formatTime($time, $format){
