@@ -100,9 +100,11 @@
 
 
 
-                {{-- MATJAZ, upam, da te tole ne moti ... ker sem zakomentiral, ker meni ni delalo drugace --}}
+                {{-- MATJAZ, upam, da te tole ne moti ... ker sem MORDA zakomentiral, ker meni ni delalo drugace --}}
+                {{-- PS: na herokuju dela s to kodo, pri meni pa crash-a --}}
                 {{-- by Ziga --}}
 
+                {{-- ce tezave: komentiraj do komentarja "do tu" --}}
                 <div class="checkbox hidden">
                     <label>
                         <input type="checkbox" name="is_critical"
@@ -110,7 +112,8 @@
                         Kritičen
                     </label>
                 </div>
-                
+                {{-- do tu --}}
+
                 <div class="checkbox hidden">
                     <label>
                         <input type="checkbox" name="is_rejected"
