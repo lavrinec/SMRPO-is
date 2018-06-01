@@ -585,6 +585,7 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         $meta['showEstimation'] = $request->showEstimation;
         $meta['showDeadline'] = $request->showDeadline;
         $meta['showProject'] = $request->showProject;
+        $meta['showTasks'] = $request->showTasks;
 
         $board->update(['meta' => json_encode($meta)]);
 
