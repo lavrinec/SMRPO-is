@@ -475,9 +475,11 @@ private function calculateLeadTime($card_id, $start_column_id, $end_column_id, $
         //dd($board);
         $projects = Project::all();
 
+        $cards = Board::where('id', $id)->with('cards')->first();
+
         //$this->getUsersGroupsOfBoard($id);
 
-        return view('boards.focus')->with('board', $board)->with('projects', $projects)->with('userGroups',$userGroups);
+        return view('boards.focus')->with('board', $board)->with('projects', $projects)->with('userGroups',$userGroups)->with('cards',$cards);
     }
 
 //    public function getUsersGroupsOfBoard($boardid){

@@ -107,12 +107,14 @@ class CardController extends Controller
             $card->update($cop);
             $board = Board::where('id', $request->board_id)->with('projects', 'structuredColumnsCards')->first();
             $userGroups = UsersGroup::where('user_id', $request->user_id)->with('role')->get();
+            $cards  = Board::where('id', $request->board_id)->with('cards')->first();
             $projects = Project::all();
             $result = array();
             $result['card'] = $card;
             $result['board'] = $board;
             $result['projects'] = $board->projects;
             $result['userGroups'] = $userGroups;
+            $result['cards'] = $cards->cards;
             //$card->with('board',$board)->with('projects', $projects)->with('userGroups',$userGroups);
             //$card->view = View::make('boards.card')->with('card',$card)->with('board',$board)->with('projects', $projects)->with('userGroups',$userGroups)->render();
             return $result;

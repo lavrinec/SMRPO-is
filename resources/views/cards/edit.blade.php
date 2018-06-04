@@ -241,7 +241,7 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Zapri</button>
         @if($canEdit)
-            <button type="submit" class="btn btn-success" id="saveCard">Shrani</button>
+            <button type="submit" onclick="handleCardUpdate({{$card}}, window.board.id )" class="btn btn-success" id="saveCard">Shrani</button>
         @endif
     </div>
 </form>

@@ -55,6 +55,93 @@
         });
     }
 
+    function findQuoteCriticalFromLocalStorage(boardId){
+        console.log('jep');
+
+        // var cardColumnIndex = window.allColumns.findIndex(function(element,i){
+        //     //if(element.)
+        //     console.log(element);
+        // });
+        var deadlineFromLocalStorage = localStorage.getItem('criticalDayDeadlineSessionData'+'-'+boardId);
+        if(deadlineFromLocalStorage != null && deadlineFromLocalStorage != undefined){
+            var theDeadline = new Date(deadlineFromLocalStorage);
+
+            for(var i = 0 ; i < window.myAllCards.length ; i++){
+                var cardIterated = window.myAllCards[i];
+
+                console.log('here problem');
+                if((cardIterated.deadline != null) && (cardIterated.deadline != undefined)){
+                    var cardDeadline = new Date(cardIterated.deadline);
+                    if(cardDeadline.getTime() <= theDeadline.getTime()) {
+                        var beyondTesting = checkIfCardBeyondTesting(cardIterated);
+                        console.log('kaj se dogaja' + beyondTesting);
+
+                        if(beyondTesting==true){
+                            colorCard(cardIterated.id, 'rgb(230,140,100');
+                            continue;
+                        }
+
+                    }
+                }
+                colorCard(cardIterated.id, cardIterated.color);
+            }
+        }
+
+    }
+    function colorCard(cardId, newColor){
+        var foundCardDiv = $('*[data-card-id="'+cardId+'"]');
+        var foundChildCardDiv = $('*[data-card-id="' + cardId + '"] .box-header');
+        if(foundCardDiv != null && foundCardDiv != undefined && foundChildCardDiv != null && foundChildCardDiv != undefined){
+            console.log('jup');
+            foundCardDiv.css('border-color', newColor);
+            // foundCardDiv.css('border-color', 'rgb(230,140,100)');
+            foundChildCardDiv.css('background-color', newColor);
+            // foundChildCardDiv.css('background-color', 'rgb(230,140,100)');
+        }
+    }
+    function checkIfCardBeyondTesting(cardToTest){
+        var acceptanceTestingColumnIndex = window.allColumns.findIndex(function (element, i) {
+            if (element.acceptance_testing == true) {
+                return true;
+            }
+        });
+        var cardColumnIndex = window.allColumns.findIndex(function(element,i){
+            if(element.id == cardToTest.column_id){
+                return i;
+            }
+        });
+        console.log('test index: ' + acceptanceTestingColumnIndex + ' curent column ' + cardColumnIndex);
+        if(cardColumnIndex < acceptanceTestingColumnIndex){
+            return true;
+        }
+        return false;
+
+    }
+
+    function handleCardUpdate(updatedCard, boardId){
+        console.log('what is deeadline : ' + updatedCard.deadline);
+        var cardDeadline = $('#updateCard #deadline').val();
+        updatedCard.deadline = cardDeadline;
+        console.log('what is deeadline : ' + updatedCard.deadline);
+        window.myAllCards = findCardAndReplaceContent(updatedCard);
+        setTimeout(function(){findQuoteCriticalFromLocalStorage(boardId);},350);
+    }
+
+    function findCardAndReplaceContent(updatedCard){
+        var allCards = window.myAllCards;
+        if(allCards != null && allCards!=undefined){
+            var swapIndex = allCards.findIndex(function(element,i){
+                if(element.id == updatedCard.id){
+                    return i;
+                }
+            });
+            if(swapIndex != null && swapIndex != undefined && swapIndex != -1){
+                allCards[swapIndex] = updatedCard;
+            }
+        }
+        return allCards;
+    }
+
     $(function () {
         $('#example1').DataTable({
             'paging'      : true,

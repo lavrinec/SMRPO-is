@@ -112,6 +112,12 @@
                                         Full Screen
                                     </button>
 
+                                    <button type="button"
+                                            class="btn btn-primary pull-right control-buttons"
+                                            data-card-id="0"
+                                            data-board-id="{{ $board->id }}"
+                                            onclick="showQuoteCriticalCards()">Prikaz "kritičnih" kartic
+                                    </button>
 
                                     @if(($isKM = Auth::user()->isKM()) || Auth::user()->isPO())
                                         @if($isKM)
@@ -390,7 +396,12 @@
         var wipBreakAllowed = false;
         var wipBreak = false;
 
+        var myAllCards = {!! $board->cards !!};
+        window.myAllCards = myAllCards;
+        console.log('my cards');
+        console.log(myAllCards);
 
+        window.board = board;
         window.onload = function () {
 //            makeExisting();
 
@@ -404,6 +415,8 @@
             allLeaves = getAllLeaves();
             allColumns = getAllColumns();
 
+
+            window.allColumns = allColumns;
             console.log('columns');
             console.log(allColumns);
 
@@ -421,7 +434,116 @@
             });
 
 
+            console.log('board' + board.id);
+
+            setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id);},350);
+
+
         };
+
+        function showQuoteCriticalCards(){
+
+            $('#boardModal .modal-footer').html('');
+            // var foundPreviousString = JSON.stringify(foundPrevious).replace(/"/g, "'");
+            // var foundNextString = JSON.stringify(foundNext).replace(/"/g, "'");
+            // var foundCardString = JSON.stringify(foundCard).replace(/"/g, "'");
+            // console.log((foundPreviousString));
+            // $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\',' + foundPrevious.id + ',' + foundNext.id + ',' + foundCard.id + ',' + foundCard.order + ',' + foundPrevious.acceptance_testing + ',' + acceptanceTestingColumnIndex + ',' + nextIndexInAllColumns + ',' + previousIndexInAllColumns + ',' + '\'' + foundCard.color + '\'' + ',\'' + foundCard.meta + '\'' + ',' + foundPrevious.parent_id + ',' + foundNext.parent_id + ')" type="button" class="btn btn-default">Shrani</button>');
+            // $('#boardModal .modal-footer').append('<button id="cancelWipBreak" onclick="enableWipBreak(\'cancelWipBreak\')" type="button" class="btn btn-default">Prekliči</button>');
+            $('#boardModal .modal-header h4').text('Modalno okno');
+            $('#boardModal .modal-body').html('<div class="row">' +
+                '<div class="col-sm-12"><p>Vnesite število dni</p></div></div>' +
+                '<div class="row"><div class="col-sm-12"><input class="col-sm-12" style="margin-bottom:15px;" id="boardModalCriticalCardsDays" type="text" /></div>' +
+                '</div>');
+            $('#boardModal .modal-footer').append('<button id="saveCriticalDaysCards" onClick="startCriticalDaysCardsProcess(\'boardModal\', \'boardModalCriticalCardsDays\')" type="button" class="btn btn-default">Shrani</button>');
+            $('#boardModal .modal-footer').append('<button id="closeModalCriticalDaysCards" onClick="closeModal(\'boardModal\')" type="button" class="btn btn-default">Prekliči</button>');
+            $('#boardModal').modal('show');
+
+            // console.log('card element');
+            // var foundCardDiv = $('*[data-card-id="3"]');
+            // var foundChildCardDiv = $('*[data-card-id="3"] .box-header');
+            // foundCardDiv.css('border-color', 'rgb(230,140,100)');
+            // foundChildCardDiv.css('background-color', 'rgb(230,140,100)');
+            // console.log(foundCardDiv);
+            // console.log(foundChildCardDiv);
+
+
+
+
+        }
+
+        /*
+        function findQuoteCriticalFromLocalStorage(){
+            var deadlineFromLocalStorage = localStorage.getItem('criticalDayDeadlineSessionData');
+            if(deadlineFromLocalStorage != null && deadlineFromLocalStorage != undefined){
+                var theDeadline = new Date(deadlineFromLocalStorage);
+
+                for(var i = 0 ; i < window.myAllCards.length ; i++){
+                    var cardIterated = window.myAllCards[i];
+
+                    if((cardIterated.deadline != null) && (cardIterated.deadline != undefined)){
+                        var cardDeadline = new Date(cardIterated.deadline);
+                        if(cardDeadline.getTime() <= theDeadline.getTime()) {
+                            colorCard(cardIterated.id);
+
+                        }
+                    }
+                }
+            }
+
+        }
+        function colorCard(cardId){
+            var foundCardDiv = $('*[data-card-id="'+cardId+'"]');
+            var foundChildCardDiv = $('*[data-card-id="' + cardId + '"] .box-header');
+            if(foundCardDiv != null && foundCardDiv != undefined && foundChildCardDiv != null && foundChildCardDiv != undefined){
+                foundCardDiv.css('border-color', 'rgb(230,140,100)');
+                foundChildCardDiv.css('background-color', 'rgb(230,140,100)');
+            }
+        }
+         */
+
+        function startCriticalDaysCardsProcess(modalId, daysInputId){
+            /*
+            * We need to store somewhere different color for these "critical cards"
+            * We need to show this different color on table
+            * We need to check everytime we draw table if "critical cards" are still
+            *
+            * v sejo bomo shranili spremenljivko, ki bo dala vedeti, da moramo imeti nastavljeno nastavitev za "kriticne kartice"!!!
+            *
+            *
+            * gledamo vse kartice, ki imajo deadline na trenutni datum + "n" dni
+            *
+            * */
+
+            var addDays = $('#'+modalId+ ' #'+daysInputId).val();
+            console.log('in here ' + addDays + (addDays != null) + (addDays != undefined));
+            console.log(allLeaves);
+
+            if(addDays != null && addDays != undefined){
+                //do stuff - especially , add number of days to current date
+
+                //where to store new deadline - we need to check this data somwehere else - somewhere where we draw cards
+                var criticalDayDeadlineSessionData = localStorage.getItem('criticalDayDeadlineSessionData');
+                if(criticalDayDeadlineSessionData != null && criticalDayDeadlineSessionData != undefined){
+                    localStorage.removeItem('criticalDayDeadlineSessionData-' + board.id);
+                }
+                var today = new Date();//sets current date and current time
+                today.setDate(parseInt(today.getDate()) + parseInt(addDays));
+                localStorage.setItem('criticalDayDeadlineSessionData'+'-'+board.id, today);
+                findQuoteCriticalFromLocalStorage(board.id);
+
+
+            }
+            closeModal(modalId);
+        }
+
+
+
+        function closeModal(modalId){
+            $('#'+modalId).modal('toggle');
+            var today = new Date();
+            console.log('this is value from input  ' + $('#boardModal #boardModalCriticalCardsDays').val());
+        }
 
         function findLastColumnOfAParent(columnsArray, parentId) {
             console.log('to je primerjava ' + parentId);
@@ -653,6 +775,7 @@
                 console.log('column' + (parseInt(previousIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
                 console.log('column' + (parseInt(previousIndexInAllColumns)) + '  ' + (parseInt(acceptanceTestingColumnIndex)));//(foundPrevious.acceptance_testing == true));
                 console.log(foundPrevious);
+                var beyondTesting = false;
                 if (((foundPrevious.acceptance_testing == true || foundPrevious.acceptance_testing == 1) || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex)) ) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))) {
                     sendData['is_rejected'] = 1;
                     if (foundCard.meta == null || foundCard.meta == undefined || foundCard.meta == '' || !foundCard.meta.includes('previousColor:')) {
@@ -660,6 +783,7 @@
                     }
                     sendData['color'] = '#0DFFA0';
                     needToRecreateDOM = true;
+                    beyondTesting = true;
                 }
                 if (foundNext.acceptance_testing == true || foundNext.acceptance_testing == 1) {
                     var searchString = 'previousColor:'
@@ -674,6 +798,7 @@
                         sendData['is_rejected'] = 0;
                         needToRecreateDOM = true;
                     }
+                    //beyondTesting = true;
                 }
 
                 $.ajax({
@@ -708,6 +833,9 @@
                         if (needToRecreateDOM == true) {
                             resetTable();
                         }
+                        // if(beyondTesting){
+                        setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id);},250);
+                        // }
 
                     }
                 });
@@ -750,6 +878,7 @@
                     }
 
 
+                    var beyondAcceptance = false;
                     if (((acceptance_testing == true || acceptance_testing == 1 || acceptance_testing == '1') || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))) {
                         sendData['is_rejected'] = 1;
                         if (cardMeta == null || cardMeta == undefined || cardMeta == '' || !cardMeta.includes('previousColor:')) {
@@ -757,6 +886,7 @@
                         }
                         sendData['color'] = '#0DFFA0';
                         needToRecreateDOM = true;
+                        beyondAcceptance = true;
                     } else if ((parseInt(acceptanceTestingColumnIndex) == parseInt(nextIndexInAllColumns) )) {
                         sendData['is_rejected'] = 0;
                         console.log('jap');
@@ -801,6 +931,9 @@
                             if (needToRecreateDOM) {
                                 resetTable();
                             }
+                            // if(beyondAcceptance){
+                            setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id)},250);
+                            // }
 
                             $('#boardModal').modal('toggle');//zapri ročno modal
                         }
@@ -850,6 +983,10 @@
 
             allLeaves = getAllLeaves();
             allColumns = getAllColumns();
+
+            window.allColumns = allColumns;
+            myAllCards = result.cards;
+            window.myAllCards = myAllCards;
 
         }
 
