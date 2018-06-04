@@ -277,28 +277,80 @@ public function makeReport(Request $request){
     request()->flash();
     //dd($Cards);
 
-    return [$request->report_start, $request->report_end, $Cards];
+    //return [$request->report_start, $request->report_end, $Cards];
 
+    $total = $this->totalWorkflow($Cards,$request->report_start, $request->report_end,$request->start_column, $request->end_column, $leaves);
+
+    //return $total;
+    $report_column =  $this->calculateWorkflowColumn($Cards,$request->report_start, $request->report_end, 44 );
+    
+    $report_column = (json_encode($report_column));
+
+    //return $report_column;
     return view("boards.report")->with("cards",$Cards)->with("board", $full_board)->with('projects', $projects)
-    ->with("average_time", $formatted)->with("old_request", $old_request)->with("data", $data)->with("report_type", $report_type);
+    ->with("average_time", $formatted)->with("old_request", $old_request)
+    ->with("data", $data)->with("report_type", $report_type)
+    ->with("workflow", json_encode($total[1]))->with("names", json_encode($total[0]));
 }
 
-private function calculateWorkflow($cards, $start, $end, $column){
-    $days = $end->diffInDays($start);
-    $cardsInColumn = array_fill(0, $days, 0);
-    foreach ($cards as $card){
-        $in = Move::where("new_column_id", $column)->where("card_id", $card)->first();
-        $out = Move::where("old_column_id", $column)->where("card_id", $card)->first();
-        $current = $start;
-        //za celo dolzino izbranega casa poglej
-        for($i = 0; $i < $days; $i++) {
-            if($in->created_at <= $current && $current < $out->$created_at){
-                $days[$i]++;
-            }
-            $current = $current->addDays(1);
+private function totalWorkflow($cards, $start, $end, $start_column_id, $end_column_id, $leaves){
+    $start_index = array_search($start_column_id, $leaves);
+    $end_index = array_search($end_column_id, $leaves);
+    $data = [];
+    $names = [];
+
+
+    while($start_index!=$end_index+1){
+        $report_column = $this->calculateWorkflowColumn($cards, $start, $end, $start_column_id);
+        $start_index++;
+        $column = Column::where("id",$start_column_id)->first();
+        if($start_index<count($leaves)){
+            $start_column_id = $leaves[$start_index];
         }
+        
+        array_push($data, $report_column);
+        
+        array_push($names,$column->column_name);
     }
 
+    return [$names, $data];
+}
+
+private function calculateWorkflowColumn($cards, $start, $end, $column){
+    $days = (new Carbon($end))->diffInDays(new Carbon($start))+1;
+    //return $days;
+    $cardsInColumn = array_fill(0, $days, [0,0]);
+    //return [$cardsInColumn, $days];
+    foreach ($cards as $card){
+        $in = Move::where("new_column_id", $column)->where("card_id", $card->id)->first();
+        $out = Move::where("old_column_id", $column)->where("card_id", $card->id)->first();
+        //return [$column, $card];
+       // if ($in!=null && $out!=null && $out == true)return ["to je in", $in, "to je out", $out];
+        $current = new Carbon($start);
+        //za celo dolzino izbranega casa poglej
+        for($i = 0; $i < $days+1; $i++) {
+           // $cardsInColumn[$i]++;
+            //return $cardsInColumn[$i];
+           // if($in!=null && $out!=null && $in->created_at <= $current && $current < $out->created_at) return ["to je in", $in, "to je out", $out,$in->created_at <= $current, $current<$out->created_at];
+           
+           if($in!=null && $out!=null && $in->created_at < $current && $current <= $out->created_at){
+                //return [$in, $out];
+                if($i!=0) $cardsInColumn[$i-1][1]++;
+            }
+            if($in!=null && $out==null && $in->created_at < $current){
+                //return [$in, $out];
+                if($i!=0) $cardsInColumn[$i-1][1]++;
+            }
+            if($i<$days) {
+               $test =   Carbon::parse($current);
+               $cardsInColumn[$i][0] = $current->format('d.m.Y'); 
+
+            } 
+            $current = $current->addDays(1);
+           // return [$current < $out->created_at];
+        }
+    }
+    return $cardsInColumn;
 }
 
 private function formatTime($time, $format){
