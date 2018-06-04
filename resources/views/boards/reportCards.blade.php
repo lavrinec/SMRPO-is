@@ -107,7 +107,7 @@
 </div>
 
 <div class="box">
-    @if(isset($average_time))
+    @if(isset($average_time)&&$report_type != 'workflow')
 
         <div class="box-header">
             <h3 class="box-title">Povprečni čas za izbrane kartice: {{$average_time}}</h3>
@@ -117,8 +117,8 @@
 </div>
 
 <script>
-let workflow = {!!$workflow!!};
-let names = {!!$names!!};
+var workflow = {!!$workflow!!};
+var names = {!!$names!!};
 console.log("to so names", names);
 labels = [];
 data = []
