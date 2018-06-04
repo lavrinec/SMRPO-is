@@ -107,7 +107,7 @@
 </div>
 
 <div class="box">
-    @if(isset($average_time))
+    @if(isset($average_time)&&$report_type != 'workflow')
 
         <div class="box-header">
             <h3 class="box-title">Povprečni čas za izbrane kartice: {{$average_time}}</h3>
@@ -117,20 +117,52 @@
 </div>
 
 <script>
+var workflow = {!!$workflow!!};
+var names = {!!$names!!};
+console.log("to so names", names);
+labels = [];
+data = []
+console.log("to je workflow", workflow);
+workflow.forEach(
+    function(column){
+        col_data=[];
+        labels=[];
+    column.forEach(function(element) {
+        
+  labels.push(element[0]);
+  col_data.push(element[1]);
+});
+    data.push(col_data)}
+);
+
+
+background_colors = [
+    "rgba(151,2230,250,1)",
+    "rgba(133,220,214,1)",
+    "rgba(159,243,214,1)",
+    "rgba(133,220,165,1)",
+    "rgba(151,250,159,1)",
+    "rgba(112,222,131,1)",
+    "rgba(181,245,112,1)"
+]
+console.log("to je labels", labels);
+console.log("to je data", data);
+datasets = [];
+for(i=0; i<data.length; i++){
+    object = {
+        label:names[i],
+        data:data[i],
+        backgroundColor:background_colors[i%background_colors.length]
+    }
+    datasets.push(object);
+}
+console.log("to so dataseti", datasets);
 var ctx = document.getElementById('myChart').getContext('2d');
 var myChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-    datasets: [{
-      label: 'apples',
-      data: [12, 19, 3, 17, 6, 3, 7],
-      backgroundColor: "rgba(153,255,51,0.4)"
-    }, {
-      label: 'oranges',
-      data: [2, 29, 5, 5, 2, 3, 10],
-      backgroundColor: "rgba(255,153,0,0.4)"
-    }]
+    labels: labels,
+    datasets: datasets.reverse()
   }, 
   options: {
         scales: {

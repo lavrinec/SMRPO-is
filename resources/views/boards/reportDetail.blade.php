@@ -182,12 +182,12 @@ function getval(sel)
 
      <div class="col-sm-11">
         <input type="date" class="form-control" id="report_start" name="report_start"
-             value="{{(isset($old_request))?$old_request->creation_start:""}}" >
+             value="{{(isset($old_request))?$old_request->report_start:""}}" >
     </div>
     <label for="creation_end" class="col-sm-1 control-label">do</label>
     <div class="col-sm-11">
         <input type="date" class="form-control" id="report_end" name="report_end"
-               value="{{(isset($old_request))?$old_request->creation_end:""}}">
+               value="{{(isset($old_request))?$old_request->report_end:""}}">
     </div>
 </div>
     ` ).insertAfter( "#krneki" );
@@ -212,6 +212,9 @@ old_show_time = {{(isset($old_request->show_time))&&$old_request->show_time!=""?
 console.log(old_start_column!=null?old_start_column:"prazna izjava");
 window.onload = function () {
     findColumns();
+    selected = document.getElementById("report_type");
+    console.log(selected);
+    getval(selected);
     //console.log("log");
     console.log("test " + proj_array);
     $("#proj").select2();
