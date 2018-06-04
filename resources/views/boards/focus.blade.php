@@ -1457,7 +1457,7 @@
                 'Spodaj lahko določite, kateri dodatni podatki se še prikazujejo na kartici.</p>' +
 
                 '<label for="showPriority" class="">' +
-                '<input id="showPriority" type="checkbox" class="pull-left" name="meta[showPriority]" ' +
+                '<input id="showPriority" type="checkbox" class="pull-left" name="showPriority" ' +
                 'value="showPriority" ' +
                 '{{ isset($board->meta->showPriority) && $board->meta->showPriority == true ? "checked" : "" }}>' +
                 ' Prioriteta' +
@@ -1465,7 +1465,7 @@
                 '<br>' +
 
                 '<label for="showEstimation" class="">' +
-                '<input id="showEstimation" type="checkbox" class="pull-left" name="meta[showEstimation]" ' +
+                '<input id="showEstimation" type="checkbox" class="pull-left" name="showEstimation" ' +
                 'value="showEstimation" ' +
                 '{{ isset($board->meta->showEstimation) && $board->meta->showEstimation == true ? "checked" : "" }}>' +
                 ' Ocena zahtevnosti' +
@@ -1473,7 +1473,7 @@
                 '<br>' +
 
                 '<label for="showDeadline" class="">' +
-                '<input id="showDeadline" type="checkbox" class="pull-left" name="meta[showDeadline]" ' +
+                '<input id="showDeadline" type="checkbox" class="pull-left" name="showDeadline" ' +
                 'value="showDeadline" ' +
                 '{{ isset($board->meta->showDeadline) && $board->meta->showDeadline == true ? "checked" : "" }}>' +
                 ' Rok za dokončanje' +
@@ -1481,10 +1481,18 @@
                 '<br>' +
 
                 '<label for="showProject" class="">' +
-                '<input id="showProject" type="checkbox" class="pull-left" name="meta[showProject]" ' +
+                '<input id="showProject" type="checkbox" class="pull-left" name="showProject" ' +
                 'value="showProject" ' +
                 '{{ isset($board->meta->showProject) && $board->meta->showProject == true ? "checked" : "" }}>' +
                 ' Projekt, h katerem kartica spada' +
+                '</label>' +
+                '<br>' +
+
+                '<label for="showTasks" class="">' +
+                '<input id="showTasks" type="checkbox" class="pull-left" name="showTasks" ' +
+                'value="showProject" ' +
+                '{{ isset($board->meta->showTasks) && $board->meta->showTasks == true ? "checked" : "" }}>' +
+                ' Naloge na kartici' +
                 '</label>' +
                 '<br>' +
                 '@endif' +
@@ -1516,10 +1524,10 @@
                 if (board_meta.showProject == "true") {
                     $("#showProject").prop('checked', true);
                 }
+                if (board_meta.showTasks == "true") {
+                    $("#showTasks").prop('checked', true);
+                }
             }
-
-
-            {{-- preveri se, ce je user KM, omogoci izbiranje podatkov za prikaz na kartici --}}
 
             $('#boardModal').modal('show');
         }
@@ -1536,6 +1544,7 @@
                         'showEstimation': $("#showEstimation")[0].checked,
                         'showDeadline': $("#showDeadline")[0].checked,
                         'showProject': $("#showProject")[0].checked,
+                        'showTasks': $("#showTasks")[0].checked,
                         'board_id': board.id
                     },
                     success: function (data) {
@@ -1561,6 +1570,7 @@
                 $(".estimation_data").hide();
                 $(".deadline_data").hide();
                 $(".project_data").hide();
+                $(".tasks_data").hide();
             }
             else {
                 if (board_meta.showPriority == undefined || board_meta.showPriority == "false") {
@@ -1589,6 +1599,12 @@
                 }
                 else {
                     $(".project_data").show();
+                }
+                if (board_meta.showTasks == undefined || board_meta.showTasks == "false") {
+                    $(".tasks_data").hide();
+                }
+                else {
+                    $(".tasks_data").show();
                 }
             }
         }
