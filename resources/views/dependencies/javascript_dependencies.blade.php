@@ -55,26 +55,26 @@
         });
     }
 
-    function findQuoteCriticalFromLocalStorage(boardId){
-        console.log('jep');
+    function findQuoteCriticalFromLocalStorage(boardId, userId){
+        // console.log('jep');
 
         // var cardColumnIndex = window.allColumns.findIndex(function(element,i){
         //     //if(element.)
         //     console.log(element);
         // });
-        var deadlineFromLocalStorage = localStorage.getItem('criticalDayDeadlineSessionData'+'-'+boardId);
+        var deadlineFromLocalStorage = localStorage.getItem('criticalDayDeadlineSessionData'+'-'+boardId+'-'+userId);
         if(deadlineFromLocalStorage != null && deadlineFromLocalStorage != undefined){
             var theDeadline = new Date(deadlineFromLocalStorage);
 
             for(var i = 0 ; i < window.myAllCards.length ; i++){
                 var cardIterated = window.myAllCards[i];
 
-                console.log('here problem');
+                // console.log('here problem');
                 if((cardIterated.deadline != null) && (cardIterated.deadline != undefined)){
                     var cardDeadline = new Date(cardIterated.deadline);
                     if(cardDeadline.getTime() <= theDeadline.getTime()) {
                         var beyondTesting = checkIfCardBeyondTesting(cardIterated);
-                        console.log('kaj se dogaja' + beyondTesting);
+                        // console.log('kaj se dogaja' + beyondTesting);
 
                         if(beyondTesting==true){
                             colorCard(cardIterated.id, 'rgb(230,140,100');
@@ -118,13 +118,13 @@
 
     }
 
-    function handleCardUpdate(updatedCard, boardId){
-        console.log('what is deeadline : ' + updatedCard.deadline);
+    function handleCardUpdate(updatedCard, boardId, userId){
+        // console.log('what is deeadline : ' + updatedCard.deadline);
         var cardDeadline = $('#updateCard #deadline').val();
         updatedCard.deadline = cardDeadline;
-        console.log('what is deeadline : ' + updatedCard.deadline);
+        // console.log('what is deeadline : ' + updatedCard.deadline);
         window.myAllCards = findCardAndReplaceContent(updatedCard);
-        setTimeout(function(){findQuoteCriticalFromLocalStorage(boardId);},350);
+        setTimeout(function(){findQuoteCriticalFromLocalStorage(boardId,userId);},350);
     }
 
     function findCardAndReplaceContent(updatedCard){

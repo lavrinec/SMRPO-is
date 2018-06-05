@@ -436,7 +436,7 @@
 
             console.log('board' + board.id);
 
-            setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id);},350);
+            setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id, user.id);},350);
 
 
         };
@@ -525,12 +525,12 @@
                 //where to store new deadline - we need to check this data somwehere else - somewhere where we draw cards
                 var criticalDayDeadlineSessionData = localStorage.getItem('criticalDayDeadlineSessionData');
                 if(criticalDayDeadlineSessionData != null && criticalDayDeadlineSessionData != undefined){
-                    localStorage.removeItem('criticalDayDeadlineSessionData-' + board.id);
+                    localStorage.removeItem('criticalDayDeadlineSessionData-' + board.id+'-'+user.id);
                 }
                 var today = new Date();//sets current date and current time
                 today.setDate(parseInt(today.getDate()) + parseInt(addDays));
-                localStorage.setItem('criticalDayDeadlineSessionData'+'-'+board.id, today);
-                findQuoteCriticalFromLocalStorage(board.id);
+                localStorage.setItem('criticalDayDeadlineSessionData'+'-'+board.id+'-'+user.id, today);
+                findQuoteCriticalFromLocalStorage(board.id, user.id);
 
 
             }
@@ -748,7 +748,11 @@
                     var foundNextString = JSON.stringify(foundNext).replace(/"/g, "'");
                     var foundCardString = JSON.stringify(foundCard).replace(/"/g, "'");
                     console.log((foundPreviousString));
-                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\',' + foundPrevious.id + ',' + foundNext.id + ',' + foundCard.id + ',' + foundCard.order + ',' + foundPrevious.acceptance_testing + ',' + acceptanceTestingColumnIndex + ',' + nextIndexInAllColumns + ',' + previousIndexInAllColumns + ',' + '\'' + foundCard.color + '\'' + ',\'' + foundCard.meta + '\'' + ',' + foundPrevious.parent_id + ',' + foundNext.parent_id + ')" type="button" class="btn btn-default">Shrani</button>');
+                    var metaData = JSON.stringify(foundCard.meta);
+                    metaData = metaData.replace(/"/g, "'");
+                    // console.log(metaData);
+                    //console.log(JSON.stringify(metaData));
+                    $('#boardModal .modal-footer').append('<button id="enableWipBreak" onclick="enableWipBreak(\'enableWipBreak\',' + foundPrevious.id + ',' + foundNext.id + ',' + foundCard.id + ',' + foundCard.order + ',' + foundPrevious.acceptance_testing + ',' + acceptanceTestingColumnIndex + ',' + nextIndexInAllColumns + ',' + previousIndexInAllColumns + ',' + '\'' + foundCard.color + '\'' + ',' + metaData + '' + ',' + foundPrevious.parent_id + ',' + foundNext.parent_id + ')" type="button" class="btn btn-default">Shrani</button>');
                     $('#boardModal .modal-footer').append('<button id="cancelWipBreak" onclick="enableWipBreak(\'cancelWipBreak\')" type="button" class="btn btn-default">Prekliči</button>');
                     $('#boardModal .modal-header h4').text('Opozorilo!');
                     $('#boardModal .modal-body').html('<div class="row">' +
@@ -834,7 +838,7 @@
                             resetTable();
                         }
                         // if(beyondTesting){
-                        setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id);},250);
+                        setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id, user.id);},250);
                         // }
 
                     }
@@ -882,7 +886,9 @@
                     if (((acceptance_testing == true || acceptance_testing == 1 || acceptance_testing == '1') || (parseInt(previousIndexInAllColumns) > parseInt(acceptanceTestingColumnIndex))) && (parseInt(nextIndexInAllColumns) < parseInt(acceptanceTestingColumnIndex))) {
                         sendData['is_rejected'] = 1;
                         if (cardMeta == null || cardMeta == undefined || cardMeta == '' || !cardMeta.includes('previousColor:')) {
+                            // console.log(cardMeta);
                             sendData['meta'] = cardMeta + ';previousColor:' + cardColor;
+                            // console.log(sendData['meta']);
                         }
                         sendData['color'] = '#0DFFA0';
                         needToRecreateDOM = true;
@@ -932,7 +938,7 @@
                                 resetTable();
                             }
                             // if(beyondAcceptance){
-                            setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id)},250);
+                            setTimeout(function(){findQuoteCriticalFromLocalStorage(board.id, user.id)},250);
                             // }
 
                             $('#boardModal').modal('toggle');//zapri ročno modal
