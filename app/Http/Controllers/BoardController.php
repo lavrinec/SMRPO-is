@@ -250,7 +250,7 @@ public function makeReport(Request $request){
 
     foreach ($Cards as $card){
         
-        $lead = $this->calculateLeadTime($card->id, $start_column,$end_column, $leaves);
+        $lead = $report_type == "time" ? $this->calculateLeadTime($card->id, $start_column,$end_column, $leaves) : 0;
         //return $lead->id;
 
         if(gettype($lead)!="string"){
