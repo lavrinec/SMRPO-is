@@ -175,6 +175,9 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Iz stolpca</th>
                                 <th scope="col">V stolpec</th>
+                                <th scope="col">Uporabnik</th>
+                                <th scope="col">Datum</th>
+                                <th scope="col">Ura</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -188,6 +191,9 @@
                                         @endif
                                     </td>
                                     <td>{{ $move->new_column->column_name }} (#{{ $move->new_column->id }})</td>
+                                    <td>{{ isset($move->user) ? ( $move->user->first_name . " " . $move->user->last_name ) : ""  }}</td>
+                                    <td>{{ date("d.m.Y", strtotime($move->created_at)) }}</td>
+                                    <td>{{ date("H:i", strtotime($move->created_at)) }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -205,6 +211,9 @@
                                 <th scope="col">Razlog</th>
                                 <th scope="col">Iz stolpca</th>
                                 <th scope="col">V stolpec</th>
+                                <th scope="col">Uporabnik</th>
+                                <th scope="col">Datum</th>
+                                <th scope="col">Ura</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -219,6 +228,10 @@
                                     <td style="min-width: 150px;">{{ $violation->new_column->column_name }}
                                         (#{{ $violation->new_column->id }})
                                     </td>
+
+                                    <td>{{ isset($violation->user) ? ( $violation->user->first_name . " " . $violation->user->last_name ) : ""  }}</td>
+                                    <td>{{ date("d.m.Y", strtotime($violation->created_at)) }}</td>
+                                    <td>{{ date("H:i", strtotime($violation->created_at)) }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
